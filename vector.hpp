@@ -21,23 +21,57 @@ class vector
 	class iterator
 	{
 	};
-	typedef const iterator const_iterator;
 	class reverse_iterator : public iterator
 	{
 	};
 	typedef const reverse_iterator const_reverse_iterator;
+	typedef typename allocator_type::size_type size_type;
 
 	/*
-	 * Variables
+	 * **************************************
+	 * ************ Variables ***************
+	 * **************************************
 	*/
 	private:
-	T* _arr;
-	Alloc _all;
+	allocator_type _al;
+	T* _ar;
+	size_type _sz;
+	size_type _cp;
 
 	/*
-	 * Member Functions
+	 * **************************************
+	 * ********* Member Functions ***********
+	 * **************************************
 	*/
 	public:
+	// - - - Constructors
+	// - Default
+	explicit vector(const allocator_type& alloc = allocator_type()):
+		_al(alloc),
+		_ar(0), _sz(0), _cp(0){}
+
+	// - Fill
+	explicit vector(size_type n,
+					const value_type& val = value_type(),
+					const allocator_type& alloc = allocator_type()):
+		_al(alloc),
+		_ar(_al.allocate(n)),
+		_sz(n),
+		_cp(n)
+	{
+		for (unsigned int i = 0; i < _sz; i++)
+			_al.construct(_ar + i, val);
+	}
+	
+
+	// - - - Destructor
+	~vector()
+	{
+		for (unsigned int i = 0; i < _sz; i++)
+			_al.destroy(_ar + i);
+		_al.deallocate(_ar, _sz);
+	}
+
 };
 
 }

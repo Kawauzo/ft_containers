@@ -98,6 +98,8 @@ public:
 
     void construct(T * const p, const T& t) const {
 
+
+
         void * const pv = static_cast<void *>(p);
 
  

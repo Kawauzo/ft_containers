@@ -7,7 +7,7 @@ DIR_SRC		= ./
 DIR_OBJ		= ./objs/
 
 # Files #
-SRC		= main_test.cpp explicit_allocator.cpp
+SRC		= main_test.cpp
 
 OBJ		= ${SRC:.cpp=.o}
 OBJS	= ${addprefix ${DIR_OBJ}, ${OBJ}}
