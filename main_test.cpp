@@ -17,7 +17,7 @@ void vec_alloc_1by1(int init_size)
 	std::cout << "vec.size() = " << vec.size() << std::endl;
 	for (int i = 0; i<35; i++)
 	{
-		std::cout << "-";
+        std::cout << "-";
 		vec.insert(vec.end(), 3);
 	}
 	for (int i = 0; i<10000; i++)
@@ -49,7 +49,9 @@ template <class vec>
 void test_vec()
 {
 	vec tst1(2);
-	tst1.insert(tst1.end(), 2);
+	//tst1.insert(tst1.end(), 2);
+    typename vec::value_type c = 4;
+    std::cout << c;
 }
 
 int main()
@@ -57,9 +59,9 @@ int main()
 	//vec_alloc_1by1(0);
 	print_green("");
 	//vec_alloc_large();
-	
+
 	test_vec<std::vector<int,Mallocator<int> > >();
 	Mallocator<int> prout;
 	print_green("");
-	//test_vec<ft::vector<int,Mallocator<int> > >();
+	test_vec<ft::vector<int,Mallocator<int> > >();
 }
