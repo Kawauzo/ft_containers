@@ -1,7 +1,7 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# include "iterator.hpp"
+# include "utils/iterator.hpp"
 # include <memory>
 
 namespace ft
@@ -32,8 +32,11 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     typedef typename allocator_type::size_type size_type;
  
-    // ***** Iterators *****
-    //
+    /*
+     * **************************************
+     * ************ Iterators ***************
+     * **************************************
+    */
     class iterator
     {
         public:
@@ -48,7 +51,36 @@ template <class T, class Alloc = std::allocator<T> > class vector
         T* _pos; //only variable, iterator position
 
         public:
-        iterator() {};
+        //Constructors
+        iterator():_pos(NULL){}
+        iterator(iterator const &it):_pos(it._pos){}
+        iterator(pointer p):_pos(p){}
+
+        //Copy assignation
+        iterator& operator=(const iterator& it){ _pos = it._pos;
+            return *this;
+        }
+
+        //Member access operators
+        value_type& operator * (){return *_pos;}
+        value_type& operator [] (difference_type n){return * (_pos + n);}
+        pointer operator -> (){return _pos;}
+
+        //Arithmetic operators
+        iterator operator+(difference_type n) const{ iterator ret(_pos + n); return ret; }
+        iterator operator-(difference_type n) const{ iterator ret(_pos - n); return ret; }
+
+        difference_type operator-(iterator const &it) const{ difference_type ret = _pos - it._pos; return ret; }
+
+        //Comparison operators
+        bool operator==(iterator const &it) const { return _pos == it._pos; }
+        bool operator!=(iterator const &it) const { return _pos != it._pos; } 
+
+        bool operator<(iterator const &it) const { return _pos < it._pos; } 
+        bool operator>(iterator const &it) const { return _pos > it._pos; } 
+
+        bool operator<=(iterator const &it) const { return _pos <= it._pos; } 
+        bool operator>=(iterator const &it) const { return _pos >= it._pos; } 
     };
 
     /*
@@ -60,7 +92,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     allocator_type  _al;    // Allocator
 
-    T*              _ar;    // Underlying array
+    pointer         _ar;    // Underlying array
 
     size_type       _sz;    // this.size()
 
@@ -102,8 +134,21 @@ template <class T, class Alloc = std::allocator<T> > class vector
         _al.deallocate(_ar, _sz);
     }
 
+    // ***** Iterators *****
+    iterator begin(){
+        iterator ret(_ar);
+        return ret;
+    }
+
+    iterator end(){
+        iterator ret(_ar + _sz);
+        return ret;
+    }
+
+    // ***** Subscript operator *****
+    reference operator[](size_type pos){return *(_ar + pos);}
+
 };
 
 }
-
 #endif

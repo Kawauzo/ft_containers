@@ -3,7 +3,7 @@ NAME = ft_containers_test
 
 # Directories #
 DIR_INC		= ./includes/
-DIR_SRC		= ./
+DIR_SRC		= ./tests/
 DIR_OBJ		= ./objs/
 
 # Files #
