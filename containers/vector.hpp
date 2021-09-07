@@ -9,34 +9,14 @@ namespace ft
 
 template <class T, class Alloc = std::allocator<T> > class vector
 {
-    /*
-     * **************************************
-     * ********** Member Types **************
-     * **************************************
-    */
-    public:
 
-    // ***** Basic Types *****
-
-    typedef T                   value_type;
-
-    typedef Alloc               allocator_type;
-
-    typedef value_type&         reference;
-
-    typedef const value_type&   const_reference;
-
-    typedef value_type*         pointer;
-
-    typedef const value_type*   const_pointer;
-
-    typedef typename allocator_type::size_type size_type;
- 
     /*
      * **************************************
      * ************ Iterators ***************
      * **************************************
     */
+    public:
+
     class iterator
     {
         public:
@@ -82,6 +62,31 @@ template <class T, class Alloc = std::allocator<T> > class vector
         bool operator<=(iterator const &it) const { return _pos <= it._pos; } 
         bool operator>=(iterator const &it) const { return _pos >= it._pos; } 
     };
+
+
+
+    /*
+     * **************************************
+     * ********** Member Types **************
+     * **************************************
+    */
+    // ***** Basic Types *****
+
+    typedef T                   value_type;
+
+    typedef Alloc               allocator_type;
+
+    typedef value_type&         reference;
+
+    typedef const value_type&   const_reference;
+
+    typedef value_type*         pointer;
+
+    typedef const value_type*   const_pointer;
+
+    typedef typename allocator_type::size_type size_type;
+
+
 
     /*
      * **************************************

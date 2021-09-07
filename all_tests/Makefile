@@ -1,9 +1,10 @@
 # General #
-NAME = ft_containers_test
+NAME = test_ft
+NAMEOG = test_og
 
 # Directories #
 DIR_INC		= ./includes/
-DIR_SRC		= ./tests/
+DIR_SRC		= ./
 DIR_OBJ		= ./objs/
 
 # Files #
@@ -26,6 +27,7 @@ ${DIR_OBJ}%.o:	${DIR_SRC}%.cpp
 				${CC} ${CFLAGS} -c $< -o $@
 
 $(NAME):	${OBJS}
+			${CC} ${CFLAGS} -DOG -o ${NAMEOG} ${OBJS}
 			${CC} ${CFLAGS} -o ${NAME} ${OBJS}
 
 all:		${NAME}
@@ -36,6 +38,7 @@ clean:
 
 fclean:		clean
 			${RM} ${NAME}
+			${RM} ${NAMEOG}
 
 re:			fclean all
 
