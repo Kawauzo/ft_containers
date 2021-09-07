@@ -4,19 +4,11 @@
 // cstddef needed for ptrdiff_t
 # include <cstddef>
 
+// iterator include needed for xxx_iterator_tags
+# include <iterator>
+
 namespace ft
 {
-
-// ****** Iterator Category Tags ******
-// Empty structures used by iterator_traits
-// to identify iterator categories
-
-struct input_iterator_tag {};
-struct output_iterator_tag {};
-struct forward_iterator_tag {};
-struct bidirectional_iterator_tag {};
-struct random_access_iterator_tag {};
-
 
 // ****** iterator_traits ******
 // Defines properties common to all iterators :
@@ -60,7 +52,7 @@ template <class T> class iterator_traits<T*>
 
 	typedef T& reference;
 
-	typedef random_access_iterator_tag iterator_category;
+	typedef std::random_access_iterator_tag iterator_category;
 };
 
 // define these types for const pointers
@@ -74,7 +66,7 @@ template <class T> class iterator_traits<const T*>
 
 	typedef const T& reference;
 
-	typedef random_access_iterator_tag iterator_category;
+	typedef std::random_access_iterator_tag iterator_category;
 };
 }
 

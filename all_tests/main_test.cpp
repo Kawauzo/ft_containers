@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
 #include <iterator>
+#include <algorithm>
 
 #ifndef OG
-    #include "../containers/vector.hpp"
+    #include "../containers/vector/vector.hpp"
     #include "explicit_allocator.hpp"
 #else
     #include <vector>
@@ -75,7 +76,7 @@ void test_vec()
     std::cout << (tst2.begin() + 2 == tst2.end()) << std::endl;
     std::cout << (tst2.begin() < c) << std::endl;
     std::cout << (d == c ) << std::endl;
-    std::cout << * (tst1.begin() + 3) << std::endl;
+    std::cout << * (3 + tst1.begin()) << std::endl;
 
     print_green("edit []");
     std::cout << tst1.begin()[1] << std::endl;
@@ -99,18 +100,23 @@ void test_vec()
     typename vec::iterator  j(p);
     std::cout << *j << std::endl;
 
-    /*
     print_green("it function advance()");
     j = tst1.begin();
     *(j + 2) = 58;
     std::cout << *j << std::endl;
     std::advance(j, 2);
     std::cout << *j << std::endl;
-    */
+
+    print_green("algortihm find() tst");
+    j = std::find(tst1.begin(), tst1.end(), 58);
+    std::cout << *j << std::endl;
 
     int *pn = NULL;
     typename vec::iterator  jn(pn);
-    std::cout << (jn == c);
+    std::cout << (jn == c) << std::endl;
+
+    typename vec::iterator *J = new typename vec::iterator;
+    delete J;
 }
 
 struct aba{

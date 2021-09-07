@@ -1,7 +1,8 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# include "utils/iterator.hpp"
+# include "../utils/iterator_utils.hpp"
+# include "iterator.hpp"
 # include <memory>
 
 namespace ft
@@ -21,48 +22,59 @@ template <class T, class Alloc = std::allocator<T> > class vector
     {
         public:
         // iterator_traits
-        typedef T                           value_type;
-        typedef ptrdiff_t                   difference_type;
-        typedef T*                          pointer;
-        typedef T&                          reference;
-        typedef random_access_iterator_tag  iterator_category;
+        typedef T                               value_type;
+        typedef ptrdiff_t                       difference_type;
+        typedef T*                              pointer;
+        typedef T&                              reference;
+        typedef std::random_access_iterator_tag iterator_category;
 
         private:
-        T* _pos; //only variable, iterator position
+        T* _ptr; // only variable, iterator position
 
         public:
-        //Constructors
-        iterator():_pos(NULL){}
-        iterator(iterator const &it):_pos(it._pos){}
-        iterator(pointer p):_pos(p){}
+        // Constructors
+        iterator():_ptr(NULL){}
+        iterator(iterator const &it):_ptr(it._ptr){}
+        iterator(pointer p):_ptr(p){}
 
-        //Copy assignation
-        iterator& operator=(const iterator& it){ _pos = it._pos;
+        // Assignement operator
+        iterator& operator=(const iterator& it){ _ptr = it._ptr;
             return *this;
         }
 
-        //Member access operators
-        value_type& operator * (){return *_pos;}
-        value_type& operator [] (difference_type n){return * (_pos + n);}
-        pointer operator -> (){return _pos;}
+        // Member access operators
+        value_type& operator * (){return *_ptr;}
+        value_type& operator [] (difference_type n){return * (_ptr + n);}
+        pointer operator -> (){return _ptr;}
 
-        //Arithmetic operators
-        iterator operator+(difference_type n) const{ iterator ret(_pos + n); return ret; }
-        iterator operator-(difference_type n) const{ iterator ret(_pos - n); return ret; }
+        // Pre-Increment/Decrement
+        iterator& operator++() {_ptr++; return *this;}
+        iterator& operator--() {_ptr--; return *this;}
 
-        difference_type operator-(iterator const &it) const{ difference_type ret = _pos - it._pos; return ret; }
+        // Post-Increment/Decrement
+        iterator operator++(int) {iterator copy(*this); _ptr++; return copy;}
+        iterator operator--(int) {iterator copy(*this); _ptr--; return copy;}
 
-        //Comparison operators
-        bool operator==(iterator const &it) const { return _pos == it._pos; }
-        bool operator!=(iterator const &it) const { return _pos != it._pos; } 
+        // Arithmetic operators
+        iterator operator+(difference_type n) const{ iterator ret(_ptr + n); return ret; }
+        iterator operator-(difference_type n) const{ iterator ret(_ptr - n); return ret; }
+        difference_type operator-(iterator const &it) const{ difference_type ret = _ptr - it._ptr; return ret; }
 
-        bool operator<(iterator const &it) const { return _pos < it._pos; } 
-        bool operator>(iterator const &it) const { return _pos > it._pos; } 
+        // Arithmetic Assignement operators
+        iterator& operator+=(difference_type n) { _ptr += n; return *this; }
+        iterator& operator-=(difference_type n) { _ptr -= n; return *this; }
 
-        bool operator<=(iterator const &it) const { return _pos <= it._pos; } 
-        bool operator>=(iterator const &it) const { return _pos >= it._pos; } 
+
+        // Comparison operators
+        bool operator==(iterator const &it) const { return _ptr == it._ptr; }
+        bool operator!=(iterator const &it) const { return _ptr != it._ptr; }
+
+        bool operator<(iterator const &it) const { return _ptr < it._ptr; }
+        bool operator>(iterator const &it) const { return _ptr > it._ptr; }
+
+        bool operator<=(iterator const &it) const { return _ptr <= it._ptr; }
+        bool operator>=(iterator const &it) const { return _ptr >= it._ptr; }
     };
-
 
 
     /*
