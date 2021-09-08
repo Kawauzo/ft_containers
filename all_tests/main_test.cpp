@@ -71,7 +71,7 @@ void test_vec()
     typename vec::iterator d;
     typename vec::iterator y(&tst1[0]);
 
-    print_green("test end iterators comparison");
+    print_green("test iterators operations");
     std::cout << (tst1.end() != tst2.end()) << std::endl;
     std::cout << (tst2.begin() + 2 == tst2.end()) << std::endl;
     std::cout << (tst2.begin() < c) << std::endl;

@@ -1,5 +1,5 @@
-#ifndef ITERATORHPP
-# define ITERATORHPP
+#ifndef ITERATOR_UTILS_HPP
+# define ITERATOR_UTILS_HPP
 
 // cstddef needed for ptrdiff_t
 # include <cstddef>
