@@ -6,8 +6,6 @@
 namespace ft
 {
 
-class prout{};
-
 template <class T> class vec_iterator
 {
     public:
@@ -66,6 +64,9 @@ template <class T> class vec_iterator
     bool operator>=(vec_iterator const &it) const { return _ptr >= it._ptr; }
 };
 
+// Outside class definitions //
+
+// operator+ with difference_type as lhs
 template <class T>
 vec_iterator<T> operator+(typename vec_iterator<T>::difference_type n, vec_iterator<T> it)
 { vec_iterator<T> ret(it + n); return ret; }

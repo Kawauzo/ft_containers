@@ -1,5 +1,6 @@
 # General #
-NAME = test_ft
+NAME = test_all
+NAMEFT = test_ft
 NAMEOG = test_og
 
 # Directories #
@@ -13,6 +14,9 @@ SRC		= main_test.cpp
 OBJ		= ${SRC:.cpp=.o}
 OBJS	= ${addprefix ${DIR_OBJ}, ${OBJ}}
 
+OBJOG	= ${SRC:.cpp=_og.o}
+OBJOGS	= ${addprefix ${DIR_OBJ}, ${OBJOG}}
+
 
 # Compiler #
 CC		= clang++
@@ -24,11 +28,12 @@ RM = rm -f
 # Rules #
 ${DIR_OBJ}%.o:	${DIR_SRC}%.cpp
 				@mkdir -p ${DIR_OBJ}
+				${CC} ${CFLAGS} -c -DOG $< -o ${@:.o=_og.o}  # Compile files with OG flag
 				${CC} ${CFLAGS} -c $< -o $@
 
 $(NAME):	${OBJS}
-			${CC} ${CFLAGS} -DOG -o ${NAMEOG} ${OBJS}
-			${CC} ${CFLAGS} -o ${NAME} ${OBJS}
+			${CC} ${CFLAGS} -DOG -o ${NAMEOG} ${OBJOGS}
+			${CC} ${CFLAGS} -o ${NAMEFT} ${OBJS}
 
 all:		${NAME}
 

@@ -4,8 +4,8 @@
 // needed for std::allocator
 # include <memory>
 
+// iterators, specific to vec
 # include "vec_iterator.hpp"
-# include "prout.hpp"
 
 namespace ft
 {
@@ -20,7 +20,8 @@ template <class T, class Alloc = std::allocator<T> > class vector
      * **************************************
     */
 
-    typedef vec_iterator<T> iterator;
+    typedef vec_iterator<T>         iterator;
+    typedef vec_iterator<const T>   const_iterator;
 
     /*
      * **************************************
@@ -29,15 +30,10 @@ template <class T, class Alloc = std::allocator<T> > class vector
     */
 
     typedef T                   value_type;
-
     typedef Alloc               allocator_type;
-
     typedef value_type&         reference;
-
     typedef const value_type&   const_reference;
-
     typedef value_type*         pointer;
-
     typedef const value_type*   const_pointer;
 
     typedef typename allocator_type::size_type size_type;
@@ -97,15 +93,11 @@ template <class T, class Alloc = std::allocator<T> > class vector
     }
 
     // ***** Iterators *****
-    iterator begin(){
-        iterator ret(_ar);
-        return ret;
-    }
+    iterator begin(){ iterator ret(_ar); return ret; }
+    const_iterator begin() const { const_iterator ret(_ar); return ret; }
 
-    iterator end(){
-        iterator ret(_ar + _sz);
-        return ret;
-    }
+    iterator end() { iterator ret(_ar + _sz); return ret; }
+    const_iterator end() const { const_iterator ret(_ar + _sz); return ret; }
 
     // ***** Subscript operator *****
     reference operator[](size_type pos){return *(_ar + pos);}
