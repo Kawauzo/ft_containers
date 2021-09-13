@@ -3,9 +3,16 @@
 #include <iterator>
 #include <algorithm>
 
+
+
+//#ifndef OG
+//#define OG
+//#endif
+
+
 // explicit allocator, outputing a message on cout
 // each time alloc() is called
-#include "explicit_allocator.hpp"
+#include "explicit_allocator.v.hpp"
 
 // two version of this file can be compiled
 // "clang -DOG" to compile with orginial STL
@@ -29,26 +36,86 @@ void print_green(const char *s, int line = 0)
         std::cout << std::endl << "\x1B[32m" << s << "\x1B[0m" << std::endl;
 }
 
-/*
+class verbose
+{
+    int t;
+
+    public:
+    verbose(){};
+
+    verbose(const int cpy):t(cpy)
+    {std::cout << "basic called" << std::endl;}
+
+    verbose(const verbose& cpy)
+    { t = cpy.t; std::cout << "cpy constructor called" << std::endl;}
+
+    verbose& operator=(const verbose& cpy)
+    { t = cpy.t; std::cout << "operator= called" << std::endl; return *this;}
+};
+
+void vec_alloc_1by1_verbose(int init_size)
+{
+    print_green("Making vec of int of given size");
+    ft::vector<verbose, Mallocator<verbose> > vec(init_size);
+
+    std::cout << "vec.size() = " << vec.size() << std::endl;
+    std::cout << "vec.cp() = " << vec.capacity() << std::endl;
+    vec.insert(vec.end(), 3);
+    vec.insert(vec.end(), 3);
+    for (int i = 0; i<8; i++)
+    {
+        std::cout << "-";
+        vec.insert(vec.end() - 2, 3);
+        std::cout << std::endl;
+    }
+    for (int i = 0; i<4; i++)
+        vec.insert(vec.end(), 3);
+    print_green("and now delete things");
+    std::cout << "vec.size() = " << vec.size() << std::endl;
+    while (vec.size())
+    {
+        vec.erase(vec.begin());
+        std::cout << std::endl;
+    }
+    print_green("nothing happens");
+}
+
+template<class vec>
+void print_vec(vec v)
+{
+    for (typename vec::iterator it = v.begin(); it < v.end() ; it++)
+        std::cout << *it << ':';
+    std::cout << std::endl;
+}
+
 void vec_alloc_1by1(int init_size)
 {
     print_green("Making vec of int of given size");
     ft::vector<int, Mallocator<int> > vec(init_size);
 
     std::cout << "vec.size() = " << vec.size() << std::endl;
-    for (int i = 0; i<35; i++)
+    vec.insert(vec.end(), 3);
+    print_vec(vec);
+    std::cout << std::endl;
+    for (int i = 0; i<8; i++)
     {
         std::cout << "-";
-        vec.insert(vec.end(), 3);
+        vec.insert(vec.end() - 1, i);
+        print_vec(vec);
+        std::cout << std::endl;
     }
-    for (int i = 0; i<10000; i++)
+    for (int i = 0; i<4; i++)
         vec.insert(vec.end(), 3);
     print_green("and now delete things");
     while (vec.size())
+    {
         vec.erase(vec.begin());
+        print_vec(vec);
+    }
     print_green("nothing happens");
 }
 
+/*
 void vec_alloc_large()
 {
     print_green("Making vec of int of size 6");
@@ -215,7 +282,7 @@ struct aba{
 
 int main()
 {
-    //vec_alloc_1by1(0);
+    vec_alloc_1by1(1);
     print_green("");
     //vec_alloc_large();
 

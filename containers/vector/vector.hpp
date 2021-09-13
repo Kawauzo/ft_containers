@@ -7,6 +7,9 @@
 // iterators, specific to vec
 # include "vec_iterator.hpp"
 
+// macro for capacity increse
+# define NEWCP(cp) (cp == 0 ? 1 : cp * 2)
+
 namespace ft
 {
 
@@ -75,10 +78,13 @@ template <class T, class Alloc = std::allocator<T> > class vector
                     const value_type& val = value_type(),
                     const allocator_type& alloc = allocator_type()):
         _al(alloc),
-        _ar(_al.allocate(n)),
         _sz(n),
         _cp(n)
     {
+        if (n)
+            _ar = _al.allocate(n);
+        else
+            _ar = 0;
         for (unsigned int i = 0; i < _sz; i++)
             _al.construct(_ar + i, val);
     }
@@ -89,7 +95,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
     {
         for (unsigned int i = 0; i < _sz; i++)
             _al.destroy(_ar + i);
-        _al.deallocate(_ar, _sz);
+        _al.deallocate(_ar, _cp);
     }
 
     // ***** Iterators *****
@@ -101,6 +107,64 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     // ***** Subscript operator *****
     reference operator[](size_type pos){return *(_ar + pos);}
+
+    // ***** Capacity *****
+    bool empty() const { if (!_sz) return true; else return false; }
+    size_type size() const { return _sz; }
+    size_type capacity() const { return _cp; }
+
+    // ***** Modifiers *****
+    iterator insert( iterator pos, const T& value )
+    {
+        size_type goal = pos - begin();
+
+        if (_sz < _cp)
+        {
+            size_type i = _sz;
+            _al.construct(_ar + i, *(_ar + i - 1));
+            *(_ar + goal) = value;
+            while (i > goal + 1)
+            {
+                *(_ar + i) = *(_ar + i - 1);
+                i--;
+            }
+        }
+        else
+        {
+            pointer xar = _ar;
+            _ar = _al.allocate(NEWCP(_cp));
+            size_type i = 0;
+            while (i < goal)
+            {
+                _al.construct(_ar + i, *(xar + i));
+                i++;
+            }
+            _al.construct(_ar + i, value);
+            while (i < _sz)
+            {
+                 _al.construct(_ar + i + 1, *(xar + i));
+                 i++;
+            }
+            while (i > 0)
+                _al.destroy(xar + i--);
+            if (_cp)
+                _al.deallocate(xar, _cp);
+            _cp = NEWCP(_cp);
+        }
+        _sz++;
+        return pos;
+    }
+
+    void erase(iterator pos)
+    {
+        size_type ptr = pos - begin();
+        while (ptr < _sz - 1)
+        {
+            *(_ar + ptr) = *(_ar + ptr + 1);
+            ptr++;
+        }
+        _al.destroy(_ar + _sz--);
+    }
 
 };
 

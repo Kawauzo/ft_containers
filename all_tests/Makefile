@@ -35,6 +35,7 @@ $(NAME):	${OBJS}
 			${CC} ${CFLAGS} -DOG -o ${NAMEOG} ${OBJOGS}
 			${CC} ${CFLAGS} -o ${NAMEFT} ${OBJS}
 
+
 all:		${NAME}
 
 clean:
