@@ -81,7 +81,7 @@ void vec_alloc_1by1_verbose(int init_size)
 }
 
 template<class vec>
-void print_vec(vec v)
+void print_vec(vec &v)
 {
     for (typename vec::iterator it = v.begin(); it < v.end() ; it++)
         std::cout << *it << ':';

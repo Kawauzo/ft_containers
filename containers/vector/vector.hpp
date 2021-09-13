@@ -122,12 +122,13 @@ template <class T, class Alloc = std::allocator<T> > class vector
         {
             size_type i = _sz;
             _al.construct(_ar + i, *(_ar + i - 1));
-            *(_ar + goal) = value;
-            while (i > goal + 1)
+            i--;
+            while (i > goal)
             {
                 *(_ar + i) = *(_ar + i - 1);
                 i--;
             }
+            *(_ar + goal) = value;
         }
         else
         {
@@ -146,7 +147,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
                  i++;
             }
             while (i > 0)
-                _al.destroy(xar + i--);
+                _al.destroy(xar + --i);
             if (_cp)
                 _al.deallocate(xar, _cp);
             _cp = NEWCP(_cp);
