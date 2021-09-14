@@ -1,7 +1,8 @@
 #ifndef VEC_ITERATOR_HPP
 # define VEC_ITERATOR_HPP
 
-# include "../utils/iterator_utils.hpp"
+// needed for iterator_traits
+# include "../utils/type_traits.hpp"
 
 namespace ft
 {

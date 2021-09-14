@@ -135,7 +135,7 @@ void vec_alloc_large()
 */
 
 template <class vec>
-void test_vec()
+void test_vec_iterators()
 {
     print_title("vectors tests");
     print_green("allocate two vecs", __LINE__);
@@ -275,6 +275,17 @@ void test_vec()
     delete J;
 }
 
+void test_vec_strings()
+{
+    typedef ft::vector<std::string, Mallocator<std::string> > vec;
+    std::string tab[6] = {"asdf", "ui", "hjfkd", "alo", "fd", "up"};
+    print_green("test vec range constructor");
+    vec vrng(tab, tab+6);
+    print_vec(vrng);
+    vec vcpy(vrng);
+    print_vec(vcpy);
+}
+
 struct aba{
     const std::string prout;
     aba():prout("tst"){};
@@ -286,8 +297,9 @@ int main()
     print_green("");
     //vec_alloc_large();
 
+    test_vec_strings();
     print_green("");
-    test_vec<ft::vector<int,Mallocator<int> > >();
+    test_vec_iterators<ft::vector<int,Mallocator<int> > >();
 
     ft::vector<aba> j(3);
     ft::vector<aba>::iterator c = j.begin();

@@ -4,6 +4,9 @@
 // needed for std::allocator
 # include <memory>
 
+// type_traits, contains iterator_traits, enable_if, is_integral
+# include "../utils/type_traits.hpp"
+
 // iterators, specific to vec
 # include "vec_iterator.hpp"
 
@@ -67,13 +70,15 @@ template <class T, class Alloc = std::allocator<T> > class vector
     public:
 
     // ***** Constructors *****
-    //
-    // - Default
+
+    // Constructs an empty container with the given allocator alloc
     explicit vector(const allocator_type& alloc = allocator_type()):
         _al(alloc),
         _ar(0), _sz(0), _cp(0){}
-    //
-    // - Fill
+
+    // Fill
+    // Constructs a container with n elements.
+    // Each element is a copy of val
     explicit vector(size_type n,
                     const value_type& val = value_type(),
                     const allocator_type& alloc = allocator_type()):
@@ -89,6 +94,35 @@ template <class T, class Alloc = std::allocator<T> > class vector
             _al.construct(_ar + i, val);
     }
 
+    // Range:
+    // Constructs a container with as many elements as the range [first,last),
+    // with each element constructed from its corresponding element in that range,
+    // in the same order.
+    template <class InputIt>
+    vector(typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last,
+            const allocator_type& alloc = allocator_type()):
+        _al(alloc),
+        _sz(0),
+        _cp(0)
+    {
+        for (InputIt it = first; it != last; it++)
+            _cp++;
+        _ar = _al.allocate(_cp);
+        while (first != last)
+            _al.construct(_ar + _sz++, *first++);
+    }
+
+    // Copy:
+    vector (const vector& cpy):
+        _al(cpy._al),
+        _sz(cpy._sz),
+        _cp(cpy._cp)
+    {
+        if (_cp)
+            _ar = _al.allocate(_cp);
+        for (unsigned int i = 0; i < _sz; i++)
+            _al.construct(_ar + i, cpy[i]);
+    }
 
     // ***** Destructor *****
     ~vector()
@@ -107,6 +141,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     // ***** Subscript operator *****
     reference operator[](size_type pos){return *(_ar + pos);}
+    const_reference operator[](size_type pos) const {return *(_ar + pos);}
 
     // ***** Capacity *****
     bool empty() const { if (!_sz) return true; else return false; }
