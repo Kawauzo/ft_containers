@@ -83,6 +83,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
                     const value_type& val = value_type(),
                     const allocator_type& alloc = allocator_type()):
         _al(alloc),
+        _ar(0),
         _sz(n),
         _cp(n)
     {
@@ -102,12 +103,14 @@ template <class T, class Alloc = std::allocator<T> > class vector
     vector(typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last,
             const allocator_type& alloc = allocator_type()):
         _al(alloc),
+        _ar(0),
         _sz(0),
         _cp(0)
     {
         for (InputIt it = first; it != last; it++)
             _cp++;
-        _ar = _al.allocate(_cp);
+        if (_cp)
+            _ar = _al.allocate(_cp);
         while (first != last)
             _al.construct(_ar + _sz++, *first++);
     }
@@ -115,6 +118,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
     // Copy:
     vector (const vector& cpy):
         _al(cpy._al),
+        _ar(0),
         _sz(cpy._sz),
         _cp(cpy._cp)
     {
@@ -129,7 +133,8 @@ template <class T, class Alloc = std::allocator<T> > class vector
     {
         for (unsigned int i = 0; i < _sz; i++)
             _al.destroy(_ar + i);
-        _al.deallocate(_ar, _cp);
+        if (_cp)
+            _al.deallocate(_ar, _cp);
     }
 
     // ***** Iterators *****

@@ -279,11 +279,21 @@ void test_vec_strings()
 {
     typedef ft::vector<std::string, Mallocator<std::string> > vec;
     std::string tab[6] = {"asdf", "ui", "hjfkd", "alo", "fd", "up"};
-    print_green("test vec range constructor");
+
+    print_green("test vec range constructor with C array", __LINE__);
     vec vrng(tab, tab+6);
     print_vec(vrng);
+
+    print_green("test vec range constructor with two equal iterators (empty cont)", __LINE__);
+    vec vrng_empty(tab, tab);
+    print_vec(vrng_empty);
+
+    print_green("test vec cpy constructor", __LINE__);
     vec vcpy(vrng);
     print_vec(vcpy);
+    vec emptyrng(tab, tab+6);
+
+    print_green("end of scope, destroy vectors", __LINE__);
 }
 
 struct aba{
