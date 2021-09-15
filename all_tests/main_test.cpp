@@ -15,7 +15,7 @@
 #include "explicit_allocator.v.hpp"
 
 // two version of this file can be compiled
-// "clang -DOG" to compile with orginial STL
+// "clang++ -DOG" to compile with orginial STL
 #ifndef OG
     #include "../containers/vector/vector.hpp"
 #else
@@ -266,6 +266,18 @@ void test_vec_iterators()
     print_green("algortihm find() tst", __LINE__);
     j = std::find(tst1.begin(), tst1.end(), 58);
     std::cout << *j << std::endl;
+
+    vec tst_res(5, 6);
+    print_green("test resize()", __LINE__);
+    print_vec(tst_res);
+    tst_res.resize(16);
+    print_vec(tst_res);
+    tst_res.resize(18, 3);
+    print_vec(tst_res);
+    tst_res.resize(20, 4);
+    print_vec(tst_res);
+    tst_res.resize(2, 6);
+    print_vec(tst_res);
 
     int *pn = NULL;
     typename vec::iterator  jn(pn);

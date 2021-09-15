@@ -1,12 +1,13 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-// needed for std::allocator
-# include <memory>
+# include <iostream> // TEMPORARY // TESTING
+
+# include <memory> // needed for std::allocator
+# include <limits> // needed for vector::max_size()
 
 // type_traits, contains iterator_traits, enable_if, is_integral
 # include "../utils/type_traits.hpp"
-
 // iterators, specific to vec
 # include "vec_iterator.hpp"
 
@@ -22,7 +23,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     /*
      * **************************************
-     * ************ Iterators ***************
+     * ********* Iterator Types *************
      * **************************************
     */
 
@@ -42,7 +43,8 @@ template <class T, class Alloc = std::allocator<T> > class vector
     typedef value_type*         pointer;
     typedef const value_type*   const_pointer;
 
-    typedef typename allocator_type::size_type size_type;
+    typedef typename allocator_type::size_type       size_type;
+    typedef typename allocator_type::difference_type difference_type;
 
 
 
@@ -76,6 +78,22 @@ template <class T, class Alloc = std::allocator<T> > class vector
             _al.destroy(_ar + i);
         if (_cp)
             _al.deallocate(_ar, _cp);
+    }
+
+    void realloc_self(size_type new_cp)
+    {
+        pointer old_ar = _ar;
+
+        std::cout << new_cp;
+        _ar = _al.allocate(new_cp);
+        for (size_type i = 0; i < _sz; i++)
+            _al.construct(_ar + i, *(old_ar + i));
+
+        for (size_type i = 0; i < _sz; i++)
+            _al.destroy(old_ar + i);
+        _al.deallocate(old_ar, _cp);
+
+        _cp = new_cp;
     }
 
     /*
@@ -159,23 +177,72 @@ template <class T, class Alloc = std::allocator<T> > class vector
             _al.construct(_ar + i, cpy[i]);
     }
 
-    // ***** Iterators *****
-    iterator begin(){ iterator ret(_ar); return ret; }
+
+    /*
+     * **************************************
+     * ************ Iterators ***************
+     * **************************************
+    */
+
+    iterator begin() { iterator ret(_ar); return ret; }
     const_iterator begin() const { const_iterator ret(_ar); return ret; }
 
     iterator end() { iterator ret(_ar + _sz); return ret; }
     const_iterator end() const { const_iterator ret(_ar + _sz); return ret; }
 
-    // ***** Subscript operator *****
-    reference operator[](size_type pos){return *(_ar + pos);}
-    const_reference operator[](size_type pos) const {return *(_ar + pos);}
 
-    // ***** Capacity *****
-    bool empty() const { if (!_sz) return true; else return false; }
+    /*
+     * **************************************
+     * ************* Capacity ***************
+     * **************************************
+    */
+
     size_type size() const { return _sz; }
+
+    size_type max_size() const { return std::numeric_limits<difference_type>::max(); }
+
     size_type capacity() const { return _cp; }
 
-    // ***** Modifiers *****
+    void resize (size_type n, value_type val = value_type())
+    {
+        if (n < _sz)
+            for (size_type i = n; i < _sz; i++)
+                _al.destroy(_ar + i);
+        else if (_sz < n)
+        {
+            if (n > _cp)
+            {
+                size_type new_cp = std::max(n, NEWCP(_cp));
+                pointer old_ar = _ar;
+                _ar = _al.allocate(new_cp);
+                // copy old_ar to new
+                for (size_type i = 0; i < _sz; i++)
+                    _al.construct(_ar + i, *(old_ar + i));
+                // and add new vals
+                for (size_type i = _sz; i < n; i++)
+                    _al.construct(_ar + i, val);
+                // destroy and deallocate old_ar
+                for (size_type i = 0; i < _sz; i++)
+                    _al.destroy(old_ar + i);
+                _al.deallocate(old_ar, _cp);
+
+                _cp = new_cp;
+            }
+            else for (size_type i = _sz; i < n; i++)
+                _al.construct(_ar + i, val);
+        }
+        _sz = n;
+    }
+
+    bool empty() const { if (!_sz) return true; else return false; }
+
+
+    /*
+     * **************************************
+     * ************ Modifiers ***************
+     * **************************************
+    */
+
     iterator insert( iterator pos, const T& value )
     {
         size_type goal = pos - begin();
@@ -229,7 +296,29 @@ template <class T, class Alloc = std::allocator<T> > class vector
         _al.destroy(_ar + _sz--);
     }
 
+
+    /*
+     * **************************************
+     * ********** Element Access ************
+     * **************************************
+    */
+
+    reference operator[](size_type pos) { return *(_ar + pos);}
+    const_reference operator[](size_type pos) const { return *(_ar + pos);}
+
+
+    /*
+     * **************************************
+     * ************ Allocator ***************
+     * **************************************
+    */
+
+    allocator_type get_allocator() const { return _al;}
+
+
 };
+
+
 
 }
 #endif
