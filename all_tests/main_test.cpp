@@ -284,14 +284,17 @@ void test_vec_strings()
     vec vrng(tab, tab+6);
     print_vec(vrng);
 
-    print_green("test vec range constructor with two equal iterators (empty cont)", __LINE__);
+    print_green("test vec empty range constructor", __LINE__);
     vec vrng_empty(tab, tab);
     print_vec(vrng_empty);
 
     print_green("test vec cpy constructor", __LINE__);
     vec vcpy(vrng);
     print_vec(vcpy);
-    vec emptyrng(tab, tab+6);
+
+    print_green("test empty vec cpy constructor", __LINE__);
+    vec vcpy_empty(vrng_empty);
+    print_vec(vcpy_empty);
 
     print_green("end of scope, destroy vectors", __LINE__);
 }

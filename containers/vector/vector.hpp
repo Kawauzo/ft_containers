@@ -64,6 +64,22 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     /*
      * **************************************
+     * ********* Private Functions **********
+     * **************************************
+     *
+     * These are used to avoid rewriting code
+    */
+    private:
+    void empty_self()
+    {
+        for (unsigned int i = 0; i < _sz; i++)
+            _al.destroy(_ar + i);
+        if (_cp)
+            _al.deallocate(_ar, _cp);
+    }
+
+    /*
+     * **************************************
      * ********* Member Functions ***********
      * **************************************
     */
@@ -129,12 +145,18 @@ template <class T, class Alloc = std::allocator<T> > class vector
     }
 
     // ***** Destructor *****
-    ~vector()
+    ~vector(){ empty_self(); }
+
+    // ***** Assignment operator *****
+    vector& operator=(const vector& cpy)
     {
-        for (unsigned int i = 0; i < _sz; i++)
-            _al.destroy(_ar + i);
-        if (_cp)
-            _al.deallocate(_ar, _cp);
+        empty_self();
+       _sz = cpy._sz;
+       _cp = cpy._cp;
+       if (_cp)
+           _ar = _al.allocate(_cp);
+       for (unsigned int i = 0; i < _sz; i++)
+            _al.construct(_ar + i, cpy[i]);
     }
 
     // ***** Iterators *****
