@@ -267,6 +267,21 @@ void test_vec_iterators()
     j = std::find(tst1.begin(), tst1.end(), 58);
     std::cout << *j << std::endl;
 
+    vec tst_ins_cnt(tst2);
+    print_green("test insert count elems()", __LINE__);
+    print_vec(tst_ins_cnt);
+    tst_ins_cnt.insert(tst_ins_cnt.begin() - 2, 0, 1);
+    print_vec(tst_ins_cnt);
+    tst_ins_cnt.insert(tst_ins_cnt.begin() + 2, 0, 1);
+    print_vec(tst_ins_cnt);
+    tst_ins_cnt.insert(tst_ins_cnt.begin() + 2, 3, 1);
+    print_vec(tst_ins_cnt);
+    tst_ins_cnt.insert(tst_ins_cnt.begin() + 2, 2, 2);
+    print_vec(tst_ins_cnt);
+    tst_ins_cnt.insert(tst_ins_cnt.begin() + 2, 1, 3);
+    print_vec(tst_ins_cnt);
+
+
     vec tst_res(5, 6);
     print_green("test resize()", __LINE__);
     print_vec(tst_res);

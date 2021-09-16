@@ -203,34 +203,18 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     size_type capacity() const { return _cp; }
 
+    // Resizes the container to contain n elements.
+    // - If the current size is greater than n,
+    //   the container is reduced to its first count elements.
+    // - If the current size is less than n,
+    //   additional copies of val are inserted
     void resize (size_type n, value_type val = value_type())
     {
         if (n < _sz)
             for (size_type i = n; i < _sz; i++)
                 _al.destroy(_ar + i);
         else if (_sz < n)
-        {
-            if (n > _cp)
-            {
-                size_type new_cp = std::max(n, NEWCP(_cp));
-                pointer old_ar = _ar;
-                _ar = _al.allocate(new_cp);
-                // copy old_ar to new
-                for (size_type i = 0; i < _sz; i++)
-                    _al.construct(_ar + i, *(old_ar + i));
-                // and add new vals
-                for (size_type i = _sz; i < n; i++)
-                    _al.construct(_ar + i, val);
-                // destroy and deallocate old_ar
-                for (size_type i = 0; i < _sz; i++)
-                    _al.destroy(old_ar + i);
-                _al.deallocate(old_ar, _cp);
-
-                _cp = new_cp;
-            }
-            else for (size_type i = _sz; i < n; i++)
-                _al.construct(_ar + i, val);
-        }
+            insert(end(), n - _sz, val);
         _sz = n;
     }
 
@@ -243,6 +227,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
      * **************************************
     */
 
+    // Inserts value before pos
     iterator insert( iterator pos, const T& value )
     {
         size_type goal = pos - begin();
@@ -282,10 +267,69 @@ template <class T, class Alloc = std::allocator<T> > class vector
             _cp = NEWCP(_cp);
         }
         _sz++;
-        return pos;
+        return iterator(_ar + goal);
     }
 
-    void erase(iterator pos)
+    // Inserts count copies of the value before pos
+    iterator insert( iterator pos, size_type count, const T& value )
+    {
+        size_type goal = pos - begin();
+        size_type new_sz = _sz + count;
+
+        if (count == 0)
+            return pos;
+        if (count == 1)
+            return insert(pos, value);
+        if (new_sz < _cp)
+        {
+            size_type i = 0;
+            while (new_sz - i > _sz)
+            {
+                if (_sz - i > goal)
+                    _al.construct(_ar + new_sz - i, *(_ar +_sz - i));
+                else
+                    _al.construct(_ar + new_sz - i, value);
+                i++;
+            }
+            while (new_sz - i >= goal)
+            {
+                if (new_sz - count > goal + count)
+                    _ar[new_sz - i] = *(_ar + _sz - i);
+                else
+                    _ar[new_sz - i] = value;
+                i++;
+            }
+        }
+        else
+        {
+            pointer old_ar = _ar;
+            _ar = _al.allocate(std::max( NEWCP(_cp), new_sz));
+            size_type i = 0;
+            while (i < goal)
+            {
+                _al.construct(_ar + i, *(old_ar + i));
+                i++;
+            }
+            while (i < goal + count)
+            {
+                _al.construct(_ar + i, value);
+                i++;
+            }
+            while (i < new_sz)
+            {
+                _al.construct(_ar + i, *(old_ar + i - count));
+                i++;
+            }
+            for (i = 0; i < _sz; i++)
+                _al.destroy(old_ar + i);
+            _al.deallocate(old_ar, _cp);
+            _cp = std::max( NEWCP(_cp), new_sz);
+        }
+        _sz = new_sz;
+        return iterator(_ar + goal);
+    }
+
+    void erase( iterator pos )
     {
         size_type ptr = pos - begin();
         while (ptr < _sz - 1)
