@@ -12,7 +12,7 @@
 # include "vec_iterator.hpp"
 
 // macro for capacity increse
-# define NEWCP(cp) (cp == 0 ? 1 : cp * 2)
+# define NEWCP (_sz == 0 ? 1 : _sz * 2)
 
 namespace ft
 {
@@ -247,7 +247,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
         else
         {
             pointer xar = _ar;
-            _ar = _al.allocate(NEWCP(_cp));
+            _ar = _al.allocate(NEWCP);
             size_type i = 0;
             while (i < goal)
             {
@@ -264,22 +264,22 @@ template <class T, class Alloc = std::allocator<T> > class vector
                 _al.destroy(xar + --i);
             if (_cp)
                 _al.deallocate(xar, _cp);
-            _cp = NEWCP(_cp);
+            _cp = NEWCP;
         }
         _sz++;
         return iterator(_ar + goal);
     }
 
     // Inserts count copies of the value before pos
-    iterator insert( iterator pos, size_type count, const T& value )
+    void insert( iterator pos, size_type count, const T& value )
     {
         size_type goal = pos - begin();
         size_type new_sz = _sz + count;
 
         if (count == 0)
-            return pos;
+            return;
         if (count == 1)
-            return insert(pos, value);
+            return (void)insert(pos, value);
         if (new_sz < _cp)
         {
             size_type i = 0;
@@ -303,7 +303,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
         else
         {
             pointer old_ar = _ar;
-            _ar = _al.allocate(std::max( NEWCP(_cp), new_sz));
+            _ar = _al.allocate(std::max( NEWCP, new_sz));
             size_type i = 0;
             while (i < goal)
             {
@@ -311,10 +311,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
                 i++;
             }
             while (i < goal + count)
-            {
-                _al.construct(_ar + i, value);
-                i++;
-            }
+                _al.construct(_ar + i++, value);
             while (i < new_sz)
             {
                 _al.construct(_ar + i, *(old_ar + i - count));
@@ -323,10 +320,9 @@ template <class T, class Alloc = std::allocator<T> > class vector
             for (i = 0; i < _sz; i++)
                 _al.destroy(old_ar + i);
             _al.deallocate(old_ar, _cp);
-            _cp = std::max( NEWCP(_cp), new_sz);
+            _cp = std::max( NEWCP, new_sz);
         }
         _sz = new_sz;
-        return iterator(_ar + goal);
     }
 
     void erase( iterator pos )
