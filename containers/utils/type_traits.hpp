@@ -28,7 +28,7 @@ namespace ft
 //  The iterator category. It can be one of those defined above
 
 // obtain these types from the iterator itself
-template <class Iterator> class iterator_traits
+template <class Iterator> struct iterator_traits
 {
     typedef typename Iterator::difference_type difference_type;
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <iterator>
 #include <algorithm>
 
@@ -324,6 +325,62 @@ void test_vec_iterators()
     delete J;
 }
 
+/*
+ * En gros une fonction pour tester le bon fonctionnement
+ * des iterators input only (ne peut etre deref qu'une fois)
+*/
+//small "fake" pure input iterator
+class inputIt
+{
+    public:
+    typedef int                      value_type;
+    typedef ptrdiff_t                difference_type;
+    typedef int*                     pointer;
+    typedef int&                     reference;
+    typedef std::input_iterator_tag  iterator_category;
+
+    typedef ft::vector<int>::iterator base_t;
+    private:
+    base_t base;
+
+    public:
+    inputIt(inputIt & cpy):base(cpy.base){std::cout << *base;};
+    inputIt(base_t &bse):base(bse){};
+    inputIt operator++(int) {inputIt copy(*this); base++; return copy;}
+    inputIt& operator++() {base++; return *this;}
+    value_type& operator [] (difference_type n){return base[n];}
+
+    value_type& operator * (){return *base;}
+    bool operator!=(inputIt &it) const { return base != it.base;}
+};
+
+void test_vec_inputit()
+{
+    print_green("");
+    typedef ft::vector<int> vec_mute;
+    typedef ft::vector<int, Mallocator<int> > vec;
+
+
+    int ar[] = {39, 13, 56, 89, 56, 76, 32, 5413 , 5, 14, 543, 5431, 432};
+    vec_mute michel(ar, ar+4);
+    vec_mute::iterator mbeg(michel.begin());
+    inputIt beg(mbeg);
+    vec_mute::iterator mend(michel.end());
+    inputIt end(mend);
+    print_green("original vector. we'll do 2 more based on it", __LINE__);
+    print_green("but with pure input_iterators");
+    print_vec(michel);
+
+    print_green("input_iterators with range constructor", __LINE__);
+    vec tst1(beg, end);
+    print_vec(tst1);
+
+    vec tst2;
+    tst2.insert(tst2.end(), beg, end);
+    print_vec(tst2);
+
+}
+
 void test_vec_strings()
 {
     typedef ft::vector<std::string, Mallocator<std::string> > vec;
@@ -362,6 +419,7 @@ int main()
     test_vec_strings();
     print_green("");
     test_vec_iterators<ft::vector<int,Mallocator<int> > >();
+    test_vec_inputit();
 
     ft::vector<aba> j(3);
     ft::vector<aba>::iterator c = j.begin();

@@ -325,6 +325,36 @@ template <class T, class Alloc = std::allocator<T> > class vector
         _sz = new_sz;
     }
 
+    template <class InputIt>
+    void insert(iterator pos,
+                typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first,
+                InputIt last)
+    {
+        insert_pv(pos, first, last,
+                    typename iterator_traits<InputIt>::iterator_category());
+    }
+
+    private:
+    template <class InputIt>
+    void insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag)
+    {
+        (void)pos;
+        (void)first;
+        (void)last;
+        std::cout << "INPUT" << std::endl;
+    }
+
+    template <class InputIt>
+    void insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag)
+    {
+        (void)pos;
+        (void)first;
+        (void)last;
+        std::cout << "FORWARD" << std::endl;
+    }
+
+    public:
+
     void erase( iterator pos )
     {
         size_type ptr = pos - begin();
@@ -334,6 +364,13 @@ template <class T, class Alloc = std::allocator<T> > class vector
             ptr++;
         }
         _al.destroy(_ar + _sz--);
+    }
+
+    void clear()
+    {
+        for (int i = 0; i < _sz; i++)
+            _al.destroy(_ar + i);
+        _sz = 0;
     }
 
 
