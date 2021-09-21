@@ -333,11 +333,17 @@ template <class T, class Alloc = std::allocator<T> > class vector
     template <class InputIt>
     void _insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag)
     {
-        while (first != last)
+        if (!_cp)
+            while (first != last)
+            {
+                pos = insert(pos, *first);
+                ++first;
+                ++pos;
+            }
+        else
         {
-            pos = insert(pos, *first);
-            ++first;
-            ++pos;
+            vector tmp(first, last);
+            insert(pos, tmp.begin(), tmp.end());
         }
     }
 

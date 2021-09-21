@@ -354,34 +354,6 @@ class inputIt
     bool operator!=(inputIt &it) const { return base != it.base;}
 };
 
-void test_vec_inputit()
-{
-    print_green("");
-    typedef ft::vector<int> vec_mute;
-    typedef ft::vector<int, Mallocator<int> > vec;
-
-
-    int ar[] = {39, 13, 56, 89, 56, 76, 32, 5413 , 5, 14, 543, 5431, 432};
-    vec_mute michel(ar, ar+13);
-    vec_mute::iterator mbeg(michel.begin());
-    inputIt beg(mbeg);
-    vec_mute::iterator mend(michel.end());
-    inputIt end(mend);
-    print_green("original vector. we'll do 2 more based on it", __LINE__);
-    print_green("but with pure input_iterators");
-    print_vec(michel);
-
-    print_green("true input_iterators with range constructor", __LINE__);
-    vec tst1(beg, end);
-    print_vec(tst1);
-
-    print_green("true input_iterators with range insert", __LINE__);
-    vec tst2;
-    tst2.insert(tst2.end(), beg, end);
-    print_vec(tst2);
-
-}
-
 void test_vec_strings()
 {
     typedef ft::vector<std::string, Mallocator<std::string> > vec;
@@ -405,6 +377,39 @@ void test_vec_strings()
 
     print_green("end of scope, destroy vectors", __LINE__);
 }
+
+void test_vec_inputit()
+{
+    print_green("");
+    typedef ft::vector<int> vec_mute;
+    typedef ft::vector<int, Mallocator<int> > vec;
+
+
+    int ar[] = {39, 13, 56, 89, 56, 76, 32, 5413 , 5, 14, 543, 5431, 432};
+    vec_mute michel(ar, ar+13);
+    vec_mute::iterator mbeg(michel.begin());
+    inputIt beg(mbeg);
+    vec_mute::iterator mend(michel.end());
+    inputIt end(mend);
+    print_green("original vector. we'll do 2 more based on it", __LINE__);
+    print_green("but with pure input_iterators");
+    print_vec(michel);
+
+    print_green("true input_iterators with range constructor", __LINE__);
+    vec tst1(beg, end);
+    print_vec(tst1);
+
+    print_green("true input_iterators with range insert empty", __LINE__);
+    vec tst2;
+    tst2.insert(tst2.end(), beg, end);
+
+    print_green("true input_iterators with range insert at mid range", __LINE__);
+    tst2.insert(tst2.end() - 5, beg, end);
+    print_vec(tst2);
+
+}
+
+
 
 struct aba{
     const std::string prout;
