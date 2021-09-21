@@ -313,7 +313,8 @@ template <class T, class Alloc = std::allocator<T> > class vector
             }
             for (i = 0; i < _sz; i++)
                 _al.destroy(old_ar + i);
-            _al.deallocate(old_ar, _cp);
+            if (_cp)
+                _al.deallocate(old_ar, _cp);
             _cp = std::max( NEWCP, new_sz);
         }
         _sz = new_sz;
@@ -332,10 +333,12 @@ template <class T, class Alloc = std::allocator<T> > class vector
     template <class InputIt>
     void _insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag)
     {
-        (void)pos;
-        (void)first;
-        (void)last;
-        std::cout << "INPUT" << std::endl;
+        while (first != last)
+        {
+            pos = insert(pos, *first);
+            ++first;
+            ++pos;
+        }
     }
 
     template <class InputIt>
@@ -344,10 +347,12 @@ template <class T, class Alloc = std::allocator<T> > class vector
         size_type goal = pos - begin();
         size_type range = last - first;
         size_type new_sz = _sz + range;
+        size_type i = 0;
 
+        if (range == 0)
+            return;
         if (new_sz < _cp)
         {
-            size_type i = 0;
             while (new_sz - i > _sz)
             {
                 if (_sz - i > goal)
@@ -367,26 +372,25 @@ template <class T, class Alloc = std::allocator<T> > class vector
         // Adapter ce qu' il y a en dessous ET aussi retester le insert count parceque il y a des trucs chelous dedans (premier if entre autres)
         else
         {
-            /*
             pointer old_ar = _ar;
-            _ar = _al.allocate(std::max( NEWCP, new_sz));
+            _ar = _al.allocate(std::max(NEWCP, new_sz));
             while (i < goal)
             {
                 _al.construct(_ar + i, *(old_ar + i));
                 i++;
             }
-            while (i < goal + count)
-                _al.construct(_ar + i++, value);
+            while (i < goal + range)
+                _al.construct(_ar + i++, *first++);
             while (i < new_sz)
             {
-                _al.construct(_ar + i, *(old_ar + i - count));
+                _al.construct(_ar + i, *(old_ar + i - range));
                 i++;
             }
             for (i = 0; i < _sz; i++)
                 _al.destroy(old_ar + i);
-            _al.deallocate(old_ar, _cp);
-            _cp = std::max( NEWCP, new_sz);
-            */
+            if (_cp)
+                _al.deallocate(old_ar, _cp);
+            _cp = std::max(NEWCP, new_sz);
         }
         _sz = new_sz;
 
