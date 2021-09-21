@@ -141,12 +141,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
         _sz(0),
         _cp(0)
     {
-        for (InputIt it = first; it != last; it++)
-            _cp++;
-        if (_cp)
-            _ar = _al.allocate(_cp);
-        while (first != last)
-            _al.construct(_ar + _sz++, *first++);
+        insert(end(), first, last);
     }
 
     // Copy:
@@ -275,6 +270,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
     {
         size_type goal = pos - begin();
         size_type new_sz = _sz + count;
+        size_type i = 0;
 
         if (count == 0)
             return;
@@ -282,7 +278,6 @@ template <class T, class Alloc = std::allocator<T> > class vector
             return (void)insert(pos, value);
         if (new_sz < _cp)
         {
-            size_type i = 0;
             while (new_sz - i > _sz)
             {
                 if (_sz - i > goal)
@@ -293,7 +288,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
             }
             while (new_sz - i >= goal)
             {
-                if (new_sz - count > goal + count)
+                if (new_sz - i > goal + count)
                     _ar[new_sz - i] = *(_ar + _sz - i);
                 else
                     _ar[new_sz - i] = value;
@@ -304,7 +299,6 @@ template <class T, class Alloc = std::allocator<T> > class vector
         {
             pointer old_ar = _ar;
             _ar = _al.allocate(std::max( NEWCP, new_sz));
-            size_type i = 0;
             while (i < goal)
             {
                 _al.construct(_ar + i, *(old_ar + i));
@@ -330,13 +324,13 @@ template <class T, class Alloc = std::allocator<T> > class vector
                 typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first,
                 InputIt last)
     {
-        insert_pv(pos, first, last,
-                    typename iterator_traits<InputIt>::iterator_category());
+        _insert_pv(pos, first, last,
+                  typename iterator_traits<InputIt>::iterator_category());
     }
 
     private:
     template <class InputIt>
-    void insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag)
+    void _insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag)
     {
         (void)pos;
         (void)first;
@@ -345,12 +339,57 @@ template <class T, class Alloc = std::allocator<T> > class vector
     }
 
     template <class InputIt>
-    void insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag)
+    void _insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag)
     {
-        (void)pos;
-        (void)first;
-        (void)last;
-        std::cout << "FORWARD" << std::endl;
+        size_type goal = pos - begin();
+        size_type range = last - first;
+        size_type new_sz = _sz + range;
+
+        if (new_sz < _cp)
+        {
+            size_type i = 0;
+            while (new_sz - i > _sz)
+            {
+                if (_sz - i > goal)
+                    _al.construct(_ar + new_sz - i, *(_ar +_sz - i));
+                else
+                    _al.construct(_ar + new_sz - i, value_type());
+                i++;
+            }
+            while (new_sz - i > goal + range)
+            {
+                _ar[new_sz - i] = *(_ar + _sz - i);
+                i++;
+            }
+            while (first != last)
+                *(_ar + goal++) = *first++;
+        }
+        // Adapter ce qu' il y a en dessous ET aussi retester le insert count parceque il y a des trucs chelous dedans (premier if entre autres)
+        else
+        {
+            /*
+            pointer old_ar = _ar;
+            _ar = _al.allocate(std::max( NEWCP, new_sz));
+            while (i < goal)
+            {
+                _al.construct(_ar + i, *(old_ar + i));
+                i++;
+            }
+            while (i < goal + count)
+                _al.construct(_ar + i++, value);
+            while (i < new_sz)
+            {
+                _al.construct(_ar + i, *(old_ar + i - count));
+                i++;
+            }
+            for (i = 0; i < _sz; i++)
+                _al.destroy(old_ar + i);
+            _al.deallocate(old_ar, _cp);
+            _cp = std::max( NEWCP, new_sz);
+            */
+        }
+        _sz = new_sz;
+
     }
 
     public:

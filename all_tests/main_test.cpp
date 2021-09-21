@@ -329,7 +329,7 @@ void test_vec_iterators()
  * En gros une fonction pour tester le bon fonctionnement
  * des iterators input only (ne peut etre deref qu'une fois)
 */
-//small "fake" pure input iterator
+//small "true" input iterator
 class inputIt
 {
     public:
@@ -344,7 +344,7 @@ class inputIt
     base_t base;
 
     public:
-    inputIt(inputIt & cpy):base(cpy.base){std::cout << *base;};
+    inputIt(inputIt & cpy):base(cpy.base){};
     inputIt(base_t &bse):base(bse){};
     inputIt operator++(int) {inputIt copy(*this); base++; return copy;}
     inputIt& operator++() {base++; return *this;}
@@ -362,7 +362,7 @@ void test_vec_inputit()
 
 
     int ar[] = {39, 13, 56, 89, 56, 76, 32, 5413 , 5, 14, 543, 5431, 432};
-    vec_mute michel(ar, ar+4);
+    vec_mute michel(ar, ar+13);
     vec_mute::iterator mbeg(michel.begin());
     inputIt beg(mbeg);
     vec_mute::iterator mend(michel.end());
@@ -371,10 +371,11 @@ void test_vec_inputit()
     print_green("but with pure input_iterators");
     print_vec(michel);
 
-    print_green("input_iterators with range constructor", __LINE__);
+    print_green("true input_iterators with range constructor", __LINE__);
     vec tst1(beg, end);
     print_vec(tst1);
 
+    print_green("true input_iterators with range insert", __LINE__);
     vec tst2;
     tst2.insert(tst2.end(), beg, end);
     print_vec(tst2);
