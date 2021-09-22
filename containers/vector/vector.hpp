@@ -84,7 +84,6 @@ template <class T, class Alloc = std::allocator<T> > class vector
     {
         pointer old_ar = _ar;
 
-        std::cout << new_cp;
         _ar = _al.allocate(new_cp);
         for (size_type i = 0; i < _sz; i++)
             _al.construct(_ar + i, *(old_ar + i));
@@ -221,6 +220,30 @@ template <class T, class Alloc = std::allocator<T> > class vector
      * ************ Modifiers ***************
      * **************************************
     */
+
+    // Push back
+    void push_back (const value_type& val)
+    {
+        if (_sz >= _cp)
+        {
+            pointer old_ar = _ar;
+            _ar = _al.allocate(NEWCP);
+            for (size_type i = 0; i < _sz; i++)
+                _al.construct(_ar + i, *(old_ar + i));
+            _al.construct(_ar + _sz, val);
+            for (size_type i = 0; i < _sz; i++)
+                _al.destroy(old_ar + i);
+            _al.deallocate(old_ar, _cp);
+            _cp = NEWCP;
+        }
+        else
+            _al.construct(_ar + _sz, val);
+        ++_sz;
+    }
+
+    // Pop Back
+    void pop_back() { _al.destroy(_ar + --_sz); }
+
 
     // Inserts value before pos
     iterator insert( iterator pos, const T& value )
@@ -422,9 +445,9 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     void swap(vector &x)
     {
-        pointer         tmp_ar = x._ar;
-        size_type       tmp_sz = x._sz;
-        size_type       tmp_cp = x._cp;
+        pointer    tmp_ar = x._ar;
+        size_type  tmp_sz = x._sz;
+        size_type  tmp_cp = x._cp;
 
         x._ar = _ar;
         x._sz = _sz;

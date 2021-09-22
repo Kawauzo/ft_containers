@@ -322,6 +322,20 @@ void test_vec_iterators()
     print_vec(tst2);
     print_vec(empty);
 
+    print_green("test pop_back", __LINE__);
+    while (!tst1.empty())
+    {
+        print_vec(tst1);
+        std::cout << tst1.size() << std::endl;
+        tst1.pop_back();
+    }
+    print_vec(tst1);
+
+    print_green("test push_back", __LINE__);
+    for (int i = 0; i < 56; i++)
+        tst1.push_back(i);
+    print_vec(tst1);
+
 
 
     std::cout << std::endl;
