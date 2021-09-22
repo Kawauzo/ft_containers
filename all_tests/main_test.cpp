@@ -310,6 +310,19 @@ void test_vec_iterators()
     tst_ins_cnt.clear();
     tst_ins_cnt.insert(tst_ins_cnt.begin(), 10, 3);
 
+    print_green("test swap", __LINE__);
+    print_vec(tst2);
+    print_vec(tst1);
+    tst1.swap(tst2);
+    print_vec(tst2);
+    print_vec(tst1);
+
+    vec empty;
+    empty.swap(tst2);
+    print_vec(tst2);
+    print_vec(empty);
+
+
 
     std::cout << std::endl;
     vec tst_res(5, 6);

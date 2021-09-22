@@ -420,6 +420,21 @@ template <class T, class Alloc = std::allocator<T> > class vector
         _al.destroy(_ar + _sz--);
     }
 
+    void swap(vector &x)
+    {
+        pointer         tmp_ar = x._ar;
+        size_type       tmp_sz = x._sz;
+        size_type       tmp_cp = x._cp;
+
+        x._ar = _ar;
+        x._sz = _sz;
+        x._cp = _cp;
+
+        _ar = tmp_ar;
+        _sz = tmp_sz;
+        _cp = tmp_cp;
+    }
+
     void clear()
     {
         for (size_type i = 0; i < _sz; i++)
