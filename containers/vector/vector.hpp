@@ -227,7 +227,9 @@ template <class T, class Alloc = std::allocator<T> > class vector
     {
         size_type goal = pos - begin();
 
-        if (_sz < _cp)
+        if (!_sz && _cp)
+            _al.construct(_ar + goal, value);
+        else if (_sz < _cp)
         {
             size_type i = _sz;
             _al.construct(_ar + i, *(_ar + i - 1));
@@ -275,8 +277,11 @@ template <class T, class Alloc = std::allocator<T> > class vector
         if (count == 0)
             return;
         if (count == 1)
-            return (void)insert(pos, value);
-        if (new_sz < _cp)
+            return (void) insert(pos, value);
+        if (!_sz && _cp)
+            while (i < new_sz)
+               _al.construct(_ar + i++, value);
+        else if (new_sz < _cp)
         {
             while (new_sz - i > _sz)
             {
@@ -417,7 +422,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     void clear()
     {
-        for (int i = 0; i < _sz; i++)
+        for (size_type i = 0; i < _sz; i++)
             _al.destroy(_ar + i);
         _sz = 0;
     }

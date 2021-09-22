@@ -302,6 +302,13 @@ void test_vec_iterators()
     print_vec(tst_ins_cnt);
     tst_ins_cnt.insert(tst_ins_cnt.begin() + 2, 1, 3);
     print_vec(tst_ins_cnt);
+    print_green("test insert count 1 elem() after clear", __LINE__);
+    tst_ins_cnt.clear();
+    tst_ins_cnt.insert(tst_ins_cnt.begin(), 1, 3);
+    print_green("test insert count 1 elem() after clear", __LINE__);
+    tst_ins_cnt.clear();
+    tst_ins_cnt.clear();
+    tst_ins_cnt.insert(tst_ins_cnt.begin(), 10, 3);
 
 
     std::cout << std::endl;
