@@ -443,12 +443,55 @@ void test_vec_inputit()
 
 }
 
-
-
 struct aba{
-    const std::string prout;
-    aba():prout("tst"){};
+    const std::string elem;
+    aba():elem("tst"){};
 };
+
+void tst_vec_arrow_operator()
+{
+
+    print_green("test -> operator on vector iterator", __LINE__);
+    ft::vector<aba> j(3);
+    ft::vector<aba>::iterator c = j.begin();
+    std::cout << c->elem << std::endl;
+
+    ft::vector<aba> j2(3);
+    ft::vector<aba>::iterator c2 = j2.begin();
+    std::cout << c2->elem << std::endl;
+}
+
+
+void tst_vec_reverse_it()
+{
+    typedef ft::vector<int> vec;
+
+    vec tst;
+    for (int i = 0; i < 10; ++i)
+        tst.push_back(i);
+    print_vec(tst);
+    vec::reverse_iterator it = tst.rbegin();
+    while ( it != tst.rend())
+    {
+        std::cout << *it << " rev | base "
+            << *it.base() << std::endl;
+        ++it;
+    }
+    std::cout << *it << " rev | base " << *it.base() << std::endl;
+    std::cout << *(--tst.begin()) << std::endl;
+
+    //from cppreference
+    vec::reverse_iterator rv = tst.rbegin();
+    std::cout << *(++rv) << ' ';
+    std::cout << *(--rv) << ' ';
+    std::cout << *(rv + 3) << ' ';
+    rv += 3;
+    std::cout << rv[0] << ' ';
+    std::cout << rv[1] << ' ';
+    std::cout << rv[2] << ' ';
+    rv -= 3;
+    std::cout << rv[0] << '\n';
+}
 
 int main()
 {
@@ -460,12 +503,7 @@ int main()
     print_green("");
     test_vec_iterators<ft::vector<int,Mallocator<int> > >();
     test_vec_inputit();
+    tst_vec_arrow_operator();
+    tst_vec_reverse_it();
 
-    ft::vector<aba> j(3);
-    ft::vector<aba>::iterator c = j.begin();
-    std::cout << c->prout << std::endl;
-
-    ft::vector<aba> j2(3);
-    ft::vector<aba>::iterator c2 = j2.begin();
-    std::cout << c2->prout << std::endl;
 }

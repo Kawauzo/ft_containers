@@ -8,6 +8,8 @@
 
 // type_traits, contains iterator_traits, enable_if, is_integral
 # include "../utils/type_traits.hpp"
+// iterators, contains reverse_iterator
+# include "../utils/iterators.hpp"
 // iterators, specific to vec
 # include "vec_iterator.hpp"
 
@@ -19,7 +21,7 @@ namespace ft
 
 template <class T, class Alloc = std::allocator<T> > class vector
 {
-    public:
+public:
 
     /*
      * **************************************
@@ -29,6 +31,9 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     typedef vec_iterator<T>         iterator;
     typedef vec_iterator<const T>   const_iterator;
+
+    typedef reverse_iterator<const_iterator>  const_reverse_iterator;
+    typedef reverse_iterator<iterator>  reverse_iterator;
 
     /*
      * **************************************
@@ -54,7 +59,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
      * ************ Variables ***************
      * **************************************
     */
-    private:
+private:
 
     allocator_type  _al;    // Allocator
 
@@ -71,7 +76,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
      *
      * These are used to avoid rewriting code
     */
-    private:
+private:
     void empty_self()
     {
         for (unsigned int i = 0; i < _sz; i++)
@@ -100,7 +105,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
      * ********* Member Functions ***********
      * **************************************
     */
-    public:
+public:
 
     // ***** Constructors *****
 
@@ -181,8 +186,14 @@ template <class T, class Alloc = std::allocator<T> > class vector
     iterator begin() { iterator ret(_ar); return ret; }
     const_iterator begin() const { const_iterator ret(_ar); return ret; }
 
+    reverse_iterator rbegin() { reverse_iterator ret(end()); return ret; }
+    const_iterator rbegin() const { const_reverse_iterator ret(end()); return ret; }
+
     iterator end() { iterator ret(_ar + _sz); return ret; }
     const_iterator end() const { const_iterator ret(_ar + _sz); return ret; }
+
+    reverse_iterator rend() { reverse_iterator ret(_ar); return ret; }
+    const_reverse_iterator rend() const { const_reverse_iterator ret(_ar); return ret; }
 
 
     /*
@@ -357,7 +368,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
                   typename iterator_traits<InputIt>::iterator_category());
     }
 
-    private:
+private:
     template <class InputIt>
     void _insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag)
     {
@@ -430,7 +441,7 @@ template <class T, class Alloc = std::allocator<T> > class vector
 
     }
 
-    public:
+public:
 
     void erase( iterator pos )
     {

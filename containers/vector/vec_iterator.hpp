@@ -36,11 +36,11 @@ template <class T> class vec_iterator
     value_type& operator [] (difference_type n){return * (_ptr + n);}
     pointer operator -> (){return _ptr;}
 
-    // Pre-Increment/Decrement
+    // Pre-Increment/Decrement (++i)
     vec_iterator& operator++() {_ptr++; return *this;}
     vec_iterator& operator--() {_ptr--; return *this;}
 
-    // Post-Increment/Decrement
+    // Post-Increment/Decrement (i++)
     vec_iterator operator++(int) {vec_iterator copy(*this); _ptr++; return copy;}
     vec_iterator operator--(int) {vec_iterator copy(*this); _ptr--; return copy;}
 
