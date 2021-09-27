@@ -30,17 +30,18 @@ public:
     explicit reverse_iterator(iterator_type itr): _base(itr) {}
 
     // Member access operators
-    value_type& operator*() {
+    value_type& operator*() const {
         iterator_type cpy(_base);
         return *(--cpy); // <== returns the content of prev
     }
-    value_type& operator [] (difference_type n){
+    value_type& operator [] (difference_type n) const {
         iterator_type cpy(_base);
-        return * (--cpy - n);
+        return * (cpy - n - 1);
     }
-    pointer operator -> (){
+    pointer operator -> () const {
         iterator_type cpy(_base);
-        return --cpy; // <== returns the content of prev
+        --cpy;
+        return cpy.operator->();
     }
 
     // Pre-Increment/Decrement (++i)
@@ -48,8 +49,8 @@ public:
     reverse_iterator& operator--() { ++_base; return *this; }
 
     // Post-Increment/Decrement (i++)
-    reverse_iterator operator++(int) {reverse_iterator copy(*this); _base--; return copy;}
-    reverse_iterator operator--(int) {reverse_iterator copy(*this); _base++; return copy;}
+    reverse_iterator operator++(int) { reverse_iterator copy(*this); _base--; return copy;}
+    reverse_iterator operator--(int) { reverse_iterator copy(*this); _base++; return copy;}
 
     // Arithmetic operators
     reverse_iterator operator+(difference_type n) const{ reverse_iterator ret(_base - n); return ret; }
@@ -59,12 +60,58 @@ public:
     reverse_iterator& operator+=(difference_type n) { _base -= n; return *this; }
     reverse_iterator& operator-=(difference_type n) { _base += n; return *this; }
 
-    bool operator!=(reverse_iterator const &it) const {
-        return _base != it._base;
-    }
-
     iterator_type base() const {return _base;}
 };
+
+// Outside class operators
+template< class Iterator1, class Iterator2 >
+bool operator==( const ft::reverse_iterator<Iterator1>& lhs,
+                 const ft::reverse_iterator<Iterator2>& rhs )
+    { return lhs.base() == rhs.base(); }
+
+template< class Iterator1, class Iterator2 >
+bool operator!=( const ft::reverse_iterator<Iterator1>& lhs,
+                 const ft::reverse_iterator<Iterator2>& rhs )
+    { return lhs.base() != rhs.base(); }
+
+template< class Iterator1, class Iterator2 >
+bool operator<( const ft::reverse_iterator<Iterator1>& lhs,
+                const ft::reverse_iterator<Iterator2>& rhs )
+    { return lhs.base() > rhs.base(); }
+
+template< class Iterator1, class Iterator2 >
+bool operator<=( const ft::reverse_iterator<Iterator1>& lhs,
+                 const ft::reverse_iterator<Iterator2>& rhs )
+    { return lhs.base() >= rhs.base(); }
+
+template< class Iterator1, class Iterator2 >
+bool operator>( const ft::reverse_iterator<Iterator1>& lhs,
+                const ft::reverse_iterator<Iterator2>& rhs )
+    { return lhs.base() < rhs.base(); }
+
+template< class Iterator1, class Iterator2 >
+bool operator>=( const ft::reverse_iterator<Iterator1>& lhs,
+                 const ft::reverse_iterator<Iterator2>& rhs )
+    { return lhs.base() <= rhs.base(); }
+
+// Arithmetic: n +- it
+template< class Iter >
+reverse_iterator<Iter>
+    operator+( typename reverse_iterator<Iter>::difference_type n,
+               const reverse_iterator<Iter>& it ) {
+    reverse_iterator<Iter> cpy(it);
+    return it + n;
+}
+
+template< class Iter >
+reverse_iterator<Iter>
+    operator-( typename reverse_iterator<Iter>::difference_type n,
+               const reverse_iterator<Iter>& it ){
+    reverse_iterator<Iter> cpy(it);
+    return it - n;
+}
+
+
 
 }
 

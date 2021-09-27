@@ -459,6 +459,9 @@ void tst_vec_arrow_operator()
     ft::vector<aba> j2(3);
     ft::vector<aba>::iterator c2 = j2.begin();
     std::cout << c2->elem << std::endl;
+
+    ft::vector<aba>::reverse_iterator cr = j.rbegin();
+    std::cout << cr->elem << std::endl;
 }
 
 
@@ -490,7 +493,29 @@ void tst_vec_reverse_it()
     std::cout << rv[1] << ' ';
     std::cout << rv[2] << ' ';
     rv -= 3;
-    std::cout << rv[0] << '\n';
+    std::cout << rv[0] << ' ';
+    vec::reverse_iterator rvp = 3 + rv;
+    std::cout << rvp[2] << ' ';
+    std::cout << *(3 + rvp) << ' ';
+
+    vec::reverse_iterator x = tst.rend() - tst.size();
+    vec::reverse_iterator y = tst.rend() - tst.size();
+    vec::reverse_iterator z = tst.rbegin() + 1;
+    std::cout << std::endl
+        << std::boolalpha
+        << "*x == " << *x << '\n' // 9
+        << "*y == " << *y << '\n' // 9
+        << "*z == " << *z << '\n' // 8
+        << "x == y ? " << (x == y) << '\n' // true
+        << "x != y ? " << (x != y) << '\n' // false
+        << "x <  y ? " << (x <  y) << '\n' // false
+        << "x <= y ? " << (x <= y) << '\n' // true
+        << "x == z ? " << (x == z) << '\n' // false
+        << "x != z ? " << (x != z) << '\n' // true
+        << "x <  z ? " << (x <  z) << '\n' // true!
+        << "x <= z ? " << (x <= z) << '\n' // true
+        ;
+    std::cout << std::endl;
 }
 
 int main()
