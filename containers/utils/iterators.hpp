@@ -31,17 +31,15 @@ public:
 
     // Member access operators
     value_type& operator*() const {
-        iterator_type cpy(_base);
-        return *(--cpy); // <== returns the content of prev
+        return *(_base - 1); // <== returns the content of prev
     }
     value_type& operator [] (difference_type n) const {
-        iterator_type cpy(_base);
-        return * (cpy - n - 1);
+        return _base[-n - 1];
     }
     pointer operator -> () const {
-        iterator_type cpy(_base);
-        --cpy;
-        return cpy.operator->();
+        //iterator_type cpy(_base);
+        //--cpy;
+        return (_base - 1).operator->();
     }
 
     // Pre-Increment/Decrement (++i)
@@ -103,15 +101,12 @@ reverse_iterator<Iter>
     return it + n;
 }
 
-template< class Iter >
-reverse_iterator<Iter>
-    operator-( typename reverse_iterator<Iter>::difference_type n,
-               const reverse_iterator<Iter>& it ){
-    reverse_iterator<Iter> cpy(it);
-    return it - n;
+template< class Iterator >
+typename reverse_iterator<Iterator>::difference_type
+    operator-( const reverse_iterator<Iterator>& lhs,
+               const reverse_iterator<Iterator>& rhs ){
+    return rhs.base() - lhs.base();
 }
-
-
 
 }
 

@@ -355,6 +355,12 @@ void test_vec_iterators()
     typename vec::iterator  jn(pn);
     std::cout << (jn == c) << std::endl;
 
+    /* NOT WORKING - const_iterator tests
+    for (typename vec::const_iterator it = tst1.begin(); it < tst1.end(); it++)
+        std::cout << *it << ' ';
+    std::cout << std::endl;
+    */
+
     typename vec::iterator *J = new typename vec::iterator;
     delete J;
 }
@@ -485,6 +491,7 @@ void tst_vec_reverse_it()
 
     //from cppreference
     vec::reverse_iterator rv = tst.rbegin();
+    vec::reverse_iterator rvend = tst.rend();
     std::cout << *(++rv) << ' ';
     std::cout << *(--rv) << ' ';
     std::cout << *(rv + 3) << ' ';
@@ -497,6 +504,10 @@ void tst_vec_reverse_it()
     vec::reverse_iterator rvp = 3 + rv;
     std::cout << rvp[2] << ' ';
     std::cout << *(3 + rvp) << ' ';
+    std::cout << rvp[2] << ' ';
+    std::cout << rvend - rv << ' ';
+    std::cout << rv - rvend << ' ';
+
 
     vec::reverse_iterator x = tst.rend() - tst.size();
     vec::reverse_iterator y = tst.rend() - tst.size();

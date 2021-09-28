@@ -32,9 +32,9 @@ template <class T> class vec_iterator
     }
 
     // Member access operators
-    value_type& operator * (){return *_ptr;}
-    value_type& operator [] (difference_type n){return * (_ptr + n);}
-    pointer operator -> (){return _ptr;}
+    value_type& operator * () const {return *_ptr;}
+    value_type& operator [] (difference_type n) const {return * (_ptr + n);}
+    pointer operator -> () const {return _ptr;}
 
     // Pre-Increment/Decrement (++i)
     vec_iterator& operator++() {_ptr++; return *this;}
@@ -63,6 +63,7 @@ template <class T> class vec_iterator
 
     bool operator<=(vec_iterator const &it) const { return _ptr <= it._ptr; }
     bool operator>=(vec_iterator const &it) const { return _ptr >= it._ptr; }
+
 };
 
 // Outside class definitions //
