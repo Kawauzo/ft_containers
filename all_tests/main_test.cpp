@@ -355,11 +355,9 @@ void test_vec_iterators()
     typename vec::iterator  jn(pn);
     std::cout << (jn == c) << std::endl;
 
-    /* NOT WORKING - const_iterator tests
     for (typename vec::const_iterator it = tst1.begin(); it < tst1.end(); it++)
         std::cout << *it << ' ';
     std::cout << std::endl;
-    */
 
     typename vec::iterator *J = new typename vec::iterator;
     delete J;
@@ -527,6 +525,27 @@ void tst_vec_reverse_it()
         << "x <= z ? " << (x <= z) << '\n' // true
         ;
     std::cout << std::endl;
+}
+
+void tst_const_error()
+{
+    typedef ft::vector<std::string> vec;
+    vec vs(10, "42");
+
+    vec::const_iterator roland(vs.begin());
+    while (roland != vs.end()){
+        std::cout << *roland << std::endl;
+        // *roland += "fortytwy"; //shouldnt compile
+        roland++;
+    }
+
+    // a marche pas
+    vec::const_reverse_iterator simon = vs.rbegin();
+    while (simon != vs.rend()){
+        std::cout << *simon << std::endl;
+        // *simon += "fortytwy"; //shouldnt compile
+        simon++;
+    }
 }
 
 int main()

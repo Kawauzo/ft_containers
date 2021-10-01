@@ -7,7 +7,7 @@
 namespace ft
 {
 
-template <class T> class vec_iterator
+template <class T, bool CONST> class vec_iterator
 {
     public:
     // iterator_traits
@@ -21,9 +21,14 @@ template <class T> class vec_iterator
     T* _ptr; // only variable, iterator position
 
     public:
+    // Const copy constructor
+    operator vec_iterator<const T, true>() const {
+        return vec_iterator<const T, true>(_ptr);
+    }
     // Constructors
     vec_iterator():_ptr(NULL){}
     vec_iterator(vec_iterator const &it):_ptr(it._ptr){}
+
     vec_iterator(pointer p):_ptr(p){}
 
     // Assignement operator
@@ -69,9 +74,9 @@ template <class T> class vec_iterator
 // Outside class definitions //
 
 // operator+ with difference_type as lhs
-template <class T>
-vec_iterator<T> operator+(typename vec_iterator<T>::difference_type n, vec_iterator<T> it)
-{ vec_iterator<T> ret(it + n); return ret; }
+template <class T, bool CONST>
+vec_iterator<T, CONST> operator+(typename vec_iterator<T, CONST>::difference_type n, vec_iterator<T, CONST> it)
+{ vec_iterator<T, CONST> ret(it + n); return ret; }
 
 }
 #endif

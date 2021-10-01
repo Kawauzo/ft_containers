@@ -26,8 +26,13 @@ public:
     typedef typename iterator_traits<Iter>::pointer pointer;
     typedef typename iterator_traits<Iter>::reference reference;
 
-
+    // Constructors
+    reverse_iterator(): _base(Iter()) {}
+    // Copy constructor
     explicit reverse_iterator(iterator_type itr): _base(itr) {}
+    //
+    template< class U >
+    reverse_iterator(const reverse_iterator<U>& other): _base(other.base()) {}
 
     // Member access operators
     value_type& operator*() const {

@@ -25,18 +25,6 @@ public:
 
     /*
      * **************************************
-     * ********* Iterator Types *************
-     * **************************************
-    */
-
-    typedef vec_iterator<T>         iterator;
-    typedef vec_iterator<const T>   const_iterator;
-
-    typedef reverse_iterator<const_iterator>  const_reverse_iterator;
-    typedef reverse_iterator<iterator>  reverse_iterator;
-
-    /*
-     * **************************************
      * ********** Member Types **************
      * **************************************
     */
@@ -51,6 +39,17 @@ public:
     typedef typename allocator_type::size_type       size_type;
     typedef typename allocator_type::difference_type difference_type;
 
+    /*
+     * **************************************
+     * ********* Iterator Types *************
+     * **************************************
+    */
+
+    typedef vec_iterator<value_type, false>         iterator;
+    typedef vec_iterator<const value_type, true>   const_iterator;
+
+    typedef reverse_iterator<const_iterator>  const_reverse_iterator;
+    typedef reverse_iterator<iterator>  reverse_iterator;
 
 
 
@@ -187,7 +186,7 @@ public:
     const_iterator begin() const { const_iterator ret(_ar); return ret; }
 
     reverse_iterator rbegin() { reverse_iterator ret(end()); return ret; }
-    const_iterator rbegin() const { const_reverse_iterator ret(end()); return ret; }
+    const_reverse_iterator rbegin() const { const_reverse_iterator ret(end()); return ret; }
 
     iterator end() { iterator ret(_ar + _sz); return ret; }
     const_iterator end() const { const_iterator ret(_ar + _sz); return ret; }
