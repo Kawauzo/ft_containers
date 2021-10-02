@@ -382,11 +382,11 @@ class inputIt
     base_t base;
 
     public:
-    inputIt(inputIt & cpy):base(cpy.base){};
-    inputIt(base_t &bse):base(bse){};
+    inputIt(inputIt & cpy):base(cpy.base) {}
+    inputIt(base_t &bse):base(bse) {}
     inputIt operator++(int) {inputIt copy(*this); base++; return copy;}
     inputIt& operator++() {base++; return *this;}
-    value_type& operator [] (difference_type n){return base[n];}
+    value_type& operator[](difference_type n) {return base[n];}
 
     value_type& operator * (){return *base;}
     bool operator!=(inputIt &it) const { return base != it.base;}
@@ -412,6 +412,14 @@ void test_vec_strings()
     print_green("test empty vec cpy constructor", __LINE__);
     vec vcpy_empty(vrng_empty);
     print_vec(vcpy_empty);
+
+    print_green("tst at", __LINE__);
+    std::cout << vrng.at(2) << std::endl;
+    try { std::cout << vrng.at(122) << std::endl; }
+    catch (std::exception &e) {std::cout << e.what() << std::endl; }
+    try { std::cout << vrng.at(-1) << std::endl; }
+    catch (std::exception &e) {std::cout << e.what() << std::endl; }
+    std::cout << vrng.at(2) << std::endl;
 
     print_green("end of scope, destroy vectors", __LINE__);
 }
@@ -506,6 +514,9 @@ void tst_vec_reverse_it()
     std::cout << rvend - rv << ' ';
     std::cout << rv - rvend << ' ';
 
+    print_green("tst max_size()", __LINE__);
+    std::cout << tst.max_size() << std::endl;
+
 
     vec::reverse_iterator x = tst.rend() - tst.size();
     vec::reverse_iterator y = tst.rend() - tst.size();
@@ -527,6 +538,39 @@ void tst_vec_reverse_it()
     std::cout << std::endl;
 }
 
+void tst_vec_capacity()
+{
+    typedef ft::vector<int> vec;
+
+    vec tst(14, 42);
+
+    print_green("tst resize()", __LINE__);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.resize(1);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.resize(tst.capacity() + 1);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.resize(tst.capacity() + 130);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.resize(tst.capacity() + 1);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+
+    print_green("tst reserve()", __LINE__);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.reserve(1);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.reserve(tst.capacity() + 1);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    try { tst.reserve(tst.max_size() + 1); }
+    catch (std::exception &e) { std::cout << e.what() << std::endl; }
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.reserve(tst.capacity() + 130);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+    tst.reserve(tst.capacity() + 1);
+    std::cout << tst.capacity()  << '|' << tst.size() << std::endl;
+
+}
+
 void tst_const_error()
 {
     typedef ft::vector<std::string> vec;
@@ -539,7 +583,6 @@ void tst_const_error()
         roland++;
     }
 
-    // a marche pas
     vec::const_reverse_iterator simon = vs.rbegin();
     while (simon != vs.rend()){
         std::cout << *simon << std::endl;
@@ -560,5 +603,6 @@ int main()
     test_vec_inputit();
     tst_vec_arrow_operator();
     tst_vec_reverse_it();
+    tst_vec_capacity();
 
 }

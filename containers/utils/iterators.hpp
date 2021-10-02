@@ -66,7 +66,7 @@ public:
     iterator_type base() const {return _base;}
 };
 
-// Outside class operators
+// Outside class relational operators
 template< class Iterator1, class Iterator2 >
 bool operator==( const ft::reverse_iterator<Iterator1>& lhs,
                  const ft::reverse_iterator<Iterator2>& rhs )
