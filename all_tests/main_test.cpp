@@ -321,17 +321,57 @@ void tst_vec_iterators()
     empty.swap(tst2);
     print_vec(tst2);
     print_vec(empty);
+    empty.swap(tst2);
 
     vec tst_asgn = tst1;
     print_green("tst assign(count, val)", __LINE__);
     print_vec(tst_asgn);
+    std::cout << "cp: " << tst_asgn.capacity() << std::endl;
     tst_asgn.assign(45, 1);
     print_vec(tst_asgn);
+    std::cout << "cp: " << tst_asgn.capacity() << std::endl;
     tst_asgn.assign(5, 42);
     print_vec(tst_asgn);
+    std::cout << "cp: " <<  tst_asgn.capacity() << std::endl;
     tst_asgn.assign(34, 68);
     print_vec(tst_asgn);
-    std::cout << tst_asgn.capacity() << std::endl;
+    std::cout << "cp: " <<  tst_asgn.capacity() << std::endl;
+    tst_asgn.assign(0, 68);
+    print_vec(tst_asgn);
+    std::cout << "cp: " <<  tst_asgn.capacity() << std::endl;
+    tst_asgn.clear();
+    std::cout << "cp: " <<  tst_asgn.capacity() << std::endl;
+
+
+
+    vec tst_asgn2;
+    print_green("assign(range) :  (cp++)", __LINE__);
+    std::cout << tst_asgn2.capacity() << std::endl;
+    tst_asgn2.assign(tst2.begin(), tst2.begin() + 12);
+    print_vec(tst2);
+
+    print_green("assign(range) :  (size--)", __LINE__);
+    std::cout << tst_asgn2.capacity() << std::endl;
+    tst_asgn2.assign(tst2.begin() + 1, tst2.begin() + 10);
+    print_vec(tst_asgn2);
+    std::cout << tst_asgn2.capacity() << std::endl;
+
+    print_green("assign(range) :  (size++, same cp)", __LINE__);
+    tst_asgn2.assign(tst2.begin(), tst2.begin() + 6);
+    print_vec(tst_asgn2);
+    std::cout << tst_asgn2.capacity() << std::endl;
+
+    print_green("assign(range) :  (cp++)", __LINE__);
+    tst_asgn2.assign(tst2.begin() + 5, tst2.begin() + 20);
+    print_vec(tst_asgn2);
+    std::cout << tst_asgn2.capacity() << std::endl;
+
+    print_green("assign(range) :  (empty)", __LINE__);
+    tst_asgn2.assign(tst2.begin(), tst2.begin());
+    print_vec(tst_asgn2);
+    std::cout << tst_asgn2.capacity() << std::endl;
+
+
 
 
     print_green("tst pop_back", __LINE__);
@@ -402,6 +442,7 @@ class inputIt
 
     value_type& operator * (){return *base;}
     bool operator!=(inputIt &it) const { return base != it.base;}
+    bool operator==(inputIt &it) const { return base == it.base;}
 };
 
 void tst_vec_strings()
@@ -453,6 +494,14 @@ void tst_vec_inputit()
     inputIt beg(mbeg);
     vec_mute::iterator mend(michel.end());
     inputIt end(mend);
+
+    vec_mute bigone(45, 1);
+    vec_mute::iterator bbeg(bigone.begin());
+    inputIt bigbeg(bbeg);
+    vec_mute::iterator bend(bigone.end());
+    inputIt bigend(bend);
+
+
     print_green("original vector. we'll do 2 more based on it", __LINE__);
     print_green("but with pure input_iterators");
     print_vec(michel);
@@ -469,6 +518,32 @@ void tst_vec_inputit()
     tst2.insert(tst2.end() - 5, beg, end);
     print_vec(tst2);
 
+    vec_mute::iterator smol(michel.begin() + 5);
+    inputIt ssmol(smol);
+
+    print_green("true input_iterators with assign (size--)", __LINE__);
+    std::cout << tst2.capacity() << std::endl;
+    tst2.assign(beg, ssmol);
+    print_vec(tst2);
+    std::cout << tst2.capacity() << std::endl;
+
+    print_green("true input_iterators with assign (size++, same cp)", __LINE__);
+    tst2.assign(beg, end);
+    print_vec(tst2);
+    std::cout << tst2.capacity() << std::endl;
+
+    print_green("true input_iterators with assign (cp++)", __LINE__);
+    tst2.assign(bigbeg, bigend);
+    print_vec(tst2);
+    std::cout << tst2.capacity() << std::endl;
+
+    print_green("true input_iterators with assign (empty)", __LINE__);
+    tst2.assign(bigbeg, bigbeg);
+    print_vec(tst2);
+    std::cout << tst2.capacity() << std::endl;
+
+
+    print_green("end of scope", __LINE__);
 }
 
 struct aba{

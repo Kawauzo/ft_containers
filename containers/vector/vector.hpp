@@ -470,7 +470,8 @@ private:
 
 public:
 
-    // Resets
+    // does the equivalent of rebuilding the vector with vector(count, value)
+    // (but optimized to reuse previously constructed elements)
     void assign( size_type count, const T& value ) {
         if (count > _cp) {
             pointer next = _al.allocate(count);
@@ -493,16 +494,54 @@ public:
         _sz = count;
     }
 
+    // Same as insert, see comment right above for details
     template< class InputIt >
-    void assign( typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first,
-                 InputIt last )
+    void assign( typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last )
     {
-        for (size_type i = 0; i < _sz; i++)
-            _al.destroy(_ar + i);
-        _sz = 0;
-        insert(end(), first, last);
+        _assign_pv(first, last,
+                  typename iterator_traits<InputIt>::iterator_category());
     }
 
+private:
+    template <class InputIt>
+    void _assign_pv(InputIt first, InputIt last, std::input_iterator_tag) {
+        size_type i = 0;
+        while (i < _sz && first != last)
+            *(_ar + i++) = *first++;
+        if (first == last){
+            while (i < _sz)
+                _al.destroy(_ar + --_sz);
+        }
+        else while (first != last)
+            insert(end(), *first++);
+    }
+
+    template <class InputIt>
+    void _assign_pv(InputIt first, InputIt last, std::forward_iterator_tag) {
+        size_type new_sz = last - first;
+        if (new_sz > _cp) {
+            pointer next = _al.allocate(new_sz);
+            for (size_type i = 0; i < new_sz; i++)
+                _al.construct(next + i, *first++);
+            empty_self();
+            _cp = new_sz;
+            _ar = next;
+        }
+        else {
+            for (size_type i = 0; i < _sz; i++)
+                *(_ar + i) = *first++;
+            if (_sz > new_sz)
+                while (new_sz != _sz)
+                    _al.destroy(_ar + --_sz);
+            else
+                while (new_sz != _sz)
+                    _al.construct(_ar + _sz++, *first++);
+        }
+        _sz = new_sz;
+    }
+    // *** end of assign ***/
+
+public:
     void erase( iterator pos ) {
         size_type ptr = pos - begin();
         while (ptr < _sz - 1) {
