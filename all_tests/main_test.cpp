@@ -136,9 +136,9 @@ void vec_alloc_large()
 */
 
 template <class vec>
-void test_vec_iterators()
+void tst_vec_iterators()
 {
-    print_title("vectors tests");
+    print_title("vectors tsts");
     print_green("allocate two vecs", __LINE__);
     vec tst1(25, 6);
     {
@@ -154,7 +154,7 @@ void test_vec_iterators()
     // as listed in link below
     typename vec::iterator a = tst1.begin() + 12;
     typename vec::iterator b = tst1.begin() + 5;
-    print_green("test vec iterators operations (https://www.cplusplus.com/reference/iterator/RandomAccessIterator/)");
+    print_green("tst vec iterators operations (https://www.cplusplus.com/reference/iterator/RandomAccessIterator/)");
     print_green("a == b", __LINE__);
     std::cout << (a == b) << std::endl;
     print_green("a != b", __LINE__);
@@ -225,10 +225,10 @@ void test_vec_iterators()
     std::cout << a[2] << std::endl;
 
 
-    //testing uninitialized iterators and end iterators values
+    //tsting uninitialized iterators and end iterators values
     typename vec::iterator c;
     typename vec::iterator d;
-    print_green("test iterators end values and comparisons", __LINE__);
+    print_green("tst iterators end values and comparisons", __LINE__);
     std::cout << (tst1.end() != tst2.end()) << std::endl;
     std::cout << (tst2.begin() + 2 == tst2.end()) << std::endl;
     std::cout << (tst2.begin() < c) << std::endl;
@@ -269,7 +269,7 @@ void test_vec_iterators()
     std::cout << *j << std::endl;
 
     vec tst_ins(tst2);
-    print_green("test insert (basic)", __LINE__);
+    print_green("tst insert (basic)", __LINE__);
     print_vec(tst_ins);
     std::cout << *tst_ins.insert(tst_ins.begin() + 2, 18)
     << std::endl;
@@ -290,7 +290,7 @@ void test_vec_iterators()
 
 
     vec tst_ins_cnt(tst2);
-    print_green("test insert count elems()", __LINE__);
+    print_green("tst insert count elems()", __LINE__);
     print_vec(tst_ins_cnt);
     tst_ins_cnt.insert(tst_ins_cnt.begin() - 2, 0, 1);
     print_vec(tst_ins_cnt);
@@ -302,15 +302,15 @@ void test_vec_iterators()
     print_vec(tst_ins_cnt);
     tst_ins_cnt.insert(tst_ins_cnt.begin() + 2, 1, 3);
     print_vec(tst_ins_cnt);
-    print_green("test insert count 1 elem() after clear", __LINE__);
+    print_green("tst insert count 1 elem() after clear", __LINE__);
     tst_ins_cnt.clear();
     tst_ins_cnt.insert(tst_ins_cnt.begin(), 1, 3);
-    print_green("test insert count 1 elem() after clear", __LINE__);
+    print_green("tst insert count 1 elem() after clear", __LINE__);
     tst_ins_cnt.clear();
     tst_ins_cnt.clear();
     tst_ins_cnt.insert(tst_ins_cnt.begin(), 10, 3);
 
-    print_green("test swap", __LINE__);
+    print_green("tst swap", __LINE__);
     print_vec(tst2);
     print_vec(tst1);
     tst1.swap(tst2);
@@ -322,7 +322,19 @@ void test_vec_iterators()
     print_vec(tst2);
     print_vec(empty);
 
-    print_green("test pop_back", __LINE__);
+    vec tst_asgn = tst1;
+    print_green("tst assign(count, val)", __LINE__);
+    print_vec(tst_asgn);
+    tst_asgn.assign(45, 1);
+    print_vec(tst_asgn);
+    tst_asgn.assign(5, 42);
+    print_vec(tst_asgn);
+    tst_asgn.assign(34, 68);
+    print_vec(tst_asgn);
+    std::cout << tst_asgn.capacity() << std::endl;
+
+
+    print_green("tst pop_back", __LINE__);
     while (!tst1.empty())
     {
         print_vec(tst1);
@@ -331,7 +343,7 @@ void test_vec_iterators()
     }
     print_vec(tst1);
 
-    print_green("test push_back", __LINE__);
+    print_green("tst push_back", __LINE__);
     for (int i = 0; i < 56; i++)
         tst1.push_back(i);
     print_vec(tst1);
@@ -340,7 +352,7 @@ void test_vec_iterators()
 
     std::cout << std::endl;
     vec tst_res(5, 6);
-    print_green("test resize()", __LINE__);
+    print_green("tst resize()", __LINE__);
     print_vec(tst_res);
     tst_res.resize(16);
     print_vec(tst_res);
@@ -364,7 +376,7 @@ void test_vec_iterators()
 }
 
 /*
- * En gros une fonction pour tester le bon fonctionnement
+ * En gros une fonction pour tster le bon fonctionnement
  * des iterators input only (ne peut etre deref qu'une fois)
 */
 //small "true" input iterator
@@ -392,26 +404,30 @@ class inputIt
     bool operator!=(inputIt &it) const { return base != it.base;}
 };
 
-void test_vec_strings()
+void tst_vec_strings()
 {
     typedef ft::vector<std::string, Mallocator<std::string> > vec;
     std::string tab[6] = {"asdf", "ui", "hjfkd", "alo", "fd", "up"};
 
-    print_green("test vec range constructor with C array", __LINE__);
+    print_green("tst vec range constructor with C array", __LINE__);
     vec vrng(tab, tab+6);
     print_vec(vrng);
 
-    print_green("test vec empty range constructor", __LINE__);
+    print_green("tst vec empty range constructor", __LINE__);
     vec vrng_empty(tab, tab);
     print_vec(vrng_empty);
 
-    print_green("test vec cpy constructor", __LINE__);
+    print_green("tst vec cpy constructor", __LINE__);
     vec vcpy(vrng);
     print_vec(vcpy);
 
-    print_green("test empty vec cpy constructor", __LINE__);
+    print_green("tst empty vec cpy constructor", __LINE__);
     vec vcpy_empty(vrng_empty);
     print_vec(vcpy_empty);
+
+    print_green("tst front / tst back", __LINE__);
+    std::cout << vrng.front() << std::endl;
+    std::cout << vrng.back() << std::endl;
 
     print_green("tst at", __LINE__);
     std::cout << vrng.at(2) << std::endl;
@@ -424,7 +440,7 @@ void test_vec_strings()
     print_green("end of scope, destroy vectors", __LINE__);
 }
 
-void test_vec_inputit()
+void tst_vec_inputit()
 {
     print_green("");
     typedef ft::vector<int> vec_mute;
@@ -463,7 +479,7 @@ struct aba{
 void tst_vec_arrow_operator()
 {
 
-    print_green("test -> operator on vector iterator", __LINE__);
+    print_green("tst -> operator on vector iterator", __LINE__);
     ft::vector<aba> j(3);
     ft::vector<aba>::iterator c = j.begin();
     std::cout << c->elem << std::endl;
@@ -597,10 +613,10 @@ int main()
     print_green("");
     //vec_alloc_large();
 
-    test_vec_strings();
+    tst_vec_strings();
     print_green("");
-    test_vec_iterators<ft::vector<int,Mallocator<int> > >();
-    test_vec_inputit();
+    tst_vec_iterators<ft::vector<int,Mallocator<int> > >();
+    tst_vec_inputit();
     tst_vec_arrow_operator();
     tst_vec_reverse_it();
     tst_vec_capacity();

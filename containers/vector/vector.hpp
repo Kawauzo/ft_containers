@@ -175,6 +175,7 @@ public:
            _ar = _al.allocate(_cp);
        for (unsigned int i = 0; i < _sz; i++)
             _al.construct(_ar + i, cpy[i]);
+       return *this;
     }
 
 
@@ -258,7 +259,12 @@ public:
     reference       at(size_type pos)       { _at_range_check(pos); return *(_ar + pos);}
     const_reference at(size_type pos) const { _at_range_check(pos); return *(_ar + pos);}
 
+    reference       front()       { return *_ar;}
+    const_reference front() const { return *_ar;}
 
+
+    reference       back()       { return *(_ar + _sz - 1);}
+    const_reference back() const { return *(_ar + _sz - 1);}
 
     /*
      * **************************************
@@ -378,6 +384,12 @@ public:
         _sz = new_sz;
     }
 
+    // Insert all the element between first and last at pos
+    // enable_if is_integral is used to differenciate with insert(pos, count, val)
+    //
+    // Then, one of the two private spicialization declared below will be used,
+    // depending on wether iterator_category being a pure input_iterator,
+    // or a more complete one (at least forward_iterator)
     template <class InputIt>
     void insert(iterator pos,
                 typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first,
@@ -388,6 +400,9 @@ public:
     }
 
 private:
+    // Only an input_iterator, inserts element one by one,
+    // reallocating each time size is equal to capacity.
+    // this is bcause input_iterators can only be read and incremented once
     template <class InputIt>
     void _insert_pv(iterator pos, InputIt first, InputIt last, std::input_iterator_tag) {
         if (!_cp)
@@ -402,6 +417,8 @@ private:
         }
     }
 
+    // if InputIt is at least a forward_iterator, optimization is possible,
+    // by knowing the new capacity before insertion
     template <class InputIt>
     void _insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag) {
         size_type goal = pos - begin();
@@ -426,7 +443,6 @@ private:
             while (first != last)
                 *(_ar + goal++) = *first++;
         }
-        // Adapter ce qu' il y a en dessous ET aussi retester le insert count parceque il y a des trucs chelous dedans (premier if entre autres)
         else {
             pointer old_ar = _ar;
             _ar = _al.allocate(std::max(NEWCP, new_sz));
@@ -450,7 +466,42 @@ private:
 
     }
 
+    // *** end of insert *** //
+
 public:
+
+    // Resets
+    void assign( size_type count, const T& value ) {
+        if (count > _cp) {
+            pointer next = _al.allocate(count);
+            for (size_type i = 0; i < count; i++)
+                _al.construct(next + i, value);
+            empty_self();
+            _cp = count;
+            _ar = next;
+        }
+        else {
+            for (size_type i = 0; i < _sz; i++)
+                *(_ar + i) = value;
+            if (_sz > count)
+                while (count != _sz)
+                    _al.destroy(_ar + --_sz);
+            else
+                while (count != _sz)
+                    _al.construct(_ar + _sz++, value);
+        }
+        _sz = count;
+    }
+
+    template< class InputIt >
+    void assign( typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first,
+                 InputIt last )
+    {
+        for (size_type i = 0; i < _sz; i++)
+            _al.destroy(_ar + i);
+        _sz = 0;
+        insert(end(), first, last);
+    }
 
     void erase( iterator pos ) {
         size_type ptr = pos - begin();
