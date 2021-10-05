@@ -150,17 +150,29 @@ public:
         insert(end(), first, last);
     }
 
+
+//    // old Copy constructor. new is better  i guess?
+//    vector (const vector& cpy):
+//        _al(cpy._al),
+//        _ar(0),
+//        _sz(cpy._sz),
+//        _cp(cpy._cp)
+//    {
+//        if (_cp)
+//            _ar = _al.allocate(_cp);
+//        for (unsigned int i = 0; i < _sz; i++)
+//            _al.construct(_ar + i, cpy[i]);
+//    }
+//
+
     // Copy:
     vector (const vector& cpy):
-        _al(cpy._al),
+        _al(allocator_type()),
         _ar(0),
-        _sz(cpy._sz),
-        _cp(cpy._cp)
+        _sz(0),
+        _cp(0)
     {
-        if (_cp)
-            _ar = _al.allocate(_cp);
-        for (unsigned int i = 0; i < _sz; i++)
-            _al.construct(_ar + i, cpy[i]);
+        assign(cpy.begin(), cpy.end());
     }
 
     // ***** Destructor *****
@@ -168,13 +180,7 @@ public:
 
     // ***** Assignment operator *****
     vector& operator=(const vector& cpy) {
-        empty_self();
-       _sz = cpy._sz;
-       _cp = cpy._cp;
-       if (_cp)
-           _ar = _al.allocate(_cp);
-       for (unsigned int i = 0; i < _sz; i++)
-            _al.construct(_ar + i, cpy[i]);
+       assign(cpy.begin(), cpy.end());
        return *this;
     }
 
@@ -282,7 +288,8 @@ public:
             _al.construct(_ar + _sz, val);
             for (size_type i = 0; i < _sz; i++)
                 _al.destroy(old_ar + i);
-            _al.deallocate(old_ar, _cp);
+            if (old_ar)
+                _al.deallocate(old_ar, _cp);
             _cp = NEWCP;
         }
         else
@@ -528,7 +535,7 @@ private:
             _ar = next;
         }
         else {
-            for (size_type i = 0; i < _sz; i++)
+            for (size_type i = 0; i < _sz && i < new_sz; i++)
                 *(_ar + i) = *first++;
             if (_sz > new_sz)
                 while (new_sz != _sz)
@@ -542,13 +549,31 @@ private:
     // *** end of assign ***/
 
 public:
-    void erase( iterator pos ) {
+    // removes the element at pos
+    iterator erase( iterator pos ) {
         size_type ptr = pos - begin();
         while (ptr < _sz - 1) {
             *(_ar + ptr) = *(_ar + ptr + 1);
             ptr++;
         }
         _al.destroy(_ar + _sz--);
+        return pos;
+    }
+
+    // removes the elements in range [first, last)
+    iterator erase( iterator first, iterator last) {
+        size_type range = last - first;
+        iterator  first_cpy = first;
+        while (last != end()) {
+            *first = *last;
+            ++first;
+            ++last;
+        }
+        while (range) {
+            _al.destroy(_ar + --_sz);
+            --range;
+        }
+        return first_cpy;
     }
 
     void swap(vector &x) {

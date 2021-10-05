@@ -110,7 +110,13 @@ void vec_alloc_1by1(int init_size)
     print_green("and now delete things");
     while (vec.size())
     {
-        vec.erase(vec.begin());
+        ft::vector<int, Mallocator<int> >::iterator tmp;
+        tmp = vec.erase(vec.begin());
+        if (tmp == vec.end())
+            std::cout << "end" << std::endl;
+        else
+            std::cout << *tmp << std::endl;
+
         print_vec(vec);
     }
     print_green("nothing happens");
@@ -413,6 +419,41 @@ void tst_vec_iterators()
 
     typename vec::iterator *J = new typename vec::iterator;
     delete J;
+
+    print_green("tst assign empty its");
+    vec nul;
+    vec test(3, 0);
+    test.assign(nul.begin(), nul.end());
+
+    print_green("tst operator=()", __LINE__);
+    vec foo (3,0);
+    vec bar (5,0);
+    bar = foo;
+    std::cout << "Capacity of foo: " << int(foo.capacity()) << '\n';
+    std::cout << "Capacity of bar: " << int(bar.capacity()) << '\n';
+    std::cout << "Size of foo: " << int(foo.size()) << '\n';
+    std::cout << "Size of bar: " << int(bar.size()) << '\n';
+    foo = vec();
+    std::cout << "Capacity of foo: " << int(foo.capacity()) << '\n';
+    std::cout << "Capacity of bar: " << int(bar.capacity()) << '\n';
+    std::cout << "Size of foo: " << int(foo.size()) << '\n';
+    std::cout << "Size of bar: " << int(bar.size()) << '\n';
+
+
+    std::cout << "tst1 cp/sz " << int(tst1.size()) << '/' << int(tst1.capacity()) << '\n';
+
+    vec  erange = tst1;
+    print_vec(erange);
+
+    print_green("test erase(range)");
+
+    std::cout << *erange.erase(erange.begin() + 3, erange.begin() + 8) << std::endl;
+    std::cout << erange.size() << '\n';
+    print_vec(erange);
+    std::cout << (erange.erase(erange.end() - 8, erange.end()) == erange.end()) << std::endl;
+    print_vec(erange);
+    std::cout << *erange.erase(erange.begin() + 3, erange.begin() + 3) << std::endl;
+    print_vec(erange);
 }
 
 /*
@@ -570,7 +611,7 @@ void tst_vec_arrow_operator()
 
 void tst_vec_reverse_it()
 {
-    typedef ft::vector<int> vec;
+    typedef ft::vector<int, Mallocator<int> > vec;
 
     vec tst;
     for (int i = 0; i < 10; ++i)
@@ -579,12 +620,9 @@ void tst_vec_reverse_it()
     vec::reverse_iterator it = tst.rbegin();
     while ( it != tst.rend())
     {
-        std::cout << *it << " rev | base "
-            << *it.base() << std::endl;
+        std::cout << *it << std::endl;
         ++it;
     }
-    std::cout << *it << " rev | base " << *it.base() << std::endl;
-    std::cout << *(--tst.begin()) << std::endl;
 
     //from cppreference
     vec::reverse_iterator rv = tst.rbegin();
