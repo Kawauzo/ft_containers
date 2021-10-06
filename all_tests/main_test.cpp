@@ -116,7 +116,6 @@ void vec_alloc_1by1(int init_size)
             std::cout << "end" << std::endl;
         else
             std::cout << *tmp << std::endl;
-
         print_vec(vec);
     }
     print_green("nothing happens");

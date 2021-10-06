@@ -256,9 +256,9 @@ public:
 private:
     // Used to throw the same exception
     // as std::vector when trying at() out of bounds
-    void _at_range_check(size_type n) {
+    void _at_range_check(size_type n) const {
         if ( n >= _sz)
-            throw (std::length_error(SSTR("vector::_M_range_check: __n (which is "
+            throw (std::out_of_range(SSTR("vector::_M_range_check: __n (which is "
                    << n << ") >= this->size() (which is " << _sz << ')')));
     }
 public:
