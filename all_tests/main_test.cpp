@@ -699,6 +699,29 @@ void tst_vec_capacity()
 
 }
 
+void failed_testers(){
+    print_green("tst assign/insert with bidirectionnal its");
+	std::list<int> lst;
+	std::list<int>::iterator lst_it;
+	for (int i = 1; i < 5; ++i)
+		lst.push_back(i * 3);
+
+	ft::vector<int> vct(lst.begin(), lst.end());
+    print_vec(vct);
+    std::cout << vct.size();
+
+	lst_it = lst.begin();
+	for (int i = 1; lst_it != lst.end(); ++i)
+		*lst_it++ = i * 5;
+	vct.assign(lst.begin(), lst.end());
+    print_vec(vct);
+    std::cout << vct.size();
+
+	vct.insert(vct.end(), lst.rbegin(), lst.rend());
+    print_vec(vct);
+    std::cout << vct.size();
+}
+
 void tst_const_error()
 {
     typedef ft::vector<std::string> vec;

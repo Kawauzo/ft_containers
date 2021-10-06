@@ -102,6 +102,16 @@ private:
         _cp = new_cp;
     }
 
+    template <class Ite>
+    size_type _range(Ite first, Ite last){
+        size_type ret = 0;
+        while (first != last){
+            ++first;
+            ++ret;
+        }
+        return ret;
+    }
+
     /*
      * **************************************
      * ********* Member Functions ***********
@@ -429,7 +439,7 @@ private:
     template <class InputIt>
     void _insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag) {
         size_type goal = pos - begin();
-        size_type range = last - first;
+        size_type range = _range(first, last);
         size_type new_sz = _sz + range;
         size_type i = 0;
 
@@ -525,7 +535,7 @@ private:
 
     template <class InputIt>
     void _assign_pv(InputIt first, InputIt last, std::forward_iterator_tag) {
-        size_type new_sz = last - first;
+        size_type new_sz = _range(first, last);
         if (new_sz > _cp) {
             pointer next = _al.allocate(new_sz);
             for (size_type i = 0; i < new_sz; i++)
