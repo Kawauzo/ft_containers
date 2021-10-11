@@ -734,6 +734,14 @@ void tst_const_error()
         roland++;
     }
 
+    vec::iterator       it(vs.begin());
+    vec::const_iterator cend(vs.end());
+    while (it != cend){
+        std::cout << *it << std::endl;
+        // *it += "fortytwy"; //shouldnt compile
+        it++;
+    }
+
     vec::const_reverse_iterator simon = vs.rbegin();
     while (simon != vs.rend()){
         std::cout << *simon << std::endl;

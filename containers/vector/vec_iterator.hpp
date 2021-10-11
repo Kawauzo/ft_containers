@@ -7,7 +7,7 @@
 namespace ft
 {
 
-template <class T, bool CONST> class vec_iterator
+template <class T> class vec_iterator
 {
     public:
     // iterator_traits
@@ -21,10 +21,11 @@ template <class T, bool CONST> class vec_iterator
     T* _ptr; // only variable, iterator position
 
     public:
-    // Const copy constructor
-    operator vec_iterator<const T, true>() const {
-        return vec_iterator<const T, true>(_ptr);
+    // Const conversion
+    operator vec_iterator<const T> () const {
+        return (vec_iterator<const T>(this->_ptr));
     }
+
     // Constructors
     vec_iterator():_ptr(NULL){}
     vec_iterator(vec_iterator const &it):_ptr(it._ptr){}
@@ -32,7 +33,8 @@ template <class T, bool CONST> class vec_iterator
     vec_iterator(pointer p):_ptr(p){}
 
     // Assignement operator
-    vec_iterator& operator=(const vec_iterator& it){ _ptr = it._ptr;
+    vec_iterator& operator=(const vec_iterator& it){
+        _ptr = it._ptr;
         return *this;
     }
 
@@ -69,14 +71,78 @@ template <class T, bool CONST> class vec_iterator
     bool operator<=(vec_iterator const &it) const { return _ptr <= it._ptr; }
     bool operator>=(vec_iterator const &it) const { return _ptr >= it._ptr; }
 
+    // Needed for const comparisons
+    pointer base() const {
+        return _ptr;
+    }
 };
 
 // Outside class definitions //
 
+// const_iterator and iterator comparisons
+/* for iterator == const_iterator */
+template<typename T_L, typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator==(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() == rhs.base());
+}
+
+/* for iterator != const_iterator */
+template<typename T_L, typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator!=(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() != rhs.base());
+}
+
+/* for iterator < const_iterator */
+template<typename T_L, typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator<(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() < rhs.base());
+}
+
+/* for iterator > const_iterator */
+template<typename T_L,
+         typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator>(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() > rhs.base());
+}
+
+/* for iterator <= const_iterator */
+template<typename T_L, typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator<=(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() <= rhs.base());
+}
+
+/* for iterator >= const_iterator */
+template<typename T_L,
+         typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator>=(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() >= rhs.base());
+}
+
+/* for iterator - const_iterator */
+template<typename T_L, typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator-(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() - rhs.base());
+}
+
 // operator+ with difference_type as lhs
-template <class T, bool CONST>
-vec_iterator<T, CONST> operator+(typename vec_iterator<T, CONST>::difference_type n, vec_iterator<T, CONST> it)
-{ vec_iterator<T, CONST> ret(it + n); return ret; }
+template <class T>
+vec_iterator<T> operator+(typename vec_iterator<T>::difference_type n, vec_iterator<T> it) {
+    vec_iterator<T> ret(it + n); return ret;
+}
 
 }
 #endif

@@ -52,8 +52,8 @@ public:
      * **************************************
     */
 
-    typedef vec_iterator<value_type, false>        iterator;
-    typedef vec_iterator<const value_type, true>   const_iterator;
+    typedef vec_iterator<value_type>        iterator;
+    typedef vec_iterator<const value_type>   const_iterator;
 
     typedef reverse_iterator<const_iterator>       const_reverse_iterator;
     typedef reverse_iterator<iterator>             reverse_iterator;
