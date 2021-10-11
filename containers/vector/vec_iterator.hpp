@@ -82,50 +82,42 @@ template <class T> class vec_iterator
 // const_iterator and iterator comparisons
 /* for iterator == const_iterator */
 template<typename T_L, typename T_R>
-typename vec_iterator<T_L>::difference_type
-operator==(const vec_iterator<T_L> lhs,
+bool operator==(const vec_iterator<T_L> lhs,
           const vec_iterator<T_R> rhs) {
     return (lhs.base() == rhs.base());
 }
 
 /* for iterator != const_iterator */
 template<typename T_L, typename T_R>
-typename vec_iterator<T_L>::difference_type
-operator!=(const vec_iterator<T_L> lhs,
+bool operator!=(const vec_iterator<T_L> lhs,
           const vec_iterator<T_R> rhs) {
     return (lhs.base() != rhs.base());
 }
 
 /* for iterator < const_iterator */
 template<typename T_L, typename T_R>
-typename vec_iterator<T_L>::difference_type
-operator<(const vec_iterator<T_L> lhs,
+bool operator<(const vec_iterator<T_L> lhs,
           const vec_iterator<T_R> rhs) {
     return (lhs.base() < rhs.base());
 }
 
 /* for iterator > const_iterator */
-template<typename T_L,
-         typename T_R>
-typename vec_iterator<T_L>::difference_type
-operator>(const vec_iterator<T_L> lhs,
+template<typename T_L, typename T_R>
+bool operator>(const vec_iterator<T_L> lhs,
           const vec_iterator<T_R> rhs) {
     return (lhs.base() > rhs.base());
 }
 
 /* for iterator <= const_iterator */
 template<typename T_L, typename T_R>
-typename vec_iterator<T_L>::difference_type
-operator<=(const vec_iterator<T_L> lhs,
+bool operator<=(const vec_iterator<T_L> lhs,
           const vec_iterator<T_R> rhs) {
     return (lhs.base() <= rhs.base());
 }
 
 /* for iterator >= const_iterator */
-template<typename T_L,
-         typename T_R>
-typename vec_iterator<T_L>::difference_type
-operator>=(const vec_iterator<T_L> lhs,
+template<typename T_L, typename T_R>
+bool operator>=(const vec_iterator<T_L> lhs,
           const vec_iterator<T_R> rhs) {
     return (lhs.base() >= rhs.base());
 }
@@ -140,7 +132,8 @@ operator-(const vec_iterator<T_L> lhs,
 
 // operator+ with difference_type as lhs
 template <class T>
-vec_iterator<T> operator+(typename vec_iterator<T>::difference_type n, vec_iterator<T> it) {
+vec_iterator<T>
+operator+(typename vec_iterator<T>::difference_type n, vec_iterator<T> it) {
     vec_iterator<T> ret(it + n); return ret;
 }
 
