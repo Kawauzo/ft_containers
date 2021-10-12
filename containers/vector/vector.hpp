@@ -9,6 +9,8 @@
 // type_traits, contains iterator_traits, enable_if, is_integral
 # include "../utils/type_traits.hpp"
 // iterators, contains reverse_iterator
+# include "../utils/comparisons.hpp"
+// iterators, contains reverse_iterator
 # include "../utils/iterators.hpp"
 // iterators, specific to vec
 # include "vec_iterator.hpp"
@@ -159,21 +161,6 @@ public:
     {
         insert(end(), first, last);
     }
-
-
-//    // old Copy constructor. new is better  i guess?
-//    vector (const vector& cpy):
-//        _al(cpy._al),
-//        _ar(0),
-//        _sz(cpy._sz),
-//        _cp(cpy._cp)
-//    {
-//        if (_cp)
-//            _ar = _al.allocate(_cp);
-//        for (unsigned int i = 0; i < _sz; i++)
-//            _al.construct(_ar + i, cpy[i]);
-//    }
-//
 
     // Copy:
     vector (const vector& cpy):
@@ -639,38 +626,31 @@ bool operator!=(const vector<T, Alloc>& lhs,
                 const vector<T, Alloc>& rhs) {
     return !(lhs == rhs);
 }
-/*
+
 template <class T, class Alloc>
 bool operator<(const vector<T, Alloc>& lhs,
                 const vector<T, Alloc>& rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(),
+    return ft::lexicographical_compare(lhs.begin(), lhs.end(),
                                         rhs.begin(), rhs.end());
 }
 
 template <class T, class Alloc>
 bool operator>(const vector<T, Alloc>& lhs,
                 const vector<T, Alloc>& rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(),
-                                        rhs.begin(), rhs.end(),
-                                        T::operator>);
+    return (!(lhs == rhs) && !(lhs < rhs));
 }
 
 template <class T, class Alloc>
 bool operator<=(const vector<T, Alloc>& lhs,
                 const vector<T, Alloc>& rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(),
-                                        rhs.begin(), rhs.end(),
-                                        T::operator<=());
+    return ((lhs == rhs) || (lhs < rhs));
 }
 
 template <class T, class Alloc>
 bool operator>=(const vector<T, Alloc>& lhs,
                 const vector<T, Alloc>& rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(),
-                                        rhs.begin(), rhs.end(),
-                                        T::operator>=());
+    return ((lhs == rhs) || !(lhs < rhs));
 }
-*/
 
 }
 

@@ -645,7 +645,6 @@ void tst_vec_reverse_it()
     print_green("tst max_size()", __LINE__);
     std::cout << tst.max_size() << std::endl;
 
-
     vec::reverse_iterator x = tst.rend() - tst.size();
     vec::reverse_iterator y = tst.rend() - tst.size();
     vec::reverse_iterator z = tst.rbegin() + 1;
@@ -664,6 +663,9 @@ void tst_vec_reverse_it()
         << "x <= z ? " << (x <= z) << '\n' // true
         ;
     std::cout << std::endl;
+
+    vec::const_reverse_iterator cit = tst.rbegin();
+	std::cout << "(const_ite - it): " << (cit - x) << std::endl;
 }
 
 void tst_vec_capacity()
@@ -774,7 +776,6 @@ void tst_vec_comparison() {
     std::cout << (vs == vs2) << std::endl;
     std::cout << (vs != vs2) << std::endl;
 
-    /*
     vs[2] = vs2[2];
     print_green("tst vector comparisons (lexicographical compare)", __LINE__);
     std::cout << (vs < vs2) << std::endl;
@@ -795,7 +796,6 @@ void tst_vec_comparison() {
     std::cout << (vs > vs2) << std::endl;
     std::cout << (vs <= vs2) << std::endl;
     std::cout << (vs >= vs2) << std::endl;
-*/
 }
 
 int main()
