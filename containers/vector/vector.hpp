@@ -260,6 +260,10 @@ public:
      * **************************************
     */
 
+    // Get allocator
+    allocator_type get_allocator() const { return _al;}
+
+    // [] operator
     reference       operator[](size_type pos)       { return *(_ar + pos);}
     const_reference operator[](size_type pos) const { return *(_ar + pos);}
 
@@ -606,18 +610,67 @@ public:
         _sz = 0;
     }
 
-    /*
-     * **************************************
-     * ************ Allocator ***************
-     * **************************************
-    */
-
-    allocator_type get_allocator() const { return _al;}
-
 
 };
 
 
+/*
+ * **************************************
+ * ********** Relational Ope ************
+ * **************************************
+*/
+
+// equality
+template <class T, class Alloc>
+bool operator==(const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs) {
+    if (lhs.size() != rhs.size())
+        return false;
+    typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+    typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+    while (lit != lhs.end())
+        if (*lit++ != *rit++)
+            return false;
+    return true;
+}
+
+template <class T, class Alloc>
+bool operator!=(const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs) {
+    return !(lhs == rhs);
+}
+/*
+template <class T, class Alloc>
+bool operator<(const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs) {
+    return std::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end());
+}
+
+template <class T, class Alloc>
+bool operator>(const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs) {
+    return std::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end(),
+                                        T::operator>);
+}
+
+template <class T, class Alloc>
+bool operator<=(const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs) {
+    return std::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end(),
+                                        T::operator<=());
+}
+
+template <class T, class Alloc>
+bool operator>=(const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs) {
+    return std::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end(),
+                                        T::operator>=());
+}
+*/
 
 }
 

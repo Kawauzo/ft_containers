@@ -750,6 +750,54 @@ void tst_const_error()
     }
 }
 
+void tst_vec_comparison() {
+    typedef ft::vector<std::string> vec;
+
+    vec vs(120, "char ");
+
+    char alpha = 0;
+    for (vec::iterator it = vs.begin(); it != vs.end(); it++)
+        *it += alpha++;
+
+    vec vs2(vs);
+
+    print_green("tst vector equality", __LINE__);
+    std::cout << (vs == vs2) << std::endl;
+    std::cout << (vs != vs2) << std::endl;
+    vs.push_back("alo");
+    std::cout << (vs == vs2) << std::endl;
+    std::cout << (vs != vs2) << std::endl;
+    vs.pop_back();
+    std::cout << (vs == vs2) << std::endl;
+    std::cout << (vs != vs2) << std::endl;
+    vs[2] = "non";
+    std::cout << (vs == vs2) << std::endl;
+    std::cout << (vs != vs2) << std::endl;
+
+    /*
+    vs[2] = vs2[2];
+    print_green("tst vector comparisons (lexicographical compare)", __LINE__);
+    std::cout << (vs < vs2) << std::endl;
+    std::cout << (vs > vs2) << std::endl;
+    std::cout << (vs <= vs2) << std::endl;
+    std::cout << (vs >= vs2) << std::endl;
+    print_green("diff a/b", __LINE__);
+    vs[3] += 'a';
+    vs2[3] += 'b';
+    std::cout << (vs < vs2) << std::endl;
+    std::cout << (vs > vs2) << std::endl;
+    std::cout << (vs <= vs2) << std::endl;
+    std::cout << (vs >= vs2) << std::endl;
+    print_green("diff vs1 has more elem", __LINE__);
+    vs[3] = vs2[3];
+    vs.push_back("oui oui ");
+    std::cout << (vs < vs2) << std::endl;
+    std::cout << (vs > vs2) << std::endl;
+    std::cout << (vs <= vs2) << std::endl;
+    std::cout << (vs >= vs2) << std::endl;
+*/
+}
+
 int main()
 {
     vec_alloc_1by1(1);
@@ -763,5 +811,6 @@ int main()
     tst_vec_arrow_operator();
     tst_vec_reverse_it();
     tst_vec_capacity();
+    tst_vec_comparison();
 
 }
