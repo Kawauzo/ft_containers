@@ -130,6 +130,14 @@ operator-(const vec_iterator<T_L> lhs,
     return (lhs.base() - rhs.base());
 }
 
+/* for iterator + const_iterator */
+template<typename T_L, typename T_R>
+typename vec_iterator<T_L>::difference_type
+operator+(const vec_iterator<T_L> lhs,
+          const vec_iterator<T_R> rhs) {
+    return (lhs.base() - rhs.base());
+}
+
 // operator+ with difference_type as lhs
 template <class T>
 vec_iterator<T>

@@ -113,6 +113,15 @@ typename reverse_iterator<Iterator>::difference_type
     return rhs.base() - lhs.base();
 }
 
+/* for rev_iterator - const_rev_iterator */
+template<typename T_L, typename T_R>
+typename reverse_iterator<T_L>::difference_type
+operator-(const reverse_iterator<T_L> lhs,
+          const reverse_iterator<T_R> rhs) {
+    return (rhs.base() - lhs.base());
+}
+
+
 }
 
 #endif

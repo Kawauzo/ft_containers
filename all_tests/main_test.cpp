@@ -121,7 +121,6 @@ void vec_alloc_1by1(int init_size)
     print_green("nothing happens");
 }
 
-/*
 void vec_alloc_large()
 {
     print_green("Making vec of int of size 6");
@@ -138,7 +137,6 @@ void vec_alloc_large()
     std::cout << "cbeg " << std::endl;
     std::cout << "vec.capacity() = " << vec.capacity() << std::endl;
 }
-*/
 
 template <class vec>
 void tst_vec_iterators()
@@ -665,7 +663,8 @@ void tst_vec_reverse_it()
     std::cout << std::endl;
 
     vec::const_reverse_iterator cit = tst.rbegin();
-	std::cout << "(const_ite - it): " << (cit - x) << std::endl;
+	std::cout << "(const_ite - it): " << (cit - x - 2) << std::endl;
+	std::cout << "(const_ite - it): " << (cit - z) << std::endl;
 }
 
 void tst_vec_capacity()
@@ -802,7 +801,7 @@ int main()
 {
     vec_alloc_1by1(1);
     print_green("");
-    //vec_alloc_large();
+    vec_alloc_large();
 
     tst_vec_strings();
     print_green("");
