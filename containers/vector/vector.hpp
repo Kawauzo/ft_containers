@@ -177,8 +177,8 @@ public:
 
     // ***** Assignment operator *****
     vector& operator=(const vector& cpy) {
-       assign(cpy.begin(), cpy.end());
-       return *this;
+        assign(cpy.begin(), cpy.end());
+        return *this;
     }
 
 
@@ -343,14 +343,13 @@ public:
 
     // Inserts count copies of the value before pos
     void insert( iterator pos, size_type count, const T& value ) {
-        size_type goal = pos - begin();
-        size_type new_sz = _sz + count;
-        size_type i = 0;
-
         if (count == 0)
             return;
         if (count == 1)
             return (void) insert(pos, value);
+        size_type goal = pos - begin();
+        size_type new_sz = _sz + count;
+        size_type i = 0;
         if (!_sz && _cp)
             while (i < new_sz)
                _al.construct(_ar + i++, value);
@@ -362,17 +361,21 @@ public:
                     _al.construct(_ar + new_sz - i, value);
                 i++;
             }
-            while (new_sz - i >= goal) {
+            while (new_sz - i > goal) {
                 if (new_sz - i > goal + count)
                     _ar[new_sz - i] = *(_ar + _sz - i);
                 else
                     _ar[new_sz - i] = value;
                 i++;
             }
+            if (new_sz - i > goal + count)
+                _ar[new_sz - i] = *(_ar + _sz - i);
+            else
+                _ar[new_sz - i] = value;
         }
         else {
             pointer old_ar = _ar;
-            _ar = _al.allocate(std::max( NEWCP, new_sz));
+            _ar = _al.allocate(std::max(NEWCP, new_sz));
             while (i < goal) {
                 _al.construct(_ar + i, *(old_ar + i));
                 i++;

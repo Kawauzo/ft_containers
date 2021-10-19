@@ -7,7 +7,7 @@
 
 
 //#ifndef OG
-//#define OG
+//# define OG
 //#endif
 
 
@@ -511,9 +511,9 @@ void tst_vec_strings()
     print_green("tst at", __LINE__);
     std::cout << vrng.at(2) << std::endl;
     try { std::cout << vrng.at(122) << std::endl; }
-    catch (std::exception &e) {std::cout << e.what() << std::endl; }
+    catch (std::exception &e) {std::cout << e.what() << std::endl;}
     try { std::cout << vrng.at(-1) << std::endl; }
-    catch (std::exception &e) {std::cout << e.what() << std::endl; }
+    catch (std::exception &e) {std::cout << e.what() << std::endl;}
     std::cout << vrng.at(2) << std::endl;
 
     print_green("end of scope, destroy vectors", __LINE__);
@@ -797,6 +797,52 @@ void tst_vec_comparison() {
     std::cout << (vs >= vs2) << std::endl;
 }
 
+void tst_vec_rev_to_it() {
+    std::string arr[] = {"oui", "jul", "raymond", "patrick", "soufler"};
+    typedef ft::vector<std::string> vec;
+    vec v1(arr, arr + 5);
+    // vec::iterator v1_it = v1.rbegin();
+    // std doesn't compile ^ no conversion from reverse to iterator
+}
+
+void tst_capacity_assign() {
+    std::string arr[] = {"oui", "jul", "raymond"};
+    typedef ft::vector<std::string> vec;
+    vec v1_dup(arr, arr+3);
+    vec v1(10, "zz");
+    v1 = v1_dup;
+    print_green("vec.capacity == vec_dup.capacity", __LINE__);
+    std::cout << (v1.capacity() == v1_dup.capacity()) << std::endl;
+}
+
+template <typename T>
+void    vectorTest_InsertNElem(T& cont)
+{
+    std::string name("insert n elem:");
+    std::cout << "\n---------------------";
+
+    T tmp = cont;
+    std::cout << "size of tmp = " << tmp.size();
+
+    // Allows to value initialize (case size is 0, we can't assign cont[0])
+    typename T::value_type* x = new typename T::value_type ();
+    if (cont.size())
+    {
+        *x = cont.front();
+        typename T::iterator it = tmp.begin();
+        ++it;
+        tmp.insert(it, 5, *x);
+    }
+    tmp.insert(tmp.begin(), 5, *x);
+    tmp.insert(tmp.end(), 5, *x);
+
+    std::cout << "size of tmp = " << tmp.size();
+    print_vec(tmp);
+
+    delete x;
+}
+
+
 int main()
 {
     vec_alloc_1by1(1);
@@ -811,5 +857,12 @@ int main()
     tst_vec_reverse_it();
     tst_vec_capacity();
     tst_vec_comparison();
+    tst_capacity_assign();
+
+    int tab[] = {58966, 2147483647, 256, -214748, 3648, 0, -1, 2, 3, 4, 5};
+    ft::vector<int> tstint(tab, tab + 10);
+    vectorTest_InsertNElem(tstint);
+    tstint = ft::vector<int>(12, 8);
+    vectorTest_InsertNElem(tstint);
 
 }

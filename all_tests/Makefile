@@ -20,7 +20,7 @@ OBJOGS	= ${addprefix ${DIR_OBJ}, ${OBJOG}}
 
 # Compiler #
 CC		= clang++
-CFLAGS	= -Wall -Wextra -Werror -std=c++98
+CFLAGS	= -g -Wall -Wextra -Werror -std=c++98
 
 # Remove #
 RM = rm -f
