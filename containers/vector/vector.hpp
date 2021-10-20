@@ -340,10 +340,29 @@ public:
         _sz++;
         return iterator(_ar + goal);
     }
+    // Inserts count copies of the value before pos
+    void insert( iterator pos, size_type count, const T& value ) {
+        if (count == 0)
+            return;
+        if (count == 1)
+            return (void) insert(pos, value);
+        size_type new_sz = _sz + count;
+        if (!_sz && _cp)
+        {
+            size_type i = 0;
+            while (i < new_sz)
+               _al.construct(_ar + i++, value);
+        }
+        else if (new_sz < _cp)
+            _insert_count_noalloc(pos, count, value);
+        else
+            _insert_count_realloc(pos, count, value);
+        _sz = new_sz;
+    }
 
-    // insert(count) private ways 1/2
 private:
-void _insert_count_noalloc( iterator pos, size_type count, const T& value ){
+    // insert(count) private ways 1/2
+    void _insert_count_noalloc( iterator pos, size_type count, const T& value ){
         size_type goal = pos - begin();
         size_type new_sz = _sz + count;
         size_type i = 1;
@@ -367,10 +386,6 @@ void _insert_count_noalloc( iterator pos, size_type count, const T& value ){
                 break;
             ++i;
         }
-        //if (new_sz - i > goal + count)
-        //    _ar[new_sz - i] = *(_ar + _sz - i);
-        //else
-        //    _ar[new_sz - i] = value;
     }
 
     // insert(count) private ways 2/2
@@ -398,26 +413,6 @@ void _insert_count_noalloc( iterator pos, size_type count, const T& value ){
     }
 
 public:
-    // Inserts count copies of the value before pos
-    void insert( iterator pos, size_type count, const T& value ) {
-        if (count == 0)
-            return;
-        if (count == 1)
-            return (void) insert(pos, value);
-        size_type new_sz = _sz + count;
-        if (!_sz && _cp)
-        {
-            size_type i = 0;
-            while (i < new_sz)
-               _al.construct(_ar + i++, value);
-        }
-        else if (new_sz < _cp)
-            _insert_count_noalloc(pos, count, value);
-        else
-            _insert_count_realloc(pos, count, value);
-        _sz = new_sz;
-    }
-
     // Insert all the element between first and last at pos
     // enable_if is_integral is used to differenciate with insert(pos, count, val)
     //
@@ -451,53 +446,71 @@ private:
         }
     }
 
-    // if InputIt is at least a forward_iterator, optimization is possible,
-    // by knowing the new capacity before insertion
+    // insert(range) private ways 1/2
     template <class InputIt>
-    void _insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag) {
+    void _insert_input_noalloc(iterator pos, InputIt first, InputIt last){
+        size_type goal = pos - begin();
+        size_type range = _range(first, last);
+        size_type new_sz = _sz + range;
+        size_type i = 1;
+
+        while (new_sz - i >= _sz && _sz - i >= goal) {
+            _al.construct(_ar + new_sz - i, *(_ar +_sz - i));
+            ++i;
+        }
+        while (new_sz - i >= _sz) {
+            _al.construct(_ar + new_sz - i, value_type());
+            ++i;
+        }
+        while (new_sz - i >= goal + range) {
+            _ar[new_sz - i] = *(_ar + _sz - i);
+            ++i;
+        }
+        while (first != last)
+            *(_ar + goal++) = *first++;
+    }
+
+    // insert(range) private ways 2/2
+    template <class InputIt>
+    void _insert_input_realloc(iterator pos, InputIt first, InputIt last){
         size_type goal = pos - begin();
         size_type range = _range(first, last);
         size_type new_sz = _sz + range;
         size_type i = 0;
+        pointer old_ar = _ar;
+
+        _ar = _al.allocate(std::max(NEWCP, new_sz));
+        while (i < goal) {
+            _al.construct(_ar + i, *(old_ar + i));
+            i++;
+        }
+        while (i < goal + range)
+            _al.construct(_ar + i++, *first++);
+        while (i < new_sz) {
+            _al.construct(_ar + i, *(old_ar + i - range));
+            i++;
+        }
+        for (i = 0; i < _sz; i++)
+            _al.destroy(old_ar + i);
+        if (_cp)
+            _al.deallocate(old_ar, _cp);
+        _cp = std::max(NEWCP, new_sz);
+}
+
+    // if InputIt is at least a forward_iterator, optimization is possible,
+    // by knowing the new capacity before insertion
+    template <class InputIt>
+    void _insert_pv(iterator pos, InputIt first, InputIt last, std::forward_iterator_tag) {
+        size_type range = _range(first, last);
+        size_type new_sz = _sz + range;
 
         if (range == 0)
             return;
-        if (new_sz < _cp) {
-            while (new_sz - i > _sz) {
-                if (_sz - i > goal)
-                    _al.construct(_ar + new_sz - i, *(_ar +_sz - i));
-                else
-                    _al.construct(_ar + new_sz - i, value_type());
-                i++;
-            }
-            while (new_sz - i > goal + range) {
-                _ar[new_sz - i] = *(_ar + _sz - i);
-                i++;
-            }
-            while (first != last)
-                *(_ar + goal++) = *first++;
-        }
-        else {
-            pointer old_ar = _ar;
-            _ar = _al.allocate(std::max(NEWCP, new_sz));
-            while (i < goal) {
-                _al.construct(_ar + i, *(old_ar + i));
-                i++;
-            }
-            while (i < goal + range)
-                _al.construct(_ar + i++, *first++);
-            while (i < new_sz) {
-                _al.construct(_ar + i, *(old_ar + i - range));
-                i++;
-            }
-            for (i = 0; i < _sz; i++)
-                _al.destroy(old_ar + i);
-            if (_cp)
-                _al.deallocate(old_ar, _cp);
-            _cp = std::max(NEWCP, new_sz);
-        }
+        if (new_sz < _cp)
+            _insert_input_noalloc(pos, first, last);
+        else
+            _insert_input_realloc(pos, first, last);
         _sz = new_sz;
-
     }
 
     // *** end of insert *** //

@@ -943,6 +943,16 @@ void vector_delete_tests(){
     vectorTest_Erase1Elem(tstring);
 }
 
+void tst_derniereminute(){
+    typedef ft::vector<std::string> vec;
+    vec vs(20,"");
+    while(vs.size() > 2)
+        vs.pop_back();
+    std::string tab[] = {"1", "2", "2", "4", "3", "2", "1", "2", "3", "4", "3", };
+    vs.insert(vs.begin() + 1, tab, tab+11);
+    print_vec(vs);
+}
+
 int main()
 {
     vec_alloc_1by1(1);
@@ -962,4 +972,5 @@ int main()
     vector_insert_tests_maker();
     vector_delete_tests();
 
+    tst_derniereminute();
 }
