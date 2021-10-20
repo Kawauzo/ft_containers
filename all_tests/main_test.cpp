@@ -818,14 +818,12 @@ void tst_capacity_assign() {
 template <typename T>
 void    vectorTest_InsertNElem(T& cont)
 {
-    std::string name("insert n elem:");
-    std::cout << "\n---------------------";
-
     T tmp = cont;
     std::cout << "size of tmp = " << tmp.size();
 
     // Allows to value initialize (case size is 0, we can't assign cont[0])
     typename T::value_type* x = new typename T::value_type ();
+    std::cout <<std::endl; print_vec(tmp);
     if (cont.size())
     {
         *x = cont.front();
@@ -833,15 +831,117 @@ void    vectorTest_InsertNElem(T& cont)
         ++it;
         tmp.insert(it, 5, *x);
     }
+    std::cout <<std::endl; print_vec(tmp);
     tmp.insert(tmp.begin(), 5, *x);
+    std::cout <<std::endl; print_vec(tmp);
     tmp.insert(tmp.end(), 5, *x);
 
     std::cout << "size of tmp = " << tmp.size();
-    print_vec(tmp);
+    std::cout <<std::endl; print_vec(tmp);
 
     delete x;
 }
 
+void vector_insert_tests_maker(){
+    int tabi[] = {58966, 2147483647, 256, -214748, 3648, 0, -1, 2, 3, 4, 5};
+    ft::vector<int> tstint(tabi, tabi + 10);
+    vectorTest_InsertNElem(tstint);
+
+    tstint = ft::vector<int>(12, 8);
+    vectorTest_InsertNElem(tstint);
+
+    std::string tabs[] = {"hello coco", "j'arrive", "oui-oui", "kafeolait", "jul d'ananas", "jul d'ananas"};
+    ft::vector<std::string> tstring(tabs, tabs + 6);
+    vectorTest_InsertNElem(tstring);
+}
+
+template <typename T>
+void    vectorTest_Erase1Elem(T& cont)
+{
+    std::string name("erase 1 elem:");
+    std::cout << "\n---------------------";
+
+    typename T::value_type* x = new typename T::value_type ();
+
+    // Erase first elem
+    if (cont.size() > 1)
+    {
+         std::cout << "----- erase first elem -----";
+
+        T tmp = cont;
+         std::cout << "size of tmp = " << tmp.size();
+
+        print_vec(tmp);
+        typename T::iterator iter = tmp.erase(tmp.begin());
+        if (tmp.size())
+            {   std::cout << "return value: " << *iter << '\n'; }
+        print_vec(tmp);
+
+        for (typename T::iterator it = tmp.begin(); it != iter; ++it)
+            std::cout << *it << " | ";
+
+        std::cout << "size of tmp = " << tmp.size() << '\n';
+
+        // checking if everything was correcty destroyed and if we can push_back on erased values
+        for (int i = 0; i < 20; ++i)
+            tmp.push_back(*x);
+    }
+
+    // Erase last elem
+    if (cont.size())
+    {
+         std::cout << "----- erase last elem -----";
+
+        T tmp = cont;
+         std::cout << "size of tmp = " << tmp.size() << '\n';
+
+        typename T::iterator iter = tmp.erase(tmp.end() - 1);
+        print_vec(tmp);
+
+
+        for (typename T::iterator it = tmp.begin(); it != iter; ++it)
+            std::cout << *it << " | ";
+
+        std::cout << "size of tmp = " << tmp.size() << '\n';
+
+        // checking if everything was correcty destroyed and if we can push_back on erased values
+        for (int i = 0; i < 20; ++i)
+            tmp.push_back(*x);
+        print_vec(tmp);
+    }
+
+    // Erase one elem
+    if (cont.size() > 1)
+    {
+        std::cout << "----- erase second elem -----";
+
+        T tmp = cont;
+        std::cout << "size of tmp = " << tmp.size() << '\n';
+
+        typename T::iterator iter = tmp.erase(tmp.begin() + 1);
+        if (tmp.size() > 2)
+            { std::cout << "return value: " << *iter; }
+        print_vec(tmp);
+
+
+        for (typename T::iterator it = tmp.begin(); it != iter; ++it)
+            std::cout << *it << " | ";
+
+
+        // checking if everything was correcty destroyed and if we can push_back on erased values
+        for (int i = 0; i < 20; ++i)
+            tmp.push_back(*x);
+        print_vec(tmp);
+    }
+
+    delete x;
+}
+
+void vector_delete_tests(){
+    std::string tabs[] = {"raviolis du nord est", "raviolis du nord est", "raviolis du nord est"};
+    ft::vector<std::string> tstring(tabs, tabs + 3);
+    vectorTest_Erase1Elem(tstring);
+}
 
 int main()
 {
@@ -859,10 +959,7 @@ int main()
     tst_vec_comparison();
     tst_capacity_assign();
 
-    int tab[] = {58966, 2147483647, 256, -214748, 3648, 0, -1, 2, 3, 4, 5};
-    ft::vector<int> tstint(tab, tab + 10);
-    vectorTest_InsertNElem(tstint);
-    tstint = ft::vector<int>(12, 8);
-    vectorTest_InsertNElem(tstint);
+    vector_insert_tests_maker();
+    vector_delete_tests();
 
 }

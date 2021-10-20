@@ -341,57 +341,80 @@ public:
         return iterator(_ar + goal);
     }
 
+    // insert(count) private ways 1/2
+private:
+void _insert_count_noalloc( iterator pos, size_type count, const T& value ){
+        size_type goal = pos - begin();
+        size_type new_sz = _sz + count;
+        size_type i = 1;
+        while (new_sz - i >= _sz && _sz - i >= goal) {
+            _al.construct(_ar + new_sz - i, _ar[_sz - i]);
+            ++i;
+        }
+        while (new_sz - i >= _sz) {
+            _al.construct(_ar + new_sz - i, value);
+            ++i;
+        }
+        while (new_sz - i >= goal && new_sz - i >= goal + count) {
+            _ar[new_sz - i] = _ar[_sz - i];
+            if (!(new_sz - i))
+                break;
+            ++i;
+        }
+        while (new_sz - i >= goal) {
+            _ar[new_sz - i] = value;
+            if (!(new_sz - i))
+                break;
+            ++i;
+        }
+        //if (new_sz - i > goal + count)
+        //    _ar[new_sz - i] = *(_ar + _sz - i);
+        //else
+        //    _ar[new_sz - i] = value;
+    }
+
+    // insert(count) private ways 2/2
+    void _insert_count_realloc( iterator pos, size_type count, const T& value ){
+        size_type goal = pos - begin();
+        size_type new_sz = _sz + count;
+        size_type i = 0;
+        pointer old_ar = _ar;
+        _ar = _al.allocate(std::max(NEWCP, new_sz));
+        while (i < goal) {
+            _al.construct(_ar + i, *(old_ar + i));
+            i++;
+        }
+        while (i < goal + count)
+            _al.construct(_ar + i++, value);
+        while (i < new_sz) {
+            _al.construct(_ar + i, *(old_ar + i - count));
+            i++;
+        }
+        for (i = 0; i < _sz; i++)
+            _al.destroy(old_ar + i);
+        if (_cp)
+            _al.deallocate(old_ar, _cp);
+        _cp = std::max( NEWCP, new_sz);
+    }
+
+public:
     // Inserts count copies of the value before pos
     void insert( iterator pos, size_type count, const T& value ) {
         if (count == 0)
             return;
         if (count == 1)
             return (void) insert(pos, value);
-        size_type goal = pos - begin();
         size_type new_sz = _sz + count;
-        size_type i = 0;
         if (!_sz && _cp)
+        {
+            size_type i = 0;
             while (i < new_sz)
                _al.construct(_ar + i++, value);
-        else if (new_sz < _cp) {
-            while (new_sz - i > _sz) {
-                if (_sz - i > goal)
-                    _al.construct(_ar + new_sz - i, *(_ar +_sz - i));
-                else
-                    _al.construct(_ar + new_sz - i, value);
-                i++;
-            }
-            while (new_sz - i > goal) {
-                if (new_sz - i > goal + count)
-                    _ar[new_sz - i] = *(_ar + _sz - i);
-                else
-                    _ar[new_sz - i] = value;
-                i++;
-            }
-            if (new_sz - i > goal + count)
-                _ar[new_sz - i] = *(_ar + _sz - i);
-            else
-                _ar[new_sz - i] = value;
         }
-        else {
-            pointer old_ar = _ar;
-            _ar = _al.allocate(std::max(NEWCP, new_sz));
-            while (i < goal) {
-                _al.construct(_ar + i, *(old_ar + i));
-                i++;
-            }
-            while (i < goal + count)
-                _al.construct(_ar + i++, value);
-            while (i < new_sz) {
-                _al.construct(_ar + i, *(old_ar + i - count));
-                i++;
-            }
-            for (i = 0; i < _sz; i++)
-                _al.destroy(old_ar + i);
-            if (_cp)
-                _al.deallocate(old_ar, _cp);
-            _cp = std::max( NEWCP, new_sz);
-        }
+        else if (new_sz < _cp)
+            _insert_count_noalloc(pos, count, value);
+        else
+            _insert_count_realloc(pos, count, value);
         _sz = new_sz;
     }
 
@@ -560,7 +583,7 @@ public:
             *(_ar + ptr) = *(_ar + ptr + 1);
             ptr++;
         }
-        _al.destroy(_ar + _sz--);
+        _al.destroy(_ar + --_sz);
         return pos;
     }
 

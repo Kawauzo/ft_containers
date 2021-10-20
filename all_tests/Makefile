@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lfourner <lfourner@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/10/19 15:44:23 by lfourner          #+#    #+#              #
+#    Updated: 2021/10/19 15:44:37 by lfourner         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 # General #
 NAME = test_all
 NAMEFT = test_ft
@@ -20,7 +32,8 @@ OBJOGS	= ${addprefix ${DIR_OBJ}, ${OBJOG}}
 
 # Compiler #
 CC		= clang++
-CFLAGS	= -g -Wall -Wextra -Werror -std=c++98
+CFLAGS	= ${DEBUGFLAGS} -Wall -Wextra -Werror -std=c++98
+DEBUGFLAGS = -g -fsanitize=address
 
 # Remove #
 RM = rm -f
