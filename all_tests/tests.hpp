@@ -12,8 +12,10 @@
 // "clang++ -DOG" to compile with orginial STL
 #ifndef OG
     #include "../containers/vector/vector.hpp"
+    #include "../containers/stack/stack.hpp"
 #else
     #include <vector>
+    #include <stack>
     namespace ft = std;
 #endif
 
@@ -22,5 +24,6 @@ void print_title(const char *s);
 void print_green(const char *s, int line = 0);
 
 void vector_all_tests();
+void stack_all_tests();
 
 #endif

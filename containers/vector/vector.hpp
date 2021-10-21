@@ -62,12 +62,13 @@ public:
 
 
 
+private:
+
     /*
      * **************************************
      * ************ Variables ***************
      * **************************************
     */
-private:
 
     allocator_type  _al;    // Allocator
     pointer         _ar;    // Underlying array
@@ -81,7 +82,7 @@ private:
      *
      * These are used to avoid rewriting code
     */
-private:
+
     // Destroys and deallocate all vector content
     void empty_self() {
         for (unsigned int i = 0; i < _sz; i++)
@@ -114,12 +115,13 @@ private:
         return ret;
     }
 
+public:
+
     /*
      * **************************************
      * ********* Member Functions ***********
      * **************************************
     */
-public:
 
     // ***** Constructors *****
 
