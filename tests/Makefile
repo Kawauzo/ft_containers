@@ -6,7 +6,7 @@
 #    By: lfourner <lfourner@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/19 15:44:23 by lfourner          #+#    #+#              #
-#    Updated: 2021/10/21 18:41:19 by lfourner         ###   ########.fr        #
+#    Updated: 2021/10/21 22:17:50 by lfourner         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ DIR_SRC		= ./
 DIR_OBJ		= ./objs/
 
 # Files #
-SRC		= main_test.cpp vector_tst.cpp stack_tst.cpp
+SRC		= main_test.cpp vector_tst.cpp stack_tst.cpp map_tst.cpp
 
 OBJ		= ${SRC:.cpp=.o}
 OBJS	= ${addprefix ${DIR_OBJ}, ${OBJ}}

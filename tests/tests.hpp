@@ -13,9 +13,11 @@
 #ifndef OG
     #include "../containers/vector/vector.hpp"
     #include "../containers/stack/stack.hpp"
+    #include "../containers/map/map.hpp"
 #else
     #include <vector>
     #include <stack>
+    #include <map>
     namespace ft = std;
 #endif
 
@@ -25,5 +27,6 @@ void print_green(const char *s, int line = 0);
 
 void vector_all_tests();
 void stack_all_tests();
+void map_all_tests();
 
 #endif
