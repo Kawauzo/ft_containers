@@ -1,4 +1,4 @@
-make re -C all_tests > /dev/null
+make re -C tests > /dev/null
 
 if [ $? -eq 0 ] ; then
     mkdir -p results
