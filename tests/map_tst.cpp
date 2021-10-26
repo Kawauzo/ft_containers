@@ -1,6 +1,5 @@
 #include "tests.hpp"
 
-
 void cppr_pair(){
     ft::pair <std::string,double> product1;                     // default constructor
     ft::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
@@ -46,7 +45,23 @@ void cppr_pair(){
     if (foo>=bar) std::cout << "foo is greater than or equal to bar\n";
 }
 
+void tst_binarytree(){
+    ft::bst<int> arbr;
+
+    arbr.insert(3);
+    arbr.insert(1);
+    arbr.insert(2);
+    arbr.insert(4);
+    arbr.insert(5);
+    for (int i = 1; i<=5; i++)
+        arbr.find(i);
+    arbr.find(6);
+}
+
 void map_all_tests(){
 
     cppr_pair();
+    tst_binarytree();
 }
+
+int main(){ map_all_tests(); }
