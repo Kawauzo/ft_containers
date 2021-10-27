@@ -28,7 +28,7 @@ void print_green(const char *s, int line)
 
 
 int main() {
-    vector_all_tests();
-    stack_all_tests();
+//    vector_all_tests();
+//    stack_all_tests();
     map_all_tests();
 }

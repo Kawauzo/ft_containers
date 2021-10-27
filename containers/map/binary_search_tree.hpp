@@ -3,6 +3,7 @@
 
 // testing
 #include <iostream>
+#include <cstdio>
 
 // decrire la classe ici
 

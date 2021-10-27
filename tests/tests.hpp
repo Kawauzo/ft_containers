@@ -11,8 +11,8 @@
 // two version of this file can be compiled
 // "clang++ -DOG" to compile with orginial STL
 #ifndef OG
-    #include "../containers/vector/vector.hpp"
-    #include "../containers/stack/stack.hpp"
+//    #include "../containers/vector/vector.hpp"
+//    #include "../containers/stack/stack.hpp"
     #include "../containers/map/map.hpp"
 #else
     #include <vector>

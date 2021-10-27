@@ -46,13 +46,13 @@ void cppr_pair(){
 }
 
 void tst_binarytree(){
-    ft::bst<int> arbr;
+    ft::map<int, int> arbr;
 
-    arbr.insert(3);
-    arbr.insert(1);
-    arbr.insert(2);
-    arbr.insert(4);
-    arbr.insert(5);
+    arbr.insert(ft::make_pair(3, 3));
+    arbr.insert(ft::make_pair(1, 1));
+    arbr.insert(ft::make_pair(2, 2));
+    arbr.insert(ft::make_pair(4, 4));
+    arbr.insert(ft::make_pair(5, 5));
     for (int i = 1; i<=5; i++)
         arbr.find(i);
     arbr.find(6);
@@ -61,14 +61,14 @@ void tst_binarytree(){
     arbr.clear();
 
 
-    arbr.insert(8);
-    arbr.insert(3);
-    arbr.insert(1);
-    arbr.insert(6);
-    arbr.insert(7);
-    arbr.insert(10);
-    arbr.insert(14);
-    arbr.insert(13);
+    arbr.insert(ft::make_pair(8, 8));
+    arbr.insert(ft::make_pair(3, 3));
+    arbr.insert(ft::make_pair(1, 1));
+    arbr.insert(ft::make_pair(6, 6));
+    arbr.insert(ft::make_pair(7, 7));
+    arbr.insert(ft::make_pair(10, 10));
+    arbr.insert(ft::make_pair(13, 13));
+    arbr.insert(ft::make_pair(14, 14));
     arbr.print();
     std::cout << arbr.size() << '\n';
 }
