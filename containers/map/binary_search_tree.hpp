@@ -8,7 +8,7 @@
 
 namespace ft {
 
-template <class T>
+template <class T, class Alloc = std::allocator<T> >
 class bst {
     typedef T data;
 
@@ -85,8 +85,80 @@ private:
     }
 
 public:
-    // ***** find element *****
+    // ***** find *****
     node * find(const data & x) const { return find_rec(root, x); }
+
+    // ***** clear *****
+    void clear(){
+        destroy_rec(root);
+        root = NULL;
+    }
+
+private:
+    unsigned int max_depth_rec(node * n){
+        if (n == NULL)
+            return 0;
+        else {
+            unsigned int lDepth = max_depth_rec(n->l);
+            unsigned int rDepth = max_depth_rec(n->r);
+
+            if (lDepth > rDepth)
+                return lDepth + 1;
+            else
+                return rDepth + 1;
+        }
+
+    }
+public:
+    // ***** max_depth *****
+    unsigned int max_depth(){ return max_depth_rec(root); }
+
+    /*
+private:
+    unsigned int size_rec(){ return 0; }
+
+public:
+    // ***** max_depth *****
+    unsigned int size(){ return size_rec(root); }
+    */
+
+
+
+
+
+
+    // TESTING --- print tree
+    void  print()
+    {
+        printf("Display tree : \n");
+        node_print(root, 0, max_depth());
+        printf("\n\n");
+
+    }
+
+    void  node_print(node *n, int current_level, int max_level)
+    {
+        int i;
+
+        if (n) {
+            node_print(n->r, current_level + 1, max_level);
+            for (i = 0; i < current_level; i++) {
+                printf("    ");
+            }
+            printf("%d\n", *n->val);
+            node_print(n->l, current_level + 1, max_level);
+        }
+        else {
+            if (current_level < max_level) {
+                node_print(NULL, current_level + 1, max_level);
+                for (i = 0; i < current_level; i++) {
+                    printf("    ");
+                }
+                printf("..\n");
+                node_print(NULL, current_level + 1, max_level);
+            }
+        }
+    }
 
 };
 

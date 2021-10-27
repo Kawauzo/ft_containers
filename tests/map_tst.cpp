@@ -56,6 +56,19 @@ void tst_binarytree(){
     for (int i = 1; i<=5; i++)
         arbr.find(i);
     arbr.find(6);
+    arbr.print();
+    arbr.clear();
+
+
+    arbr.insert(8);
+    arbr.insert(3);
+    arbr.insert(1);
+    arbr.insert(6);
+    arbr.insert(7);
+    arbr.insert(10);
+    arbr.insert(14);
+    arbr.insert(13);
+    arbr.print();
 }
 
 void map_all_tests(){
