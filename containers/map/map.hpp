@@ -86,6 +86,10 @@ private:
     // and all it's children
     void destroy_rec(node_type *n){
         if (n){
+            if (n->val) {
+                _al.destroy(n->val);
+                _al.deallocate(n->val, 1);
+            }
             destroy_rec(n->l);
             destroy_rec(n->r);
             delete n;

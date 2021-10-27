@@ -56,7 +56,7 @@ void tst_binarytree(){
     for (int i = 1; i<=5; i++)
         arbr.find(i);
     arbr.find(6);
-    arbr.print();
+    //arbr.print();
     std::cout << arbr.size() << '\n';
     arbr.clear();
 
@@ -69,7 +69,9 @@ void tst_binarytree(){
     arbr.insert(ft::make_pair(10, 10));
     arbr.insert(ft::make_pair(13, 13));
     arbr.insert(ft::make_pair(14, 14));
-    arbr.print();
+
+    //arbr.print();
+
     std::cout << arbr.size() << '\n';
 }
 
@@ -79,4 +81,4 @@ void map_all_tests(){
     tst_binarytree();
 }
 
-int main(){ map_all_tests(); }
+// int main(){ map_all_tests(); }
