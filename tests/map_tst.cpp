@@ -57,6 +57,7 @@ void tst_binarytree(){
         arbr.find(i);
     arbr.find(6);
     arbr.print();
+    std::cout << arbr.size() << '\n';
     arbr.clear();
 
 
@@ -69,6 +70,7 @@ void tst_binarytree(){
     arbr.insert(14);
     arbr.insert(13);
     arbr.print();
+    std::cout << arbr.size() << '\n';
 }
 
 void map_all_tests(){

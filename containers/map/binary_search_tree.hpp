@@ -113,14 +113,17 @@ public:
     // ***** max_depth *****
     unsigned int max_depth(){ return max_depth_rec(root); }
 
-    /*
 private:
-    unsigned int size_rec(){ return 0; }
+    unsigned int size_rec(node * n){
+        if (n == NULL)
+            return 0;
+        else
+            return (size_rec(n->l) + size_rec(n->r) + 1);
+    }
 
 public:
-    // ***** max_depth *****
+    // ***** size *****
     unsigned int size(){ return size_rec(root); }
-    */
 
 
 
