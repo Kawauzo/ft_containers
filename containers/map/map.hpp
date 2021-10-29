@@ -6,6 +6,7 @@
 
 
 # include "../utils/pair.hpp" // needed for ft::pair and ft::make_pair
+# include "map_iterator.hpp" // iterator
 
 # include <memory> // needed for std::allocator
 
@@ -39,19 +40,24 @@ template <
     typedef typename Alloc::pointer       pointer;
     typedef typename Alloc::const_pointer const_pointer;
 
+
     private:
     // ***** private BST node_type *****
     struct node_type{
-        value_type *val;
-        node_type  *l;
-        node_type  *r;
+        value_type * val;
+        node_type  * l;
+        node_type  * r;
+        node_type  * parent;
 
-        node_type(): val(NULL), l(NULL), r(NULL) {}
-        node_type(const value_type & x, Alloc & al): val(al.allocate(1)), l(NULL), r(NULL) {
+        node_type(): val(NULL), l(NULL), r(NULL), parent(NULL){}
+        node_type(const value_type & x, Alloc & al): val(al.allocate(1)), l(NULL), r(NULL), parent(NULL) {
             al.construct(val, x);
         }
         ~node_type(){}
     };
+
+    public:
+    typedef map_iterator<value_type, node_type>  iterator;
 
     /*
      * **************************************
@@ -59,6 +65,7 @@ template <
      * **************************************
     */
 
+    private:
     node_type *          _root;
     const key_compare    _cmp;
     allocator_type       _al;
@@ -95,6 +102,22 @@ private:
             delete n;
         }
     }
+
+    /*
+     * **************************************
+     * ************* Iterator ***************
+     * **************************************
+    */
+
+public:
+    iterator begin(){
+        node_type* tmp = _root;
+        while (tmp->l)
+            tmp = tmp->l;
+        return iterator(tmp);
+    }
+
+    iterator end() {return iterator(NULL);}
 
     /*
      * **************************************
@@ -142,10 +165,14 @@ private:
         if (!n){
             return new node_type(x, _al);
         }
-        if (x.first > n->val->first)
+        if (x.first > n->val->first){
             n->r = insert_rec(n->r, x);
-        else
+            n->r->parent = n;
+        }
+        else{
             n->l = insert_rec(n->l, x);
+            n->l->parent = n;
+        }
         return n;
     }
 

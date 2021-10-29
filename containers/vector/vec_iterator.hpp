@@ -44,12 +44,12 @@ template <class T> class vec_iterator
     pointer operator -> () const {return _ptr;}
 
     // Pre-Increment/Decrement (++i)
-    vec_iterator& operator++() {_ptr++; return *this;}
-    vec_iterator& operator--() {_ptr--; return *this;}
+    vec_iterator& operator++() {++_ptr; return *this;}
+    vec_iterator& operator--() {--_ptr; return *this;}
 
     // Post-Increment/Decrement (i++)
-    vec_iterator operator++(int) {vec_iterator copy(*this); _ptr++; return copy;}
-    vec_iterator operator--(int) {vec_iterator copy(*this); _ptr--; return copy;}
+    vec_iterator operator++(int) {vec_iterator copy(*this); ++_ptr; return copy;}
+    vec_iterator operator--(int) {vec_iterator copy(*this); --_ptr; return copy;}
 
     // Arithmetic operators
     vec_iterator operator+(difference_type n) const{ vec_iterator ret(_ptr + n); return ret; }
