@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 
+typedef ft::map<int, int>  mpii;
+
 void cppr_pair(){
     ft::pair <std::string,double> product1;                     // default constructor
     ft::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
@@ -48,7 +50,7 @@ void cppr_pair(){
 }
 
 void tst_binarytree(){
-    ft::map<int, int> arbr;
+    mpii arbr;
 
     arbr.insert(ft::make_pair(3, 3));
     arbr.insert(ft::make_pair(1, 1));
@@ -84,13 +86,42 @@ void tst_binarytree(){
 
     //arbr.print();
 
-    for ( ft::map<int, int>::iterator it = arbr.begin(); it != arbr.end(); ++it)
+    for ( mpii::iterator it = arbr.begin(); it != arbr.end(); ++it)
         std::cout << (*it).first << std::endl;
 
-    for ( ft::map<int, int>::iterator it = --arbr.end(); it != arbr.begin(); --it)
+    for ( mpii::iterator it = --arbr.end(); it != arbr.begin(); --it)
         std::cout << (*it).first << std::endl;
     std::cout << "size: " << arbr.size() << '\n';
 }
+
+void tst_const_error(mpii mapi)
+{
+    mpii::const_iterator roland(mapi.begin());
+    while (roland != mapi.end()){
+        std::cout << roland->first << std::endl;
+        //roland->first += 12; //shouldnt compile
+        roland++;
+    }
+
+    mpii::iterator       it(mapi.begin());
+    mpii::const_iterator cend(mapi.end());
+    while (it != cend){
+        std::cout << it->first << std::endl;
+        //it->first += 12; //shouldnt compile
+        it++;
+    }
+
+    /*
+    mpii::const_reverse_iterator simon = mapi.rbegin();
+    while (simon != mapi.rend()){
+        std::cout << *simon << std::endl;
+        // *simon += "fortytwy"; //shouldnt compile
+        simon++;
+    }
+    */
+}
+
+
 
 void map_all_tests(){
 

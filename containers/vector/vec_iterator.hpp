@@ -72,7 +72,7 @@ template <class T> class vec_iterator
     bool operator>=(vec_iterator const &it) const { return _ptr >= it._ptr; }
 
     // Needed for const comparisons
-    pointer base() const {
+    node_type* base() const {
         return _ptr;
     }
 };

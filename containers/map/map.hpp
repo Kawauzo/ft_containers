@@ -57,7 +57,8 @@ template <
     };
 
     public:
-    typedef map_iterator<value_type, node_type>  iterator;
+    typedef map_iterator<value_type, node_type>        iterator;
+    typedef map_iterator<const value_type, const node_type>  const_iterator;
 
     /*
      * **************************************
@@ -118,7 +119,21 @@ public:
         return iterator(tmp);
     }
 
+    const_iterator begin() const {
+        node_type* tmp = _root;
+        while (tmp->l)
+            tmp = tmp->l;
+        return iterator(tmp);
+    }
+
     iterator end(){
+        node_type* tmp = _root;
+        while (tmp->r)
+            tmp = tmp->r;
+        return iterator(tmp);
+    }
+
+    const_iterator end() const {
         node_type* tmp = _root;
         while (tmp->r)
             tmp = tmp->r;
