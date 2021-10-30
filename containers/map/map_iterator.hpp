@@ -19,6 +19,7 @@ template <class T, class node_type> class map_iterator
     typedef std::bidirectional_iterator_tag  iterator_category;
 
     private:
+    public: // TEMPORARY, FOR TESTING PURPOSE
     node_type* _ptr; // only variable, iterator position
 
 
@@ -45,7 +46,7 @@ template <class T, class node_type> class map_iterator
                 _ptr = _ptr->l;
             return *this;
         }
-        if (!_ptr->r && !_ptr->l){
+        if (!_ptr->r /*&& !_ptr->l*/){
             node_type* parent = _ptr->parent;
             while (true){
                 if (_ptr == parent->l){
@@ -59,8 +60,33 @@ template <class T, class node_type> class map_iterator
         return *this;
     }
 
-    // Post-Increment
+    // Post-increment
     map_iterator operator++(int) { map_iterator copy(*this); ++*this; return copy;}
+
+    // Pre-decrement
+    map_iterator& operator--() {
+        if (_ptr->l){
+            _ptr = _ptr->l;
+            while (_ptr->r)
+                _ptr = _ptr->r;
+            return *this;
+        }
+        if (!_ptr->l /*&& !_ptr->l*/){
+            node_type* parent = _ptr->parent;
+            while (true){
+                if (_ptr == parent->r){
+                    _ptr = parent;
+                    return *this;
+                }
+                _ptr = parent;
+                parent = _ptr->parent;
+            }
+        }
+        return *this;
+    }
+
+    // Post-decrement
+    map_iterator operator--(int) { map_iterator copy(*this); --*this; return copy;}
 
 
     // Comparison operators

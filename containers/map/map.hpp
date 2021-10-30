@@ -75,13 +75,14 @@ template <
      * ********* Member Functions ***********
      * **************************************
     */
-    public:
+
+public:
 
     // ***** Constructors *****
     //
     explicit map (const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) :
-        _root(NULL),
+        _root(new node_type),
         _cmp(comp),
         _al(alloc)
     {}
@@ -93,7 +94,7 @@ private:
     // and all it's children
     void destroy_rec(node_type *n){
         if (n){
-            if (n->val) {
+            if (n->val){
                 _al.destroy(n->val);
                 _al.deallocate(n->val, 1);
             }
@@ -117,7 +118,12 @@ public:
         return iterator(tmp);
     }
 
-    iterator end() {return iterator(NULL);}
+    iterator end(){
+        node_type* tmp = _root;
+        while (tmp->r)
+            tmp = tmp->r;
+        return iterator(tmp);
+    }
 
     /*
      * **************************************
@@ -127,7 +133,8 @@ public:
 
 public:
     // ***** Size *****
-    unsigned int size(){ return size_rec(_root); }
+    // the '- 1' is because of end iterator node
+    unsigned int size(){ return size_rec(_root) - 1; }
 
 private:
     unsigned int size_rec(node_type * n){
@@ -147,24 +154,33 @@ public:
     // Clear
     void clear(){
         destroy_rec(_root);
-        _root = NULL;
+        _root = new node_type;
     }
 
     // Insert
     void insert(const value_type & x){
-        if (!_root){
-            _root = new node_type(x, _al);
-        }
-        else
-            insert_rec(_root, x);
+        insert_rec(_root, x);
     }
 
 private:
     // recursive function for inserting
     node_type * insert_rec(node_type * n, const value_type & x){
-        if (!n){
+        if (n){
+            if (!n->val){
+                node_type *tmp = new node_type(x, _al);
+                tmp->parent = n->parent;
+                tmp->r = n;
+                n->parent = tmp;
+                if (_root == n)
+                    _root = tmp;
+                return tmp;
+            }
+        }
+        else {
             return new node_type(x, _al);
         }
+        if (x.first == n->val->first)
+            return n;
         if (x.first > n->val->first){
             n->r = insert_rec(n->r, x);
             n->r->parent = n;
@@ -189,11 +205,11 @@ public:
 private:
     // recursive function to find a value
     node_type * find_rec(node_type *n, const key_type & k) const {
-        if (!n){
+        if (!n || (n && !n->val)){
             //std::cout << "not found" << std::endl;
             return (NULL);
         }
-        //std::cout << *n->key << std::endl;
+        //std::cout << n->val->first << std::endl;
         if (k == n->val->first){
             //std::cout << std::endl;
             return (n);
@@ -249,7 +265,10 @@ public:
             for (i = 0; i < current_level; i++) {
                 printf("    ");
             }
-            std::cout << n->val->first << '\n';
+            if (n->val)
+                std::cout << n->val->first << '\n';
+            else
+                std::cout << "end" << '\n';
             node_print(n->l, current_level + 1, max_level);
         }
         else {

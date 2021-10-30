@@ -1,4 +1,6 @@
 #include "tests.hpp"
+#include <cstdlib>
+#include <ctime>
 
 void cppr_pair(){
     ft::pair <std::string,double> product1;                     // default constructor
@@ -57,11 +59,18 @@ void tst_binarytree(){
         arbr.find(i);
     arbr.find(6);
     //arbr.print();
-    std::cout << arbr.size() << '\n';
+    std::cout << "size: " << arbr.size() << '\n';
     arbr.clear();
 
 
-    arbr.insert(ft::make_pair(8, 8));
+    srand((unsigned)time(0));
+    for (int i = 0; i < 13; i++){
+        int elem = rand() % 99;
+        arbr.insert(ft::make_pair(elem, 8));
+        std::cout << elem << " / ";
+    }
+        std::cout << '\n';
+    /*
     arbr.insert(ft::make_pair(3, 3));
     arbr.insert(ft::make_pair(1, 1));
     arbr.insert(ft::make_pair(6, 6));
@@ -69,16 +78,18 @@ void tst_binarytree(){
     arbr.insert(ft::make_pair(10, 10));
     arbr.insert(ft::make_pair(13, 13));
     arbr.insert(ft::make_pair(14, 14));
-    std::cout << sizeof(int)<<'\n';
-    std::cout << sizeof(bool)<<'\n';
-    std::cout << arbr.size() << '\n';
+    */
+
     std::cout << '\n';
 
-    arbr.print();
+    //arbr.print();
 
-    for (ft::map<int, int>::iterator it = arbr.begin(); it != arbr.end(); it++)
+    for ( ft::map<int, int>::iterator it = arbr.begin(); it != arbr.end(); ++it)
         std::cout << (*it).first << std::endl;
-    std::cout << "yoyo" << std::endl;
+
+    for ( ft::map<int, int>::iterator it = --arbr.end(); it != arbr.begin(); --it)
+        std::cout << (*it).first << std::endl;
+    std::cout << "size: " << arbr.size() << '\n';
 }
 
 void map_all_tests(){
@@ -87,4 +98,4 @@ void map_all_tests(){
     tst_binarytree();
 }
 
-int main(){ map_all_tests(); }
+//int main(){ map_all_tests(); }
