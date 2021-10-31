@@ -19,7 +19,6 @@ template <class T, class node_type> class map_iterator
     typedef std::bidirectional_iterator_tag  iterator_category;
 
     private:
-    public: // TEMPORARY, FOR TESTING PURPOSE
     node_type* _ptr; // only variable, iterator position
 
 

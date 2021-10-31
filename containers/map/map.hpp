@@ -105,6 +105,23 @@ private:
         }
     }
 
+
+    /*
+     * **************************************
+     * ********** Element access ************
+     * **************************************
+    */
+
+    // ***** At *****
+    T& at(const key_type & k){
+        node_type *res = find(k);
+        if (!res)
+            throw std::out_of_range("");
+        return res->val->second;
+    }
+
+    const T& at(const key_type & k) const { return at(k); }
+
     /*
      * **************************************
      * ************* Iterator ***************
@@ -147,9 +164,12 @@ public:
     */
 
 public:
+    // ***** Empty *****
+    bool empty() const { return size() ? 1 : 0; }
+
     // ***** Size *****
     // the '- 1' is because of end iterator node
-    unsigned int size(){ return size_rec(_root) - 1; }
+    size_type size() const { return size_rec(_root) - 1; }
 
 private:
     unsigned int size_rec(node_type * n){
@@ -207,6 +227,69 @@ private:
         return n;
     }
 
+    // ***** erase *****
+private:
+    // set parent's child to target,
+    // and target's parent to deleted node parent
+    void set_parent_target(node_type *ptr, node_type *target){
+        if (ptr->parent){
+            if (ptr->parent->l == ptr)
+                ptr->parent->l = target;
+            else
+                ptr->parent->r = target;
+        }
+        else
+            _root = target;
+        if (target)
+            target->parent = ptr->parent;
+    }
+
+public:
+    // erase node at iterator, and reconnect children
+    void erase(iterator pos){
+        node_type *ptr = pos.base();
+        if (ptr->l && ptr->r){
+            node_type *tmp = ptr->r;
+            while (tmp->l && tmp->l->val)
+                tmp = tmp->l;
+            value_type *swp = ptr->val;
+            ptr->val = tmp->val;
+            tmp->val = swp;
+            ptr = tmp;
+            erase(iterator(tmp));
+        }
+        else {
+            if (!ptr->l && !ptr->r)
+                set_parent_target(ptr, NULL);
+            else if (!ptr->l && ptr->r)
+                set_parent_target(ptr, ptr->r);
+            else if (ptr->l && !ptr->r)
+                set_parent_target(ptr, ptr->l);
+            _al.destroy(ptr->val);
+            _al.deallocate(ptr->val, 1);
+            delete ptr;
+        }
+    }
+
+    // erase range
+    void erase(iterator first, iterator last){
+        iterator tmp = first;
+        while (first != last){
+            ++tmp;
+            erase(first);
+            first = tmp;
+        }
+    }
+
+    // erase item matching key
+    size_t erase(key_type k){
+        node_type *res = find_rec(_root, k);
+        if (!res)
+            return 0;
+        erase(iterator(k));
+        return 1;
+    }
+
     /*
      * **************************************
      * ************** Lookup ****************
@@ -215,7 +298,19 @@ private:
 
 public:
     // ***** find *****
-    node_type * find(const key_type & k) const { return find_rec(_root, k); }
+    iterator       find(const key_type & k) {
+        node_type *res = find_rec(_root, k);
+        if (res)
+            return iterator(res);
+        return end();
+    }
+
+    const_iterator find(const key_type & k) const {
+        node_type *res = find_rec(_root, k);
+        if (res)
+            return iterator(res);
+        return end();
+    }
 
 private:
     // recursive function to find a value
