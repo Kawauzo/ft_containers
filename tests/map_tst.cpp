@@ -65,23 +65,22 @@ void tst_binarytree(){
     arbr.insert(ft::make_pair(-1, 5));
     arbr.insert(ft::make_pair(42, 5));
     arbr.insert(ft::make_pair(43, 5));
-    for (int i = 1; i<=12; i++)
-        arbr.find(i);
-    arbr.find(6);
-    arbr.print();
+
+    std::cout << "not found result: ";
+    std::cout << (arbr.find(6) == arbr.end()) << std::endl;
+    //arbr.print();
     arbr.erase(arbr.find(2));
-    arbr.print();
+    //arbr.print();
     arbr.erase(arbr.find(4));
-    arbr.print();
+    //arbr.print();
     arbr.erase(arbr.find(45));
-    arbr.print();
+    //arbr.print();
     arbr.erase(arbr.find(22));
-    arbr.print();
+    //arbr.print();
     std::cout << "size: " << arbr.size() << '\n';
     arbr.clear();
 
 
-    srand((unsigned)time(0));
     for (int i = 0; i < 13; i++){
         int elem = rand() % 99;
         arbr.insert(ft::make_pair(elem, 8));
@@ -100,7 +99,7 @@ void tst_binarytree(){
 
     std::cout << '\n';
 
-    arbr.print();
+    //arbr.print();
 
     for ( mpii::iterator it = arbr.begin(); it != arbr.end(); ++it)
         std::cout << (*it).first << std::endl;
@@ -108,6 +107,7 @@ void tst_binarytree(){
     for ( mpii::iterator it = --arbr.end(); it != arbr.begin(); --it)
         std::cout << (*it).first << std::endl;
     std::cout << "size: " << arbr.size() << '\n';
+
 
 
 }
@@ -140,11 +140,53 @@ void tst_const_error(mpii mapi)
 }
 
 
+void tst_custom_operator(){
+    typedef ft::map<int, int, std::greater<int> >  rev_mpii;
+    rev_mpii arbr;
+
+    arbr.insert(ft::make_pair(3, 3));
+    arbr.insert(ft::make_pair(1, 1));
+    arbr.insert(ft::make_pair(22, 2));
+    arbr.insert(ft::make_pair(4, 4));
+    arbr.insert(ft::make_pair(2, 5));
+    arbr.insert(ft::make_pair(89, 5));
+    arbr.insert(ft::make_pair(17, 5));
+    arbr.insert(ft::make_pair(45, 5));
+    arbr.insert(ft::make_pair(-3, 5));
+    arbr.insert(ft::make_pair(8, 5));
+    arbr.insert(ft::make_pair(-1, 5));
+    arbr.insert(ft::make_pair(42, 5));
+    arbr.insert(ft::make_pair(43, 5));
+
+    std::cout << "not found result: ";
+    std::cout << (arbr.find(6) == arbr.end()) << std::endl;
+    //arbr.print();
+    arbr.erase(arbr.find(2));
+    //arbr.print();
+    arbr.erase(arbr.find(4));
+    //arbr.print();
+    arbr.erase(arbr.find(45));
+    //arbr.print();
+    arbr.erase(arbr.find(22));
+    //arbr.print();
+    std::cout << "size: " << arbr.size() << '\n';
+
+    for ( rev_mpii::iterator it = arbr.begin(); it != arbr.end(); ++it)
+        std::cout << (*it).first << std::endl;
+
+    for ( rev_mpii::iterator it = --arbr.end(); it != arbr.begin(); --it)
+        std::cout << (*it).first << std::endl;
+    std::cout << "size: " << arbr.size() << '\n';
+
+
+}
 
 void map_all_tests(){
+    srand((unsigned)time(0));
 
     cppr_pair();
     tst_binarytree();
+    tst_custom_operator();
 }
 
-int main(){ map_all_tests(); }
+//int main(){ map_all_tests(); }
