@@ -365,10 +365,10 @@ public:
 
     // erase item matching key
     size_t erase(key_type k){
-        node_type *res = find_rec(_root, k);
-        if (!res)
+        iterator it = find(k);
+        if (it == end())
             return 0;
-        erase(iterator(k));
+        erase(it);
         return 1;
     }
 
@@ -379,6 +379,14 @@ public:
     */
 
 public:
+    // ***** count *****
+    size_t count(key_type k){
+        iterator it = find(k);
+        if (it == end())
+            return 0;
+        return 1;
+    }
+
     // ***** find *****
     iterator       find(const key_type & k) {
         node_type *res = find_rec(_root, k);

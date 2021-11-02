@@ -68,23 +68,26 @@ void tst_binarytree(){
 
     std::cout << "not found result: ";
     std::cout << (arbr.find(6) == arbr.end()) << std::endl;
-    //arbr.print();
+    std::cout << "size: " << arbr.size() << '\n';
     arbr.erase(arbr.find(2));
     //arbr.print();
-    arbr.erase(arbr.find(4));
+    std::cout << "erase ret: " << arbr.erase(4) << '\n';
+    std::cout << "erase ret: " << arbr.erase(4) << '\n';
     //arbr.print();
     arbr.erase(arbr.find(45));
     //arbr.print();
     arbr.erase(arbr.find(22));
     //arbr.print();
+    std::cout << "count ret: " << arbr.count(42) << '\n';
+    std::cout << "count ret: " << arbr.count(4) << '\n';
     std::cout << "size: " << arbr.size() << '\n';
     arbr.clear();
 
 
     for (int i = 0; i < 13; i++){
         int elem = rand() % 99;
-        arbr.insert(ft::make_pair(elem, 8));
-        std::cout << elem << " / ";
+        std::cout << arbr.insert(ft::make_pair(elem, 8)).second;
+        std::cout << "." << elem << " / ";
     }
         std::cout << '\n';
     /*
