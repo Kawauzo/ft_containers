@@ -177,6 +177,34 @@ void tst_custom_operator(){
     for ( rev_mpii::iterator it = --arbr.end(); it != arbr.begin(); --it)
         std::cout << (*it).first << std::endl;
     std::cout << "size: " << arbr.size() << '\n';
+}
+
+void tst_range_cpy(){
+    ft::pair<int, int> tab[] = {ft::make_pair(12, 1),
+                                ft::make_pair(27, 1),
+                                ft::make_pair(98, 1),
+                                ft::make_pair(8, 1),
+                                ft::make_pair(-2, 1),
+                                ft::make_pair(8, 1),
+                                ft::make_pair(76, 1),
+                                ft::make_pair(11, 1),
+                                ft::make_pair(3, 1) };
+    mpii tst_ins;
+    tst_ins.insert(tab, tab+8);
+    for ( mpii::iterator it = tst_ins.begin(); it != tst_ins.end(); ++it)
+        std::cout << (*it).first << std::endl;
+    std::cout << "size: " << tst_ins.size() << '\n';
+
+    mpii tst_cns(tst_ins.begin(), tst_ins.end());
+    for ( mpii::iterator it = tst_cns.begin(); it != tst_cns.end(); ++it)
+        std::cout << (*it).first << std::endl;
+    std::cout << "size: " << tst_cns.size() << '\n';
+
+    mpii tst_cpy(tst_cns);
+    for ( mpii::iterator it = tst_cns.begin(); it != tst_cns.end(); ++it)
+        std::cout << (*it).first << std::endl;
+    std::cout << "size: " << tst_cns.size() << '\n';
+
 
 
 }
@@ -187,6 +215,7 @@ void map_all_tests(){
     cppr_pair();
     tst_binarytree();
     tst_custom_operator();
+    tst_range_cpy();
 }
 
 //int main(){ map_all_tests(); }

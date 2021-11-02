@@ -88,6 +88,7 @@ template <
     const key_compare    _cmp_k;
     const value_compare  _cmp;
     allocator_type       _al;
+    size_type            _sz;
 
     /*
      * **************************************
@@ -99,16 +100,47 @@ public:
 
     // ***** Constructors *****
     //
+    // Default
     explicit map (const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) :
         _root(new node_type),
         _cmp_k(comp),
         _cmp(comp),
-        _al(alloc)
+        _al(alloc),
+        _sz(0)
     {}
 
+    // Range
+    template< class InputIt >
+    map (InputIt first, InputIt last,
+            const key_compare& comp = key_compare(),
+            const allocator_type& alloc = allocator_type()) :
+        _root(new node_type),
+        _cmp_k(comp),
+        _cmp(comp),
+        _al(alloc),
+        _sz(0)
+    { insert(first, last); }
+
+    // Copy
+    map (const map & cpy):
+        _root(new node_type),
+        _cmp_k(cpy._cmp_k),
+        _cmp(cpy._cmp),
+        _al(cpy._al),
+        _sz(0)
+    { insert(cpy.begin(), cpy.end()); }
+
+
+    // ***** Destructor *****
     ~map() { destroy_rec(_root); }
 
+
+    // ***** Assignment operator *****
+    map& operator=(const map& other){
+        clear();
+        insert(other.begin, other.end());
+    }
 
     // ***** Get_allocator *****
     allocator_type get_allocator() const {return _al;}
@@ -190,11 +222,11 @@ public:
 
 public:
     // ***** Empty *****
-    bool empty() const { return size() ? 1 : 0; }
+    bool empty() const { return _sz ? true : false; }
 
     // ***** Size *****
     // the '- 1' is because of end iterator node
-    size_type size() const { return size_rec(_root) - 1; }
+    size_type size() const { return _sz; }
 
 private:
     unsigned int size_rec(node_type * n) const {
@@ -211,15 +243,28 @@ public:
      * **************************************
     */
 
-    // Clear
+    // ***** Clear *****
     void clear(){
         destroy_rec(_root);
+        _sz = 0;
         _root = new node_type;
     }
 
-    // Insert
+    // ***** Insert *****
+    //
+    // Insert elem
     void insert(const value_type & x){
         insert_rec(_root, x);
+        ++_sz;
+    }
+
+    // Insert range
+    template< class InputIt >
+    void insert( InputIt first, InputIt last ){
+        while (first != last){
+            insert(*first);
+            ++first;
+        }
     }
 
 private:
@@ -293,6 +338,7 @@ public:
             _al.destroy(ptr->val);
             _al.deallocate(ptr->val, 1);
             delete ptr;
+            --_sz;
         }
     }
 
