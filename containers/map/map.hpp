@@ -253,9 +253,11 @@ public:
     // ***** Insert *****
     //
     // Insert elem
-    void insert(const value_type & x){
-        insert_rec(_root, x);
-        ++_sz;
+    ft::pair<iterator, bool> insert(const value_type & x){
+        ft::pair<iterator, bool> ret = insert_body(_root, x);
+        if (ret.second)
+            ++_sz;
+        return ret;
     }
 
     // Insert range
@@ -268,33 +270,42 @@ public:
     }
 
 private:
-    // recursive function for inserting
-    node_type * insert_rec(node_type * n, const value_type & x){
-        if (n){
-            if (!n->val){
-                node_type *tmp = new node_type(x, _al);
-                tmp->parent = n->parent;
-                tmp->r = n;
-                n->parent = tmp;
-                if (_root == n)
-                    _root = tmp;
-                return tmp;
+    // main function for inserting
+    // qu'on soit clair c'est une ABOMINATION
+    ft::pair<iterator, bool> insert_body(node_type * n, const value_type & x){
+        while (n->val){
+            // if element exists, return false
+            if (x.first == n->val->first)
+                return ft::make_pair(n, false);
+            if (_cmp(x, *n->val)){               // left path
+                if (n->l)                       // if it exists, go this way
+                    n = n->l;
+                else {                        // else insert and return
+                    n->l = new node_type(x, _al);;
+                    n->l->parent = n;
+                    return ft::make_pair(n->l, true);
+                }
+            }
+            else {                       // right path, same as above
+                if (n->r)
+                    n = n->r;
+                else {
+                    n->r = new node_type(x, _al);;
+                    n->r->parent = n;
+                    return ft::make_pair(n->r, true);
+                }
             }
         }
-        else {
-            return new node_type(x, _al);
-        }
-        if (x.first == n->val->first)
-            return n;
-        if (_cmp(x, *n->val)){
-            n->l = insert_rec(n->l, x);
-            n->l->parent = n;
-        }
-        else{
-            n->r = insert_rec(n->r, x);
-            n->r->parent = n;
-        }
-        return n;
+        // if we get here, it means we've reached end() node
+        node_type *tmp = new node_type(x, _al);
+        tmp->parent = n->parent;
+        tmp->r = n;
+        if (_root == n)
+            _root = tmp;
+        else
+            n->parent->r = tmp;
+        n->parent = tmp;
+        return ft::make_pair(tmp, true);
     }
 
     // ***** erase *****
