@@ -167,18 +167,12 @@ private:
      * **************************************
     */
 
-    // ***** At *****
-    T& at(const key_type & k){
-        node_type *res = find(k);
-        if (!res)
-            throw std::out_of_range("");
-        return res->val->second;
-    }
-
-    const T& at(const key_type & k) const { return at(k); }
-
+public:
     // ***** operator[] *****
 
+    mapped_type& operator[] (const key_type& k){
+        return (*((this->insert(make_pair(k,mapped_type()))).first)).second;
+    }
     /*
      * **************************************
      * ************* Iterator ***************

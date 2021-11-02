@@ -83,6 +83,8 @@ void tst_binarytree(){
     std::cout << "size: " << arbr.size() << '\n';
     arbr.clear();
 
+    std::cout << "test operator[]: " << arbr[43] << '\n';
+    std::cout << "test operator[]: " << arbr[-16] << '\n';
 
     for (int i = 0; i < 13; i++){
         int elem = rand() % 99;
