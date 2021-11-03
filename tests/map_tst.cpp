@@ -114,6 +114,8 @@ void tst_binarytree(){
     std::cout << "size: " << arbr.size() << '\n';
 
 
+    for ( mpii::reverse_iterator rit = arbr.rbegin(); rit != arbr.rend(); ++rit)
+        std::cout << (*rit).first << std::endl;
 
 }
 
@@ -154,6 +156,7 @@ void tst_custom_operator(){
     arbr.insert(ft::make_pair(22, 2));
     arbr.insert(ft::make_pair(4, 4));
     arbr.insert(ft::make_pair(2, 5));
+    //arbr.print();
     arbr.insert(ft::make_pair(89, 5));
     arbr.insert(ft::make_pair(17, 5));
     arbr.insert(ft::make_pair(45, 5));
@@ -165,7 +168,6 @@ void tst_custom_operator(){
 
     std::cout << "not found result: ";
     std::cout << (arbr.find(6) == arbr.end()) << std::endl;
-    //arbr.print();
     arbr.erase(arbr.find(2));
     //arbr.print();
     arbr.erase(arbr.find(4));
@@ -214,6 +216,49 @@ void tst_range_cpy(){
 
 }
 
+void tst_uplow_bounds(){
+    print_green("tst upper_bound and lower_bound", __LINE__);
+
+    ft::map<char,int> mymap;
+    ft::map<char,int>::iterator itlow,itup;
+
+    mymap['a']=20;
+    mymap['b']=40;
+    mymap['c']=60;
+    mymap['d']=80;
+    mymap['e']=100;
+
+    itlow=mymap.lower_bound ('b');  // itlow points to b
+    itup=mymap.upper_bound ('d');   // itup points to e (not d!)
+
+    mymap.erase(itlow,itup);        // erases [itlow,itup)
+
+    // print content:
+    for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+        std::cout << it->first << " => " << it->second << '\n';
+
+    ft::map<char,int>::const_iterator citlow = mymap.lower_bound('z');
+    std::cout << (citlow == mymap.end()) << '\n';
+}
+
+void tst_equal_range(){
+    print_green("tst equal_range()", __LINE__);
+    ft::map<char,int> mymap;
+
+    mymap['a']=10;
+    mymap['b']=20;
+    mymap['c']=30;
+
+    ft::pair<ft::map<char,int>::iterator,ft::map<char,int>::iterator> ret;
+    ret = mymap.equal_range('b');
+
+    std::cout << "lower bound points to: ";
+    std::cout << ret.first->first << " => " << ret.first->second << '\n';
+
+    std::cout << "upper bound points to: ";
+    std::cout << ret.second->first << " => " << ret.second->second << '\n';
+}
+
 void map_all_tests(){
     srand((unsigned)time(0));
 
@@ -221,6 +266,8 @@ void map_all_tests(){
     tst_binarytree();
     tst_custom_operator();
     tst_range_cpy();
+    tst_uplow_bounds();
+    tst_equal_range();
 }
 
 //int main(){ map_all_tests(); }

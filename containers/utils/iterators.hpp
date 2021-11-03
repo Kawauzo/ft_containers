@@ -14,10 +14,8 @@ namespace ft
 template<typename Iter>
 class reverse_iterator {
 
-    // Underlying base iterator
-    Iter _base;
-
 public:
+    // ***** MEMBER TYPES *****
     // Typedefs, based on Iter iterator_traits
     typedef Iter iterator_type;
     typedef typename iterator_traits<Iter>::iterator_category iterator_category;
@@ -26,17 +24,23 @@ public:
     typedef typename iterator_traits<Iter>::pointer pointer;
     typedef typename iterator_traits<Iter>::reference reference;
 
+    // ***** VARIABLES *****
+    // Underlying base iterator
+    iterator_type _base;
+
+    // ***** MEMBER FUNCTIONS *****
     // Constructors
     reverse_iterator(): _base(Iter()) {}
     // Copy constructor
     explicit reverse_iterator(iterator_type itr): _base(itr) {}
-    //
+
     template< class U >
     reverse_iterator(const reverse_iterator<U>& other): _base(other.base()) {}
 
     // Member access operators
     value_type& operator*() const {
-        return *(_base - 1); // <== returns the content of prev
+        iterator_type ret(_base);
+        return *(--ret); // <== returns the content of prev
     }
     value_type& operator [] (difference_type n) const {
         return _base[-n - 1];
@@ -44,7 +48,8 @@ public:
     pointer operator -> () const {
         //iterator_type cpy(_base);
         //--cpy;
-        return (_base - 1).operator->();
+        iterator_type ret(_base);
+        return (--ret).operator->();
     }
 
     // Pre-Increment/Decrement (++i)

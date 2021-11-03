@@ -5,8 +5,9 @@
 # include <cstdio> // TESTING, DELETE AFTERWARDS
 
 
-# include "../utils/pair.hpp" // needed for ft::pair and ft::make_pair
-# include "map_iterator.hpp" // iterator
+# include "../utils/pair.hpp"       // needed for ft::pair and ft::make_pair
+# include "../utils/iterators.hpp" // needed for reverse iterator
+# include "map_iterator.hpp"      // iterator
 
 # include <memory> // needed for std::allocator
 
@@ -58,7 +59,7 @@ template <
         }
     };
 
-    private:
+private:
     // ***** private BST node_type *****
     struct node_type{
         value_type * val;
@@ -73,9 +74,11 @@ template <
         ~node_type(){}
     };
 
-    public:
-    typedef map_iterator<value_type, node_type>        iterator;
+public:
+    typedef map_iterator<value_type, node_type>              iterator;
     typedef map_iterator<const value_type, const node_type>  const_iterator;
+    typedef reverse_iterator<const_iterator>                 const_reverse_iterator;
+    typedef reverse_iterator<iterator>                       reverse_iterator;
 
     /*
      * **************************************
@@ -83,7 +86,7 @@ template <
      * **************************************
     */
 
-    private:
+private:
     node_type *          _root;
     const key_compare    _cmp_k;
     const value_compare  _cmp;
@@ -96,6 +99,12 @@ template <
      * **************************************
     */
 
+    void _insert_ends(){
+        _root = new node_type();
+        _root->r = new node_type();
+        _root->r->parent = _root;
+    }
+
 public:
 
     // ***** Constructors *****
@@ -103,33 +112,33 @@ public:
     // Default
     explicit map (const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) :
-        _root(new node_type),
+        _root(NULL),
         _cmp_k(comp),
         _cmp(comp),
         _al(alloc),
         _sz(0)
-    {}
+    { _insert_ends(); }
 
     // Range
     template< class InputIt >
     map (InputIt first, InputIt last,
             const key_compare& comp = key_compare(),
             const allocator_type& alloc = allocator_type()) :
-        _root(new node_type),
+        _root(NULL),
         _cmp_k(comp),
         _cmp(comp),
         _al(alloc),
         _sz(0)
-    { insert(first, last); }
+    { _insert_ends(); insert(first, last); }
 
     // Copy
     map (const map & cpy):
-        _root(new node_type),
+        _root(NULL),
         _cmp_k(cpy._cmp_k),
         _cmp(cpy._cmp),
         _al(cpy._al),
         _sz(0)
-    { insert(cpy.begin(), cpy.end()); }
+    { _insert_ends(); insert(cpy.begin(), cpy.end()); }
 
 
     // ***** Destructor *****
@@ -139,7 +148,8 @@ public:
     // ***** Assignment operator *****
     map& operator=(const map& other){
         clear();
-        insert(other.begin, other.end());
+        insert(other.begin(), other.end());
+        return *this;
     }
 
     // ***** Get_allocator *****
@@ -171,7 +181,7 @@ public:
     // ***** operator[] *****
 
     mapped_type& operator[] (const key_type& k){
-        return (*((this->insert(make_pair(k,mapped_type()))).first)).second;
+        return (*((this->insert(ft::make_pair(k,mapped_type()))).first)).second;
     }
     /*
      * **************************************
@@ -182,14 +192,14 @@ public:
 public:
     iterator begin(){
         node_type* tmp = _root;
-        while (tmp->l)
+        while (tmp->l && tmp->l->val)
             tmp = tmp->l;
         return iterator(tmp);
     }
 
     const_iterator begin() const {
         node_type* tmp = _root;
-        while (tmp->l)
+        while (tmp->l && tmp->l->val)
             tmp = tmp->l;
         return iterator(tmp);
     }
@@ -207,6 +217,16 @@ public:
             tmp = tmp->r;
         return iterator(tmp);
     }
+
+    reverse_iterator rbegin(){ return reverse_iterator(end()); }
+
+    const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+
+    reverse_iterator rend(){ return reverse_iterator(begin()); }
+
+    const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
+
+
 
     /*
      * **************************************
@@ -241,7 +261,7 @@ public:
     void clear(){
         destroy_rec(_root);
         _sz = 0;
-        _root = new node_type;
+        _insert_ends();
     }
 
     // ***** Insert *****
@@ -249,6 +269,15 @@ public:
     // Insert elem
     ft::pair<iterator, bool> insert(const value_type & x){
         ft::pair<iterator, bool> ret = insert_body(_root, x);
+        if (ret.second)
+            ++_sz;
+        return ret;
+    }
+
+    // Insert hint
+    ft::pair<iterator, bool> insert(iterator pos, const value_type & x){
+        ft::pair<iterator, bool> ret = insert_body(_root, x);
+        (void)pos;
         if (ret.second)
             ++_sz;
         return ret;
@@ -293,11 +322,20 @@ private:
         // if we get here, it means we've reached end() node
         node_type *tmp = new node_type(x, _al);
         tmp->parent = n->parent;
-        tmp->r = n;
-        if (_root == n)
-            _root = tmp;
+        if (n->parent && n == n->parent->r)
+            tmp->r = n;
         else
+            tmp->l = n;
+        if (_root == n){            // first insertion in tree
+            _root = tmp;
+            tmp->r = n->r;        // separate the 2 end nodes
+            tmp->r->parent = tmp;
+            n->r = NULL;
+        }
+        else if (n == n->parent->r)
             n->parent->r = tmp;
+        else
+            n->parent->l = tmp;
         n->parent = tmp;
         return ft::make_pair(tmp, true);
     }
@@ -366,6 +404,16 @@ public:
         return 1;
     }
 
+    // ***** swap *****
+    void swap(map& other){
+        node_type *tmp_root = _root;
+        size_type tmp_sz = _sz;
+        _root = other._root;
+        _sz = other._sz;
+        other._root = tmp_root;
+        other._sz = tmp_sz;
+    }
+
     /*
      * **************************************
      * ************** Lookup ****************
@@ -399,25 +447,46 @@ public:
 private:
     // recursive function to find a value
     node_type * find_rec(node_type *n, const key_type & k) const {
-        if (!n || (n && !n->val)){
-            //std::cout << "not found" << std::endl;
+        if (!n || (n && !n->val))
             return (NULL);
-        }
-        //std::cout << n->val->first << std::endl;
-        if (k == n->val->first){
-            //std::cout << std::endl;
+        if (k == n->val->first)
             return (n);
-        }
-        if (_cmp_k(k, n->val->first)){
-            //std::cout << "/" << std::endl;
+        if (_cmp_k(k, n->val->first))
             return (find_rec(n->l, k));
-        }
-        else{
-            //std::cout << "\\" << std::endl;
+        else
             return (find_rec(n->r, k));
-        }
     }
 
+public:
+    iterator       lower_bound (const key_type& k){
+        iterator it = begin();
+        while (it != end() && _cmp_k(it->first, k))
+            ++it;
+        return it;
+    }
+
+    const_iterator lower_bound (const key_type& k) const {
+        return const_iterator(lower_bound(k));
+    }
+
+    iterator       upper_bound (const key_type& k){
+        iterator it = begin();
+        while (it != end() && !_cmp_k(k, it->first))
+            ++it;
+        return it;
+    }
+
+    const_iterator upper_bound (const key_type& k) const {
+        return const_iterator(upper_bound(k));
+    }
+
+    ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
+        return ft::make_pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k));
+    }
+
+    ft::pair<iterator,iterator> equal_range (const key_type& k){
+        return ft::make_pair<iterator,iterator>(lower_bound(k), upper_bound(k));
+    }
     /*
      * **************************************
      * ************ Observers ***************
