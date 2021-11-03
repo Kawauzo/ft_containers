@@ -259,6 +259,16 @@ void tst_equal_range(){
     std::cout << ret.second->first << " => " << ret.second->second << '\n';
 }
 
+void tst_fld_size(){
+    ft::map<const int, std::string> ui;
+    ui.insert(ft::make_pair(58966, "hello coco"));
+    std::cout << "size: " << ui.size() << std::endl;
+    ui.erase(58966);
+    std::cout << "size: " << ui.size() << std::endl;
+    ui.insert(ft::make_pair(58966, "hello coco"));
+    std::cout << "size: " << ui.size() << std::endl;
+}
+
 void map_all_tests(){
     srand((unsigned)time(0));
 
@@ -268,6 +278,7 @@ void map_all_tests(){
     tst_range_cpy();
     tst_uplow_bounds();
     tst_equal_range();
+    tst_fld_size();
 }
 
 //int main(){ map_all_tests(); }

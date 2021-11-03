@@ -191,6 +191,8 @@ public:
 
 public:
     iterator begin(){
+        if (!_sz)
+            return end();
         node_type* tmp = _root;
         while (tmp->l && tmp->l->val)
             tmp = tmp->l;
@@ -198,6 +200,8 @@ public:
     }
 
     const_iterator begin() const {
+        if (!_sz)
+            return end();
         node_type* tmp = _root;
         while (tmp->l && tmp->l->val)
             tmp = tmp->l;
@@ -236,10 +240,9 @@ public:
 
 public:
     // ***** Empty *****
-    bool empty() const { return _sz ? true : false; }
+    bool empty() const { return !_sz ? true : false; }
 
     // ***** Size *****
-    // the '- 1' is because of end iterator node
     size_type size() const { return _sz; }
 
 private:
@@ -361,6 +364,8 @@ public:
     // erase node at iterator, and reconnect children
     void erase(iterator pos){
         node_type *ptr = pos.base();
+        if (_sz == 1)
+            return clear();
         if (ptr->l && ptr->r){
             node_type *tmp = ptr->r;
             while (tmp->l && tmp->l->val)
@@ -422,8 +427,8 @@ public:
 
 public:
     // ***** count *****
-    size_t count(key_type k){
-        iterator it = find(k);
+    size_t count(const key_type & k) const {
+        const_iterator it = find(k);
         if (it == end())
             return 0;
         return 1;
@@ -466,7 +471,11 @@ public:
     }
 
     const_iterator lower_bound (const key_type& k) const {
-        return const_iterator(lower_bound(k));
+        const_iterator it = begin();
+        while (it != end() && _cmp_k(it->first, k))
+            ++it;
+        return it;
+
     }
 
     iterator       upper_bound (const key_type& k){
@@ -477,7 +486,10 @@ public:
     }
 
     const_iterator upper_bound (const key_type& k) const {
-        return const_iterator(upper_bound(k));
+        const_iterator it = begin();
+        while (it != end() && !_cmp_k(k, it->first))
+            ++it;
+        return it;
     }
 
     ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
