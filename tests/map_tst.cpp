@@ -154,9 +154,9 @@ void tst_custom_operator(){
     arbr.insert(ft::make_pair(3, 3));
     arbr.insert(ft::make_pair(1, 1));
     arbr.insert(ft::make_pair(22, 2));
+    arbr.insert(ft::make_pair(19, 2)); // try to break erase
     arbr.insert(ft::make_pair(4, 4));
     arbr.insert(ft::make_pair(2, 5));
-    //arbr.print();
     arbr.insert(ft::make_pair(89, 5));
     arbr.insert(ft::make_pair(17, 5));
     arbr.insert(ft::make_pair(45, 5));
@@ -165,6 +165,7 @@ void tst_custom_operator(){
     arbr.insert(ft::make_pair(-1, 5));
     arbr.insert(ft::make_pair(42, 5));
     arbr.insert(ft::make_pair(43, 5));
+    arbr.print();
 
     std::cout << "not found result: ";
     std::cout << (arbr.find(6) == arbr.end()) << std::endl;
@@ -173,9 +174,9 @@ void tst_custom_operator(){
     arbr.erase(arbr.find(4));
     //arbr.print();
     arbr.erase(arbr.find(45));
-    //arbr.print();
+    arbr.print();
     arbr.erase(arbr.find(22));
-    //arbr.print();
+    arbr.print();
     std::cout << "size: " << arbr.size() << '\n';
 
     for ( rev_mpii::iterator it = arbr.begin(); it != arbr.end(); ++it)
@@ -217,7 +218,7 @@ void tst_range_cpy(){
 }
 
 void tst_uplow_bounds(){
-    print_green("tst upper_bound and lower_bound", __LINE__);
+    //print_green("tst upper_bound and lower_bound", __LINE__);
 
     ft::map<char,int> mymap;
     ft::map<char,int>::iterator itlow,itup;
@@ -242,7 +243,7 @@ void tst_uplow_bounds(){
 }
 
 void tst_equal_range(){
-    print_green("tst equal_range()", __LINE__);
+    //print_green("tst equal_range()", __LINE__);
     ft::map<char,int> mymap;
 
     mymap['a']=10;
@@ -269,6 +270,46 @@ void tst_fld_size(){
     std::cout << "size: " << ui.size() << std::endl;
 }
 
+template <typename T>
+void	mapTest_Insert1Elem(T& cont)
+{
+	std::string name("insert 1 elem:");
+	std::cout << "\n---------------------\n";
+	T tmp = cont;
+	std::cout << "size of tmp = " << tmp.size() << std::endl;
+
+	// Allows to value initialize (case size is 0, we can't insert cont.begin())
+	typename T::value_type* x = new typename T::value_type();
+        tmp.print();
+
+	if (cont.size())
+	{
+		std::cout << "return value (testing boolean): " << tmp.insert(*(tmp.begin())).second<<std::endl;
+        std::cout << "size of tmp = " << tmp.size() << std::endl;
+
+		typename T::value_type pa(tmp.begin()->first, tmp.begin()->second);
+        tmp.print();
+		tmp.erase(tmp.begin());
+        tmp.print();
+		std::cout << "return value (testing iterator, the mapped content): " << tmp.insert(pa).first->second<<std::endl;
+        tmp.print();
+	}
+	std::cout << "return value (testing iterator, the key): " << (tmp.insert(*x)).first->first;
+
+   std::cout << "size of tmp = " << tmp.size();
+   for (ft::map<int,std::string>::iterator it=tmp.begin(); it!=tmp.end(); ++it)
+      std::cout << it->first << " => " << it->second << '\n';
+
+	delete x;
+}
+
+void tst_failed_ones(){
+    ft::map<int, std::string> tst4;
+    tst4.insert(ft::make_pair(78, "hello coco"));
+    tst4.insert(ft::make_pair(190, "j'arrive"));
+    mapTest_Insert1Elem(tst4);
+}
+
 void map_all_tests(){
     srand((unsigned)time(0));
 
@@ -279,6 +320,8 @@ void map_all_tests(){
     tst_uplow_bounds();
     tst_equal_range();
     tst_fld_size();
+
+    tst_failed_ones();
 }
 
-//int main(){ map_all_tests(); }
+int main(){ map_all_tests(); }

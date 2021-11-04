@@ -360,21 +360,83 @@ private:
             target->parent = ptr->parent;
     }
 
+    // takes a node's child and its new parent,
+    // sets it if they're not adjacent
+    void _swap_set_parent(node_type* child, node_type* new_parent){
+        if (child && child != new_parent)
+            child->parent = new_parent;
+    }
+
+    // takes a node's parent and its new child,
+    // sets it if they're not adjacent
+    void _swap_set_child(node_type* old_child, node_type* new_child){
+        if (old_child->parent && old_child->parent != new_child){
+            if (old_child->parent->l == old_child)
+                old_child->parent->l = new_child;
+            else
+                old_child->parent->r = new_child;
+        }
+    }
+
+    // function that swaps 2 nodes,
+    // used, ie, if a node to delete has 2 children
+    // c'est la pire chose que j'ai ecrit de TOUTE ma vie
+    void _swap_nodes(node_type* ptr, node_type* tmp){
+        _swap_set_parent(ptr->l, tmp);
+        _swap_set_parent(ptr->r, tmp);
+        _swap_set_child(ptr, tmp);
+        if (ptr == _root)
+            _root = tmp;
+        else if (tmp == _root)
+            _root = ptr;
+        _swap_set_parent(tmp->l, ptr);
+        _swap_set_parent(tmp->r, ptr);
+        _swap_set_child(tmp, ptr);
+        node_type *old_l = ptr->l;
+        node_type *old_r = ptr->r;
+        node_type *old_p = ptr->parent;
+        if (tmp->l != ptr)
+            ptr->l = tmp->l;
+        else
+            ptr->l = tmp;
+        if (tmp->r != ptr)
+            ptr->r = tmp->r;
+        else
+            ptr->r = tmp;
+        if (tmp->parent != ptr)
+            ptr->parent = tmp->parent;
+        else
+            ptr->parent = tmp;
+        if (old_l != tmp)
+            tmp->l = old_l;
+        else
+            tmp->l = ptr;
+        if (old_r != tmp)
+            tmp->r = old_r;
+        else
+            tmp->r = ptr;
+        if (old_p != tmp)
+            tmp->parent = old_p;
+        else
+            tmp->parent = ptr;
+    }
+
 public:
     // erase node at iterator, and reconnect children
     void erase(iterator pos){
         node_type *ptr = pos.base();
         if (_sz == 1)
-            return clear();
+            return clear();             //used to reset end() nodes
         if (ptr->l && ptr->r){
             node_type *tmp = ptr->r;
             while (tmp->l && tmp->l->val)
                 tmp = tmp->l;
-            value_type *swp = ptr->val;
-            ptr->val = tmp->val;
-            tmp->val = swp;
-            ptr = tmp;
-            erase(iterator(tmp));
+            _swap_nodes(ptr, tmp);
+            //value_type *swp = ptr->val;
+            //ptr->val = tmp->val;
+            //tmp->val = swp;
+            //ptr = tmp;
+            erase(iterator(ptr));
         }
         else {
             if (!ptr->l && !ptr->r)
