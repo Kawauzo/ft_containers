@@ -432,10 +432,6 @@ public:
             while (tmp->l && tmp->l->val)
                 tmp = tmp->l;
             _swap_nodes(ptr, tmp);
-            //value_type *swp = ptr->val;
-            //ptr->val = tmp->val;
-            //tmp->val = swp;
-            //ptr = tmp;
             erase(iterator(ptr));
         }
         else {

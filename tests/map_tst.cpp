@@ -70,14 +70,14 @@ void tst_binarytree(){
     std::cout << (arbr.find(6) == arbr.end()) << std::endl;
     std::cout << "size: " << arbr.size() << '\n';
     arbr.erase(arbr.find(2));
-    //arbr.print();
+    ////arbr.print();
     std::cout << "erase ret: " << arbr.erase(4) << '\n';
     std::cout << "erase ret: " << arbr.erase(4) << '\n';
-    //arbr.print();
+    ////arbr.print();
     arbr.erase(arbr.find(45));
-    //arbr.print();
+    ////arbr.print();
     arbr.erase(arbr.find(22));
-    //arbr.print();
+    ////arbr.print();
     std::cout << "count ret: " << arbr.count(42) << '\n';
     std::cout << "count ret: " << arbr.count(4) << '\n';
     std::cout << "size: " << arbr.size() << '\n';
@@ -104,7 +104,7 @@ void tst_binarytree(){
 
     std::cout << '\n';
 
-    //arbr.print();
+    ////arbr.print();
 
     for ( mpii::iterator it = arbr.begin(); it != arbr.end(); ++it)
         std::cout << (*it).first << std::endl;
@@ -165,18 +165,18 @@ void tst_custom_operator(){
     arbr.insert(ft::make_pair(-1, 5));
     arbr.insert(ft::make_pair(42, 5));
     arbr.insert(ft::make_pair(43, 5));
-    arbr.print();
+    //arbr.print();
 
     std::cout << "not found result: ";
     std::cout << (arbr.find(6) == arbr.end()) << std::endl;
     arbr.erase(arbr.find(2));
-    //arbr.print();
+    ////arbr.print();
     arbr.erase(arbr.find(4));
-    //arbr.print();
+    ////arbr.print();
     arbr.erase(arbr.find(45));
-    arbr.print();
+    //arbr.print();
     arbr.erase(arbr.find(22));
-    arbr.print();
+    //arbr.print();
     std::cout << "size: " << arbr.size() << '\n';
 
     for ( rev_mpii::iterator it = arbr.begin(); it != arbr.end(); ++it)
@@ -280,7 +280,7 @@ void	mapTest_Insert1Elem(T& cont)
 
 	// Allows to value initialize (case size is 0, we can't insert cont.begin())
 	typename T::value_type* x = new typename T::value_type();
-        tmp.print();
+        //tmp.print();
 
 	if (cont.size())
 	{
@@ -288,11 +288,11 @@ void	mapTest_Insert1Elem(T& cont)
         std::cout << "size of tmp = " << tmp.size() << std::endl;
 
 		typename T::value_type pa(tmp.begin()->first, tmp.begin()->second);
-        tmp.print();
+        //tmp.print();
 		tmp.erase(tmp.begin());
-        tmp.print();
+        //tmp.print();
 		std::cout << "return value (testing iterator, the mapped content): " << tmp.insert(pa).first->second<<std::endl;
-        tmp.print();
+        //tmp.print();
 	}
 	std::cout << "return value (testing iterator, the key): " << (tmp.insert(*x)).first->first;
 
@@ -324,4 +324,4 @@ void map_all_tests(){
     tst_failed_ones();
 }
 
-int main(){ map_all_tests(); }
+//int main(){ map_all_tests(); }
