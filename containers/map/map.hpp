@@ -10,6 +10,7 @@
 # include "map_iterator.hpp"      // iterator
 
 # include <memory> // needed for std::allocator
+# include <limits> // needed for max_size()
 
 namespace ft {
 
@@ -62,6 +63,7 @@ template <
 private:
     // ***** private BST node_type *****
     struct node_type{
+        bool         color;
         value_type * val;
         node_type  * l;
         node_type  * r;
@@ -150,6 +152,14 @@ public:
         clear();
         insert(other.begin(), other.end());
         return *this;
+    }
+
+    // ***** Max_size *****
+private:
+    size_type _elem_size() const { return sizeof(node_type) - sizeof(value_type*) + sizeof(value_type) ;}
+public:
+    size_type max_size() const {
+        return std::numeric_limits<difference_type>::max() / (_elem_size() / 2 < 1 ? 1 : _elem_size() / 2);
     }
 
     // ***** Get_allocator *****

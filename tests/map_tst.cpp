@@ -213,6 +213,8 @@ void tst_range_cpy(){
         std::cout << (*it).first << std::endl;
     std::cout << "size: " << tst_cns.size() << '\n';
 
+    print_green("tst max_size", __LINE__);
+    std::cout << tst_cns.max_size() << std::endl;
 
 
 }
