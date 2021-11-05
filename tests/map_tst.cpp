@@ -159,7 +159,7 @@ void tst_custom_operator(){
     arbr.insert(ft::make_pair(2, 5));
     arbr.insert(ft::make_pair(89, 5));
     arbr.insert(ft::make_pair(17, 5));
-    arbr.insert(ft::make_pair(45, 5));
+    arbr.insert(arbr.begin(), ft::make_pair(45, 5)); // tst hint
     arbr.insert(ft::make_pair(-3, 5));
     arbr.insert(ft::make_pair(8, 5));
     arbr.insert(ft::make_pair(-1, 5));
@@ -270,6 +270,7 @@ void tst_fld_size(){
     std::cout << "size: " << ui.size() << std::endl;
     ui.insert(ft::make_pair(58966, "hello coco"));
     std::cout << "size: " << ui.size() << std::endl;
+    std::cout << "max_size: " << ui.max_size() << std::endl;
 }
 
 template <typename T>
@@ -312,6 +313,23 @@ void tst_failed_ones(){
     mapTest_Insert1Elem(tst4);
 }
 
+void tst_relationals(){
+  ft::map<char,int> foo;
+  ft::map<char,int> bar;
+  foo['a']=100;
+  foo['b']=200;
+  bar['a']=10;
+  bar['z']=1000;
+
+  // foo ({{a,100},{b,200}}) vs bar ({a,10},{z,1000}}):
+  if (foo==bar) std::cout << "foo and bar are equal\n";
+  if (foo!=bar) std::cout << "foo and bar are not equal\n";
+  if (foo< bar) std::cout << "foo is less than bar\n";
+  if (foo> bar) std::cout << "foo is greater than bar\n";
+  if (foo<=bar) std::cout << "foo is less than or equal to bar\n";
+  if (foo>=bar) std::cout << "foo is greater than or equal to bar\n";
+}
+
 void map_all_tests(){
     srand((unsigned)time(0));
 
@@ -322,6 +340,7 @@ void map_all_tests(){
     tst_uplow_bounds();
     tst_equal_range();
     tst_fld_size();
+    tst_relationals();
 
     tst_failed_ones();
 }

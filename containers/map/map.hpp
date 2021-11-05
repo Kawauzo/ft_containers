@@ -5,6 +5,7 @@
 # include <cstdio> // TESTING, DELETE AFTERWARDS
 
 
+# include "../utils/comparisons.hpp" // needed relational operators
 # include "../utils/pair.hpp"       // needed for ft::pair and ft::make_pair
 # include "../utils/iterators.hpp" // needed for reverse iterator
 # include "map_iterator.hpp"      // iterator
@@ -156,10 +157,10 @@ public:
 
     // ***** Max_size *****
 private:
-    size_type _elem_size() const { return sizeof(node_type) - sizeof(value_type*) + sizeof(value_type) ;}
+    size_type _elem_size() const { return sizeof(node_type) - sizeof(value_type*) + sizeof(value_type); }
 public:
     size_type max_size() const {
-        return std::numeric_limits<difference_type>::max() / (_elem_size() / 2 < 1 ? 1 : _elem_size() / 2);
+        return std::numeric_limits<difference_type>::max() / (_elem_size() / 2 < 1 ? 1 : _elem_size() / 2 );
     }
 
     // ***** Get_allocator *****
@@ -288,12 +289,12 @@ public:
     }
 
     // Insert hint
-    ft::pair<iterator, bool> insert(iterator pos, const value_type & x){
+    iterator insert(iterator pos, const value_type & x){
         ft::pair<iterator, bool> ret = insert_body(_root, x);
         (void)pos;
         if (ret.second)
             ++_sz;
-        return ret;
+        return ret.first;
     }
 
     // Insert range
@@ -636,17 +637,61 @@ public:
             }
         }
     }
+};  // --------- End of map
 
 
+    /*
+     * **************************************
+     * ** Non member - Relational operator **
+     * **************************************
+    */
 
-
-};
-
-
-
-
-
-
+template< class Key, class T, class Compare, class Alloc >
+bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs ){
+    if (lhs.size() != rhs.size())
+        return false;
+    typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+    typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
+    while (lit != lhs.end())
+        if (*lit++ != *rit++)
+            return false;
+    return true;
 }
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs ){
+    return !(lhs == rhs);
+}
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs ){
+    return ft::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end());
+}
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator>(const ft::map<Key,T,Compare,Alloc>& lhs,
+               const ft::map<Key,T,Compare,Alloc>& rhs) {
+    return (!(lhs == rhs) && !(lhs < rhs));
+}
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator<=(const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs) {
+    return ((lhs == rhs) || (lhs < rhs));
+}
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator>=(const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs) {
+    return ((lhs == rhs) || !(lhs < rhs));
+}
+
+
+
+} // --------- End of ft namespace
 
 #endif
