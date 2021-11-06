@@ -10,8 +10,8 @@
 # include "../utils/iterators.hpp" // needed for reverse iterator
 # include "map_iterator.hpp"      // iterator
 
-# include <memory> // needed for std::allocator
-# include <limits> // needed for max_size()
+# include <memory>    // needed for std::allocator
+# include <limits>   // needed for max_size()
 
 namespace ft {
 
@@ -63,17 +63,29 @@ template <
 
 private:
     // ***** private BST node_type *****
+    typedef enum {red, black} color_type;
     struct node_type{
-        bool         color;
+        color_type   color;
         value_type * val;
         node_type  * l;
         node_type  * r;
         node_type  * parent;
 
-        node_type(): val(NULL), l(NULL), r(NULL), parent(NULL){}
-        node_type(const value_type & x, Alloc & al): val(al.allocate(1)), l(NULL), r(NULL), parent(NULL) {
-            al.construct(val, x);
-        }
+        // default constructor used for end() nodes, color set to black
+        node_type(): color(black),
+                     val(NULL),
+                     l(NULL),
+                     r(NULL),
+                     parent(NULL) {}
+
+        // value constructor, color set to red
+        node_type(const value_type & x, Alloc & al): color(red),
+                                                     val(al.allocate(1)),
+                                                     l(NULL),
+                                                     r(NULL),
+                                                     parent(NULL)
+        { al.construct(val, x); }
+
         ~node_type(){}
     };
 
@@ -283,18 +295,20 @@ public:
     // Insert elem
     ft::pair<iterator, bool> insert(const value_type & x){
         ft::pair<iterator, bool> ret = insert_body(_root, x);
-        if (ret.second)
+        if (ret.second){
             ++_sz;
+            if (_sz <= 2)
+                _root->color = black;
+            else
+                _insert_fix(ret.first.base());
+        }
         return ret;
     }
 
     // Insert hint
     iterator insert(iterator pos, const value_type & x){
-        ft::pair<iterator, bool> ret = insert_body(_root, x);
         (void)pos;
-        if (ret.second)
-            ++_sz;
-        return ret.first;
+        return insert(x).first;
     }
 
     // Insert range
@@ -430,6 +444,7 @@ private:
             tmp->parent = old_p;
         else
             tmp->parent = ptr;
+        ptr->color = tmp->color;
     }
 
 public:
@@ -446,6 +461,10 @@ public:
             erase(iterator(ptr));
         }
         else {
+            color_type old_color = ptr->color;
+            node_type* parent = ptr->parent;
+            bool side = (ptr->parent && ptr == ptr->parent->l) ? 0 : 1;
+
             if (!ptr->l && !ptr->r)
                 set_parent_target(ptr, NULL);
             else if (!ptr->l && ptr->r)
@@ -456,6 +475,12 @@ public:
             _al.deallocate(ptr->val, 1);
             delete ptr;
             --_sz;
+            if (old_color == black){
+                if (!side)
+                    _erase_fix(parent->l, parent);
+                else
+                    _erase_fix(parent->r, parent);
+            }
         }
     }
 
@@ -580,6 +605,167 @@ public:
 
     /*
      * **************************************
+     * *********** Red - Black **************
+     * **************************************
+    */
+
+  // Rotate left
+  void _l_rotate(node_type* x) {
+    node_type* y = x->r;
+    x->r = y->l;
+    if (y->l != NULL) {
+      y->l->parent = x;
+    }
+    y->parent = x->parent;
+    if (x->parent == NULL) {
+      _root = y;
+    } else if (x == x->parent->l) {
+      x->parent->l = y;
+    } else {
+      x->parent->r = y;
+    }
+    y->l = x;
+    x->parent = y;
+  }
+
+  void _r_rotate(node_type* x) {
+    node_type* y = x->l;
+    x->l = y->r;
+    if (y->r != NULL) {
+      y->r->parent = x;
+    }
+    y->parent = x->parent;
+    if (x->parent == NULL) {
+      _root = y;
+    } else if (x == x->parent->r) {
+      x->parent->r = y;
+    } else {
+      x->parent->l = y;
+    }
+    y->r = x;
+    x->parent = y;
+  }
+
+  // For balancing the tree after insertion
+  void _insert_fix(node_type* k) {
+    node_type*  u;
+    while (k->parent && k->parent->color == red) {
+      if (k->parent == k->parent->parent->r) {
+        u = k->parent->parent->l;
+        if (u && u->color == red) {
+          u->color = black;
+          k->parent->color = black;
+          k->parent->parent->color = red;
+          k = k->parent->parent;
+        } else {
+          if (k == k->parent->l) {
+            k = k->parent;
+            _r_rotate(k);
+          }
+          k->parent->color = black;
+          k->parent->parent->color = red;
+          _l_rotate(k->parent->parent);
+        }
+      } else {
+        u = k->parent->parent->r;
+
+        if (u && u->color == red) {
+          u->color = black;
+          k->parent->color = black;
+          k->parent->parent->color = red;
+          k = k->parent->parent;
+        } else {
+          if (k == k->parent->r) {
+            k = k->parent;
+            _l_rotate(k);
+          }
+          k->parent->color = black;
+          k->parent->parent->color = red;
+          _r_rotate(k->parent->parent);
+        }
+      }
+      if (k == _root)
+        break;
+    }
+    _root->color = black;
+  }
+
+    bool is_black(node_type *s){
+        if (!s || s->color == black)
+            return true;
+        return false;
+    }
+
+
+  // For balancing the tree after deletion
+  void _erase_fix(node_type* x, node_type* parent) {
+    node_type* s;
+    while (x != _root && is_black(x)) {
+      if (x)
+        parent = x->parent;
+      if (x == parent->l) {
+        s = parent->r;
+        if (s->color == red) {
+          s->color = black;
+          parent->color = red;
+          _l_rotate(parent);
+          s = parent->r;
+        }
+
+        if (is_black(s->l) && is_black(s->r)) {
+          s->color = red;
+          x = parent;
+        } else {
+          if (is_black(s->r)) {
+            s->l->color = black;
+            s->color = red;
+            _r_rotate(s);
+            s = parent->r;
+          }
+
+          s->color = parent->color;
+          parent->color = black;
+          s->r->color = black;
+          _l_rotate(parent);
+          x = _root;
+        }
+      } else {
+        s = parent->l;
+        if (s->color == red) {
+          s->color = black;
+          parent->color = red;
+          _r_rotate(parent);
+          s = parent->l;
+        }
+
+        if (is_black(s->r)) {
+          s->color = red;
+          x = parent;
+        } else {
+          if (is_black(s->l)) {
+            s->r->color = black;
+            s->color = red;
+            _l_rotate(s);
+            s = parent->l;
+          }
+
+          s->color = parent->color;
+          parent->color = black;
+          s->l->color = black;
+          _r_rotate(parent);
+          x = _root;
+        }
+      }
+    }
+    x->color = black;
+  }
+
+
+
+
+
+    /*
+     * **************************************
      * ************** TESTIN ****************
      * **************************************
     */
@@ -620,10 +806,15 @@ public:
             for (i = 0; i < current_level; i++) {
                 printf("    ");
             }
-            if (n->val)
-                std::cout << n->val->first << '\n';
+            if (n->color == black)
+                std::cout << "\033[1;30;47m";
             else
-                std::cout << "end" << '\n';
+                std::cout << "\033[1;31m";
+            if (n->val)
+                std::cout << n->val->first;
+            else
+                std::cout << "end";
+            std::cout <<  "\033[0m" << '\n';
             node_print(n->l, current_level + 1, max_level);
         }
         else {

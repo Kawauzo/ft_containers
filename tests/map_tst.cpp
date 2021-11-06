@@ -91,7 +91,7 @@ void tst_binarytree(){
         std::cout << arbr.insert(ft::make_pair(elem, 8)).second;
         std::cout << "." << elem << " / ";
     }
-        std::cout << '\n';
+    std::cout << '\n';
     /*
     arbr.insert(ft::make_pair(3, 3));
     arbr.insert(ft::make_pair(1, 1));
