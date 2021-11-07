@@ -475,7 +475,7 @@ public:
             _al.deallocate(ptr->val, 1);
             delete ptr;
             --_sz;
-            if (old_color == black){
+            if (old_color == black && _sz > 1){
                 if (!side)
                     _erase_fix(parent->l, parent);
                 else
