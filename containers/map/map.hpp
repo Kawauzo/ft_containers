@@ -61,7 +61,7 @@ template <
         }
     };
 
-private:
+protected:
     // ***** private BST node_type *****
     typedef enum {red, black} color_type;
     struct node_type{
@@ -101,7 +101,7 @@ public:
      * **************************************
     */
 
-private:
+protected:
     node_type *          _root;
     const key_compare    _cmp_k;
     const value_compare  _cmp;
@@ -113,7 +113,7 @@ private:
      * ********* Member Functions ***********
      * **************************************
     */
-
+private:
     void _insert_ends(){
         _root = new node_type();
         _root->r = new node_type();
@@ -715,7 +715,8 @@ public:
         if (is_black(s->l) && is_black(s->r)) {
           s->color = red;
           x = parent;
-        } else {
+        }
+        else {
           if (is_black(s->r)) {
             s->l->color = black;
             s->color = red;
@@ -729,7 +730,8 @@ public:
           _l_rotate(parent);
           x = _root;
         }
-      } else {
+      }
+      else {
         s = parent->l;
         if (s->color == red) {
           s->color = black;
@@ -741,7 +743,8 @@ public:
         if (is_black(s->r)) {
           s->color = red;
           x = parent;
-        } else {
+        }
+        else {
           if (is_black(s->l)) {
             s->r->color = black;
             s->color = red;
@@ -760,74 +763,6 @@ public:
     x->color = black;
   }
 
-
-
-
-
-    /*
-     * **************************************
-     * ************** TESTIN ****************
-     * **************************************
-    */
-
-private:
-    unsigned int max_depth_rec(node_type * n){
-        if (n == NULL)
-            return 0;
-        else {
-            unsigned int lDepth = max_depth_rec(n->l);
-            unsigned int rDepth = max_depth_rec(n->r);
-
-            if (lDepth > rDepth)
-                return lDepth + 1;
-            else
-                return rDepth + 1;
-        }
-
-    }
-    // ***** max_depth *****
-    unsigned int max_depth(){ return max_depth_rec(_root); }
-public:
-    // TESTING --- print tree
-    void  print()
-    {
-        printf("Display tree : \n");
-        node_print(_root, 0, max_depth());
-        printf("\n\n");
-
-    }
-
-    void  node_print(node_type *n, int current_level, int max_level)
-    {
-        int i;
-
-        if (n) {
-            node_print(n->r, current_level + 1, max_level);
-            for (i = 0; i < current_level; i++) {
-                printf("    ");
-            }
-            if (n->color == black)
-                std::cout << "\033[1;30;47m";
-            else
-                std::cout << "\033[1;31m";
-            if (n->val)
-                std::cout << n->val->first;
-            else
-                std::cout << "end";
-            std::cout <<  "\033[0m" << '\n';
-            node_print(n->l, current_level + 1, max_level);
-        }
-        else {
-            if (current_level < max_level) {
-                node_print(NULL, current_level + 1, max_level);
-                for (i = 0; i < current_level; i++) {
-                    printf("    ");
-                }
-                printf("..\n");
-                node_print(NULL, current_level + 1, max_level);
-            }
-        }
-    }
 };  // --------- End of map
 
 
