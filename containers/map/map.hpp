@@ -86,6 +86,23 @@ protected:
                                                      parent(NULL)
         { al.construct(val, x); }
 
+        node_type *sibling(){
+            if (parent) {
+                if (isOnLeft())
+                    return parent->r;
+                else
+                    return parent->l;
+            }
+            return NULL;
+        }
+
+        bool isOnLeft() { return this == parent->l; }
+
+        bool hasRedChild() {
+            return (l != NULL && l->color == red) ||
+                   (r != NULL && r->color == red);
+        }
+
         ~node_type(){}
     };
 
@@ -292,6 +309,94 @@ public:
 
     // ***** Insert *****
     //
+private:
+    // Rotations are used by insert and erase black/red fixes
+    // Rotate left
+    void _l_rotate(node_type* x) {
+        node_type* y = x->r;
+        x->r = y->l;
+        if (y->l != NULL) {
+            y->l->parent = x;
+        }
+        y->parent = x->parent;
+        if (x->parent == NULL) {
+            _root = y;
+        } else if (x == x->parent->l) {
+            x->parent->l = y;
+        } else {
+            x->parent->r = y;
+        }
+        y->l = x;
+        x->parent = y;
+    }
+
+    // Rotate right
+    void _r_rotate(node_type* x) {
+        node_type* y = x->l;
+        x->l = y->r;
+        if (y->r != NULL) {
+            y->r->parent = x;
+        }
+        y->parent = x->parent;
+        if (x->parent == NULL) {
+            _root = y;
+        } else if (x == x->parent->r) {
+            x->parent->r = y;
+        } else {
+            x->parent->l = y;
+        }
+        y->r = x;
+        x->parent = y;
+    }
+
+    // For balancing the tree after insertion
+    void _insert_fix(node_type* k) {
+        node_type*  u;
+        while (k->parent && k->parent->color == red) {
+            if (k->parent == k->parent->parent->r) {
+                u = k->parent->parent->l;
+                if (u && u->color == red) {
+                    u->color = black;
+                    k->parent->color = black;
+                    k->parent->parent->color = red;
+                    k = k->parent->parent;
+                }
+                else {
+                    if (k == k->parent->l) {
+                        k = k->parent;
+                        _r_rotate(k);
+                    }
+                    k->parent->color = black;
+                    k->parent->parent->color = red;
+                    _l_rotate(k->parent->parent);
+                }
+            }
+            else {
+                u = k->parent->parent->r;
+
+                if (u && u->color == red) {
+                    u->color = black;
+                    k->parent->color = black;
+                    k->parent->parent->color = red;
+                    k = k->parent->parent;
+                }
+                else {
+                    if (k == k->parent->r) {
+                        k = k->parent;
+                        _l_rotate(k);
+                    }
+                    k->parent->color = black;
+                    k->parent->parent->color = red;
+                    _r_rotate(k->parent->parent);
+                }
+            }
+            if (k == _root)
+                break;
+        }
+        _root->color = black;
+    }
+
+public:
     // Insert elem
     ft::pair<iterator, bool> insert(const value_type & x){
         ft::pair<iterator, bool> ret = insert_body(_root, x);
@@ -370,20 +475,6 @@ private:
 
     // ***** erase *****
 private:
-    // set parent's child to target,
-    // and target's parent to deleted node parent
-    void set_parent_target(node_type *ptr, node_type *target){
-        if (ptr->parent){
-            if (ptr->parent->l == ptr)
-                ptr->parent->l = target;
-            else
-                ptr->parent->r = target;
-        }
-        else
-            _root = target;
-        if (target)
-            target->parent = ptr->parent;
-    }
 
     // takes a node's child and its new parent,
     // sets it if they're not adjacent
@@ -420,6 +511,7 @@ private:
         node_type *old_l = ptr->l;
         node_type *old_r = ptr->r;
         node_type *old_p = ptr->parent;
+        color_type old_color = ptr->color;
         if (tmp->l != ptr)
             ptr->l = tmp->l;
         else
@@ -445,6 +537,127 @@ private:
         else
             tmp->parent = ptr;
         ptr->color = tmp->color;
+        tmp->color = old_color;
+    }
+
+    // To gain space in fixDoubleBlack
+    bool is_black(node_type *s){
+        if (!s || s->color == black)
+            return true;
+        return false;
+    }
+
+    // To gain space in fixDoubleBlack
+    bool is_red(node_type *s){
+        if (s && s->color == red)
+            return true;
+        return false;
+    }
+
+    // For balancing the tree after deletion
+    void fixDoubleBlack(node_type * x, node_type * parent, node_type * sibling){
+        if (x == _root)  // Reached root
+          return;
+
+        if (sibling == NULL) {
+            // No sibiling, double black pushed up
+            fixDoubleBlack(parent, parent->parent, parent->sibling());
+        }
+        else {
+            if (sibling->color == red) {
+                // Sibling red
+                parent->color = red;
+                sibling->color = black;
+                if (sibling->isOnLeft()) {
+                    // left case
+                    _r_rotate(parent);
+                    fixDoubleBlack(x, parent, parent->l);
+                }
+                else {
+                    // right case
+                    _l_rotate(parent);
+                    fixDoubleBlack(x, parent, parent->r);
+                }
+            }
+            else {
+                // Sibling black
+                if (sibling->hasRedChild()) {
+                    // at least 1 red children
+                    if (sibling->l && sibling->l->val && sibling->l->color == red) {
+                        if (sibling->isOnLeft()) {
+                            // left left
+                            sibling->l->color = sibling->color;
+                            sibling->color = parent->color;
+                            _r_rotate(parent);
+                        }
+                        else {
+                            // right left
+                            sibling->l->color = parent->color;
+                            _r_rotate(sibling);
+                            _l_rotate(parent);
+                        }
+                    }
+                    else {
+                        if (sibling->isOnLeft()) {
+                            // left right
+                            sibling->r->color = parent->color;
+                            _l_rotate(sibling);
+                            _r_rotate(parent);
+                        }
+                        else {
+                            // right right
+                            sibling->r->color = sibling->color;
+                            sibling->color = parent->color;
+                            _l_rotate(parent);
+                        }
+                  }
+                  parent->color = black;
+                }
+                else {
+                    // 2 black children
+                    sibling->color = red;
+                    if (parent->color == red)
+                        parent->color = black;
+                    else
+                        fixDoubleBlack(parent, parent->parent, parent->sibling());
+                }
+            }
+        }
+    }
+
+
+    // set parent's child to target,
+    // and target's parent to deleted node parent
+    void set_parent_target(node_type *ptr, node_type *target){
+        bool isleft = ptr->isOnLeft() ? 1 : 0;
+        if (ptr->parent){
+            if (isleft)
+                ptr->parent->l = target;
+            else
+                ptr->parent->r = target;
+        }
+        else
+            _root = target;
+        if (target) {
+            target->parent = ptr->parent;
+            if (ptr->color == black) {
+                // If double black (deleted node is black and son is black), fix it
+                if (target->color == black && target->parent) {
+                    if (isleft)
+                        fixDoubleBlack(ptr->parent->l, ptr->parent, ptr->parent->r);
+                    else
+                        fixDoubleBlack(ptr->parent->r, ptr->parent, ptr->parent->l);
+                }
+                else
+                    target->color = black;
+            }
+        }
+        else if (ptr->color == black) {
+            if (isleft)
+                fixDoubleBlack(ptr->parent->l, ptr->parent, ptr->parent->r);
+            else
+                fixDoubleBlack(ptr->parent->r, ptr->parent, ptr->parent->l);
+        }
     }
 
 public:
@@ -455,16 +668,18 @@ public:
             return clear();             //used to reset end() nodes
         if (ptr->l && ptr->r){
             node_type *tmp = ptr->r;
-            while (tmp->l && tmp->l->val)
-                tmp = tmp->l;
+            if (tmp->val)
+                while (tmp->l && tmp->l->val)
+                    tmp = tmp->l;
+            else {
+                tmp = ptr->l;
+                while (tmp->r && tmp->r->val)
+                    tmp = tmp->r;
+            }
             _swap_nodes(ptr, tmp);
             erase(iterator(ptr));
         }
         else {
-            color_type old_color = ptr->color;
-            node_type* parent = ptr->parent;
-            bool side = (ptr->parent && ptr == ptr->parent->l) ? 0 : 1;
-
             if (!ptr->l && !ptr->r)
                 set_parent_target(ptr, NULL);
             else if (!ptr->l && ptr->r)
@@ -475,12 +690,16 @@ public:
             _al.deallocate(ptr->val, 1);
             delete ptr;
             --_sz;
+            if (_sz)
+                _root->color = black;
+            /*
             if (old_color == black && _sz > 1){
                 if (!side)
                     _erase_fix(parent->l, parent);
                 else
                     _erase_fix(parent->r, parent);
             }
+            */
         }
     }
 
@@ -557,6 +776,7 @@ private:
     }
 
 public:
+    // returns the first element that isn't less than k, or end() if none is found
     iterator       lower_bound (const key_type& k){
         iterator it = begin();
         while (it != end() && _cmp_k(it->first, k))
@@ -572,6 +792,7 @@ public:
 
     }
 
+    // returns the first element that would go after k, or end() if none is found
     iterator       upper_bound (const key_type& k){
         iterator it = begin();
         while (it != end() && !_cmp_k(k, it->first))
@@ -586,6 +807,7 @@ public:
         return it;
     }
 
+    // returns a pair made of the return values of lower and upper bound
     ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
         return ft::make_pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k));
     }
@@ -600,168 +822,10 @@ public:
     */
 
 public:
+    // returns
     key_compare   key_comp()   const { return _cmp_k; }
     value_compare value_comp() const { return _cmp; }
 
-    /*
-     * **************************************
-     * *********** Red - Black **************
-     * **************************************
-    */
-
-  // Rotate left
-  void _l_rotate(node_type* x) {
-    node_type* y = x->r;
-    x->r = y->l;
-    if (y->l != NULL) {
-      y->l->parent = x;
-    }
-    y->parent = x->parent;
-    if (x->parent == NULL) {
-      _root = y;
-    } else if (x == x->parent->l) {
-      x->parent->l = y;
-    } else {
-      x->parent->r = y;
-    }
-    y->l = x;
-    x->parent = y;
-  }
-
-  void _r_rotate(node_type* x) {
-    node_type* y = x->l;
-    x->l = y->r;
-    if (y->r != NULL) {
-      y->r->parent = x;
-    }
-    y->parent = x->parent;
-    if (x->parent == NULL) {
-      _root = y;
-    } else if (x == x->parent->r) {
-      x->parent->r = y;
-    } else {
-      x->parent->l = y;
-    }
-    y->r = x;
-    x->parent = y;
-  }
-
-  // For balancing the tree after insertion
-  void _insert_fix(node_type* k) {
-    node_type*  u;
-    while (k->parent && k->parent->color == red) {
-      if (k->parent == k->parent->parent->r) {
-        u = k->parent->parent->l;
-        if (u && u->color == red) {
-          u->color = black;
-          k->parent->color = black;
-          k->parent->parent->color = red;
-          k = k->parent->parent;
-        } else {
-          if (k == k->parent->l) {
-            k = k->parent;
-            _r_rotate(k);
-          }
-          k->parent->color = black;
-          k->parent->parent->color = red;
-          _l_rotate(k->parent->parent);
-        }
-      } else {
-        u = k->parent->parent->r;
-
-        if (u && u->color == red) {
-          u->color = black;
-          k->parent->color = black;
-          k->parent->parent->color = red;
-          k = k->parent->parent;
-        } else {
-          if (k == k->parent->r) {
-            k = k->parent;
-            _l_rotate(k);
-          }
-          k->parent->color = black;
-          k->parent->parent->color = red;
-          _r_rotate(k->parent->parent);
-        }
-      }
-      if (k == _root)
-        break;
-    }
-    _root->color = black;
-  }
-
-    bool is_black(node_type *s){
-        if (!s || s->color == black)
-            return true;
-        return false;
-    }
-
-
-  // For balancing the tree after deletion
-  void _erase_fix(node_type* x, node_type* parent) {
-    node_type* s;
-    while (x != _root && is_black(x)) {
-      if (x)
-        parent = x->parent;
-      if (x == parent->l) {
-        s = parent->r;
-        if (s->color == red) {
-          s->color = black;
-          parent->color = red;
-          _l_rotate(parent);
-          s = parent->r;
-        }
-
-        if (is_black(s->l) && is_black(s->r)) {
-          s->color = red;
-          x = parent;
-        }
-        else {
-          if (is_black(s->r)) {
-            s->l->color = black;
-            s->color = red;
-            _r_rotate(s);
-            s = parent->r;
-          }
-
-          s->color = parent->color;
-          parent->color = black;
-          s->r->color = black;
-          _l_rotate(parent);
-          x = _root;
-        }
-      }
-      else {
-        s = parent->l;
-        if (s->color == red) {
-          s->color = black;
-          parent->color = red;
-          _r_rotate(parent);
-          s = parent->l;
-        }
-
-        if (is_black(s->r)) {
-          s->color = red;
-          x = parent;
-        }
-        else {
-          if (is_black(s->l)) {
-            s->r->color = black;
-            s->color = red;
-            _l_rotate(s);
-            s = parent->l;
-          }
-
-          s->color = parent->color;
-          parent->color = black;
-          s->l->color = black;
-          _r_rotate(parent);
-          x = _root;
-        }
-      }
-    }
-    x->color = black;
-  }
 
 };  // --------- End of map
 
