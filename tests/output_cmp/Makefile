@@ -6,7 +6,7 @@
 #    By: lfourner <lfourner@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/19 15:44:23 by lfourner          #+#    #+#              #
-#    Updated: 2021/11/09 15:31:33 by lfourner         ###   ########.fr        #
+#    Updated: 2021/11/09 17:45:11 by lfourner         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,11 @@ NAMEOG = test_og
 # Directories #
 DIR_INC		= ./includes/
 DIR_SRC		= ./
-DIR_OUT		= ./output_cmp/
 DIR_OBJ		= ./objs/
 
 # Files #
 SRC		= main_test.cpp map_tst.cpp vector_tst.cpp stack_tst.cpp
-SRCS	= ${addprefix ${DIR_OUT}, ${SRC}}
+SRCS	= ${addprefix ${DIR_SRC}, ${SRC}}
 		  
 
 OBJ		= ${SRCS:.cpp=.o}
@@ -43,7 +42,7 @@ RM = rm -f
 
 # Rules #
 ${DIR_OBJ}%.o:	${DIR_SRC}%.cpp
-				@mkdir -p ${DIR_OBJ}/${DIR_OUT}
+				@mkdir -p ${DIR_OBJ}
 				${CC} ${CFLAGS} -c -DOG $< -o ${@:.o=_og.o}  # Compile files with OG flag
 				${CC} ${CFLAGS} -c $< -o $@
 
