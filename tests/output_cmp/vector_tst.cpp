@@ -1,4 +1,6 @@
 #include "../tests.hpp"
+#include <list>
+#include <cstddef>
 
 class verbose
 {
@@ -21,7 +23,7 @@ void vec_alloc_1by1_verbose(int init_size)
 {
     print_green(__FILE__);
     print_green("Making vec of int of given size", __LINE__);
-    ft::vector<verbose, Mallocator<verbose> > vec(init_size);
+    ft::vector<verbose> vec(init_size);
 
     std::cout << "vec.size() = " << vec.size() << std::endl;
     std::cout << "vec.cp() = " << vec.capacity() << std::endl;
@@ -57,7 +59,7 @@ void vec_alloc_1by1(int init_size)
 {
     print_green(__FILE__);
     print_green("Making vec of int of given size", __LINE__);
-    ft::vector<int, Mallocator<int> > vec(init_size);
+    ft::vector<int> vec(init_size);
 
     std::cout << "vec.size() = " << vec.size() << std::endl;
     vec.insert(vec.end(), 3);
@@ -75,7 +77,7 @@ void vec_alloc_1by1(int init_size)
     print_green("and now delete things", __LINE__);
     while (vec.size())
     {
-        ft::vector<int, Mallocator<int> >::iterator tmp;
+        ft::vector<int>::iterator tmp;
         tmp = vec.erase(vec.begin());
         if (tmp == vec.end())
             std::cout << "end" << std::endl;
@@ -89,7 +91,7 @@ void vec_alloc_1by1(int init_size)
 void vec_alloc_large()
 {
     print_green("Making vec of int of size 6", __LINE__);
-    ft::vector<int, Mallocator<int> > vec(6);
+    ft::vector<int> vec(6);
 
     print_green("insert 999 elems in it", __LINE__);
     vec.insert(vec.end(), 999, 2);
@@ -450,7 +452,7 @@ class inputIt
 
 void tst_vec_strings()
 {
-    typedef ft::vector<std::string, Mallocator<std::string> > vec;
+    typedef ft::vector<std::string> vec;
     std::string tab[6] = {"asdf", "ui", "hjfkd", "alo", "fd", "up"};
 
     print_green("tst vec range constructor with C array", __LINE__);
@@ -488,7 +490,7 @@ void tst_vec_inputit()
 {
     print_green("");
     typedef ft::vector<int> vec_mute;
-    typedef ft::vector<int, Mallocator<int> > vec;
+    typedef ft::vector<int> vec;
 
 
     int ar[] = {39, 13, 56, 89, 56, 76, 32, 5413 , 5, 14, 543, 5431, 432};
@@ -573,7 +575,7 @@ void tst_vec_arrow_operator()
 
 void tst_vec_reverse_it()
 {
-    typedef ft::vector<int, Mallocator<int> > vec;
+    typedef ft::vector<int> vec;
 
     vec tst;
     for (int i = 0; i < 10; ++i)
@@ -925,7 +927,7 @@ void vector_all_tests() {
 
     tst_vec_strings();
     print_green("");
-    tst_vec_iterators<ft::vector<int,Mallocator<int> > >();
+    tst_vec_iterators<ft::vector<int> >();
     tst_vec_inputit();
     tst_vec_arrow_operator();
     tst_vec_reverse_it();

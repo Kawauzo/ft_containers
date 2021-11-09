@@ -2,11 +2,9 @@
 # define TESTS_HPP
 
 
-// explicit allocator, outputing a message on cout
-// each time alloc() is called
-#include "explicit_allocator.v.hpp"
-
 #include <algorithm>
+#include <string>
+#include <iostream>
 
 // two version of this file can be compiled
 // "clang++ -DOG" to compile with orginial STL

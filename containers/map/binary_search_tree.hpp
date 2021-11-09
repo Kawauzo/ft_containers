@@ -1,5 +1,5 @@
-#ifndef BINARY_SEARCH_TREE_HPP
-# define BINARY_SEARCH_TREE_HPP
+#ifndef BINARY_SEARCH_TREE_MAP_HPP
+# define BINARY_SEARCH_TREE_MAP_HPP
 
 // testing
 #include <iostream>
