@@ -521,31 +521,27 @@ void tst_vec_inputit()
 
     print_green("true input_iterators with range insert at mid range", __LINE__);
     tst2.insert(tst2.end() - 5, beg, end);
+    std::cout << tst2.capacity() << std::endl;
     print_vec(tst2);
 
     vec_mute::iterator smol(michel.begin() + 5);
     inputIt ssmol(smol);
 
-    print_green("true input_iterators with assign (size--)", __LINE__);
-    std::cout << tst2.capacity() << std::endl;
+    print_green("true input_iterators with assign", __LINE__);
     tst2.assign(beg, ssmol);
     print_vec(tst2);
-    std::cout << tst2.capacity() << std::endl;
 
-    print_green("true input_iterators with assign (size++, same cp)", __LINE__);
+    print_green("true input_iterators with assign, same cp)", __LINE__);
     tst2.assign(beg, end);
     print_vec(tst2);
-    std::cout << tst2.capacity() << std::endl;
 
-    print_green("true input_iterators with assign (cp++)", __LINE__);
+    print_green("true input_iterators with assign", __LINE__);
     tst2.assign(bigbeg, bigend);
     print_vec(tst2);
-    std::cout << tst2.capacity() << std::endl;
 
-    print_green("true input_iterators with assign (empty)", __LINE__);
+    print_green("true input_iterators with assign", __LINE__);
     tst2.assign(bigbeg, bigbeg);
     print_vec(tst2);
-    std::cout << tst2.capacity() << std::endl;
 
 
     print_green("end of scope", __LINE__);
