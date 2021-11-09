@@ -521,7 +521,6 @@ void tst_vec_inputit()
 
     print_green("true input_iterators with range insert at mid range", __LINE__);
     tst2.insert(tst2.end() - 5, beg, end);
-    std::cout << tst2.capacity() << std::endl;
     print_vec(tst2);
 
     vec_mute::iterator smol(michel.begin() + 5);
