@@ -3,6 +3,7 @@
 typedef ft::map<int, int>  mpii;
 
 void cppr_pair(){
+    print_green("Tst ft::pair behaviour", __LINE__);
     ft::pair <std::string,double> product1;                     // default constructor
     ft::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
     ft::pair <std::string,double> product3 (product2);          // copy constructor
@@ -48,6 +49,7 @@ void cppr_pair(){
 }
 
 void tst_binarytree(){
+    print_green("Tst insert/erase", __LINE__);
     mpii arbr;
 
     arbr.insert(ft::make_pair(3, 3));
@@ -113,10 +115,11 @@ void tst_binarytree(){
 
 void tst_const_error(mpii mapi)
 {
+    print_green("Tst const_iterator", __LINE__);
     mpii::const_iterator roland(mapi.begin());
     while (roland != mapi.end()){
         std::cout << roland->first << std::endl;
-        //roland->first += 12; //shouldnt compile
+        //roland->second += 12; //shouldnt compile
         roland++;
     }
 
@@ -124,22 +127,21 @@ void tst_const_error(mpii mapi)
     mpii::const_iterator cend(mapi.end());
     while (it != cend){
         std::cout << it->first << std::endl;
-        //it->first += 12; //shouldnt compile
+        //it->second += 12; //shouldnt compile
         it++;
     }
 
-    /*
     mpii::const_reverse_iterator simon = mapi.rbegin();
     while (simon != mapi.rend()){
-        std::cout << *simon << std::endl;
-        // *simon += "fortytwy"; //shouldnt compile
+        std::cout << simon->first << std::endl;
+        //simon->second += 12; //shouldnt compile
         simon++;
     }
-    */
 }
 
 
 void tst_custom_operator(){
+    print_green("Tst map with custom comparison operator", __LINE__);
     typedef ft::map<int, int, std::greater<int> >  rev_mpii;
     rev_mpii arbr;
 
@@ -212,6 +214,8 @@ void tst_range_cpy(){
 }
 
 void tst_uplow_bounds(){
+    print_green("Tst lower/upper_bound", __LINE__);
+
     //print_green("tst upper_bound and lower_bound", __LINE__);
 
     ft::map<char,int> mymap;
@@ -237,6 +241,7 @@ void tst_uplow_bounds(){
 }
 
 void tst_equal_range(){
+    print_green("Tst equal_range", __LINE__);
     //print_green("tst equal_range()", __LINE__);
     ft::map<char,int> mymap;
 
@@ -255,6 +260,7 @@ void tst_equal_range(){
 }
 
 void tst_fld_size(){
+    print_green("Tst sz/max_sz", __LINE__);
     ft::map<const int, std::string> ui;
     ui.insert(ft::make_pair(58966, "hello coco"));
     std::cout << "size: " << ui.size() << std::endl;
@@ -268,6 +274,7 @@ void tst_fld_size(){
 template <typename T>
 void	mapTest_Insert1Elem(T& cont)
 {
+    print_green("Test strange inserts", __LINE__);
 	std::string name("insert 1 elem:");
 	std::cout << "\n---------------------\n";
 	T tmp = cont;
@@ -306,23 +313,25 @@ void tst_failed_ones(){
 }
 
 void tst_relationals(){
-  ft::map<char,int> foo;
-  ft::map<char,int> bar;
-  foo['a']=100;
-  foo['b']=200;
-  bar['a']=10;
-  bar['z']=1000;
+    print_green("Test relational operators", __LINE__);
+    ft::map<char,int> foo;
+    ft::map<char,int> bar;
+    foo['a']=100;
+    foo['b']=200;
+    bar['a']=10;
+    bar['z']=1000;
 
-  // foo ({{a,100},{b,200}}) vs bar ({a,10},{z,1000}}):
-  if (foo==bar) std::cout << "foo and bar are equal\n";
-  if (foo!=bar) std::cout << "foo and bar are not equal\n";
-  if (foo< bar) std::cout << "foo is less than bar\n";
-  if (foo> bar) std::cout << "foo is greater than bar\n";
-  if (foo<=bar) std::cout << "foo is less than or equal to bar\n";
-  if (foo>=bar) std::cout << "foo is greater than or equal to bar\n";
+    // foo ({{a,100},{b,200}}) vs bar ({a,10},{z,1000}}):
+    if (foo==bar) std::cout << "foo and bar are equal\n";
+    if (foo!=bar) std::cout << "foo and bar are not equal\n";
+    if (foo< bar) std::cout << "foo is less than bar\n";
+    if (foo> bar) std::cout << "foo is greater than bar\n";
+    if (foo<=bar) std::cout << "foo is less than or equal to bar\n";
+    if (foo>=bar) std::cout << "foo is greater than or equal to bar\n";
 }
 
 void map_all_tests(){
+    print_green(__FILE__);
 
     cppr_pair();
     tst_binarytree();

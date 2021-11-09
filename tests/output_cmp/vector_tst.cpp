@@ -19,7 +19,8 @@ class verbose
 
 void vec_alloc_1by1_verbose(int init_size)
 {
-    print_green("Making vec of int of given size");
+    print_green(__FILE__);
+    print_green("Making vec of int of given size", __LINE__);
     ft::vector<verbose, Mallocator<verbose> > vec(init_size);
 
     std::cout << "vec.size() = " << vec.size() << std::endl;
@@ -54,7 +55,8 @@ void print_vec(vec &v)
 
 void vec_alloc_1by1(int init_size)
 {
-    print_green("Making vec of int of given size");
+    print_green(__FILE__);
+    print_green("Making vec of int of given size", __LINE__);
     ft::vector<int, Mallocator<int> > vec(init_size);
 
     std::cout << "vec.size() = " << vec.size() << std::endl;
@@ -70,7 +72,7 @@ void vec_alloc_1by1(int init_size)
     }
     for (int i = 0; i<4; i++)
         vec.insert(vec.end(), 3);
-    print_green("and now delete things");
+    print_green("and now delete things", __LINE__);
     while (vec.size())
     {
         ft::vector<int, Mallocator<int> >::iterator tmp;
@@ -81,20 +83,20 @@ void vec_alloc_1by1(int init_size)
             std::cout << *tmp << std::endl;
         print_vec(vec);
     }
-    print_green("nothing happens");
+    print_green("nothing happens", __LINE__);
 }
 
 void vec_alloc_large()
 {
-    print_green("Making vec of int of size 6");
+    print_green("Making vec of int of size 6", __LINE__);
     ft::vector<int, Mallocator<int> > vec(6);
 
-    print_green("insert 999 elems in it");
+    print_green("insert 999 elems in it", __LINE__);
     vec.insert(vec.end(), 999, 2);
-    print_green("add an other one");
+    print_green("add an other one", __LINE__);
     vec.push_back(2);
 
-    print_green("assign the vec so it contains 3 ints");
+    print_green("assign the vec so it contains 3 ints", __LINE__);
     vec.assign(3, 6);
     std::cout << "vec.size() = " << vec.size() << std::endl;
     std::cout << "cbeg " << std::endl;
@@ -380,7 +382,7 @@ void tst_vec_iterators()
     typename vec::iterator *J = new typename vec::iterator;
     delete J;
 
-    print_green("tst assign empty its");
+    print_green("tst assign empty its", __LINE__);
     vec nul;
     vec test(3, 0);
     test.assign(nul.begin(), nul.end());
@@ -405,7 +407,7 @@ void tst_vec_iterators()
     vec  erange = tst1;
     print_vec(erange);
 
-    print_green("test erase(range)");
+    print_green("test erase(range)", __LINE__);
 
     std::cout << *erange.erase(erange.begin() + 3, erange.begin() + 8) << std::endl;
     std::cout << erange.size() << '\n';
@@ -664,7 +666,7 @@ void tst_vec_capacity()
 }
 
 void failed_testers(){
-    print_green("tst assign/insert with bidirectionnal its");
+    print_green("tst assign/insert with bidirectionnal its", __LINE__);
 	std::list<int> lst;
 	std::list<int>::iterator lst_it;
 	for (int i = 1; i < 5; ++i)

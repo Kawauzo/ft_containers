@@ -1,10 +1,6 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
-# include <iostream> // TESTING, DELETE AFTERWARDS
-# include <cstdio> // TESTING, DELETE AFTERWARDS
-
-
 # include "../utils/comparisons.hpp" // needed relational operators
 # include "../utils/pair.hpp"       // needed for ft::pair and ft::make_pair
 # include "../utils/iterators.hpp" // needed for reverse iterator

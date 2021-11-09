@@ -4,6 +4,8 @@
 # include <iostream>
 # include "../../containers/map/map.hpp"
 
+# define BLACK 1
+
 // TESTING --- A class that prints a map's underlying red/black
 template <
     class Key,
@@ -51,7 +53,7 @@ public:
 
     }
     void black_depth(typename map::node_type * n, int d) {
-        if (n->val &&  n->color == map::color_type::black)
+        if (n->val &&  n->color == BLACK)
             ++d;
         if ((!n->r && !n->l) || !n->val) {
             /*
@@ -75,9 +77,9 @@ public:
         if (n) {
             node_print(n->r, current_level + 1, max_level);
             for (i = 0; i < current_level; i++) {
-                printf("    ");
+                std::cout << "    ";
             }
-            if (n->color == map::color_type::black)
+            if (n->color == BLACK)
                 std::cout << "\033[1;30;47m";
             else
                 std::cout << "\033[1;31m";
@@ -92,9 +94,9 @@ public:
             if (current_level < max_level) {
                 node_print(NULL, current_level + 1, max_level);
                 for (i = 0; i < current_level; i++) {
-                    printf("    ");
+                    std::cout << "    ";
                 }
-                printf("..\n");
+                std::cout << ".." << std::endl;
                 node_print(NULL, current_level + 1, max_level);
             }
         }
