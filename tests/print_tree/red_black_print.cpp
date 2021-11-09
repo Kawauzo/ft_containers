@@ -24,11 +24,11 @@ void tst_print_map() {
         std::cout << "erase: " << inserted[index] << '\n';
         arbr.erase(inserted[index]);
         inserted.erase(inserted.begin() + index);
-        arbr.print();
     }
 
     arbr.print();
-   // insert x elem
+    // insert x elem
+    x = 6;
     for (int i = 0; i < x; i++){
         int elem = rand() % 99;
         if (arbr.insert(ft::make_pair(elem, 8)).second)

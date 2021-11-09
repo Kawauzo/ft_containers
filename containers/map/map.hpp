@@ -560,12 +560,12 @@ private:
           return;
 
         if (sibling == NULL) {
-            // No sibiling, double black pushed up
+            // No sibiling, recursive call with parent
             fixDoubleBlack(parent, parent->parent, parent->sibling());
         }
         else {
             if (sibling->color == red) {
-                // Sibling red
+                // Sibling is red
                 parent->color = red;
                 sibling->color = black;
                 if (sibling->isOnLeft()) {
@@ -580,9 +580,9 @@ private:
                 }
             }
             else {
-                // Sibling black
+                // Sibling is black
                 if (sibling->hasRedChild()) {
-                    // at least 1 red children
+                    // has at least 1 red children
                     if (sibling->l && sibling->l->val && sibling->l->color == red) {
                         if (sibling->isOnLeft()) {
                             // left left

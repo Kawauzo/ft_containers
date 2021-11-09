@@ -1,6 +1,4 @@
-#include "tests.hpp"
-#include <cstdlib>
-#include <ctime>
+#include "../tests.hpp"
 
 typedef ft::map<int, int>  mpii;
 
@@ -86,13 +84,8 @@ void tst_binarytree(){
     std::cout << "test operator[]: " << arbr[43] << '\n';
     std::cout << "test operator[]: " << arbr[-16] << '\n';
 
-    for (int i = 0; i < 13; i++){
-        int elem = rand() % 99;
-        std::cout << arbr.insert(ft::make_pair(elem, 8)).second;
-        std::cout << "." << elem << " / ";
-    }
+
     std::cout << '\n';
-    /*
     arbr.insert(ft::make_pair(3, 3));
     arbr.insert(ft::make_pair(1, 1));
     arbr.insert(ft::make_pair(6, 6));
@@ -100,7 +93,6 @@ void tst_binarytree(){
     arbr.insert(ft::make_pair(10, 10));
     arbr.insert(ft::make_pair(13, 13));
     arbr.insert(ft::make_pair(14, 14));
-    */
 
     std::cout << '\n';
 
@@ -331,7 +323,6 @@ void tst_relationals(){
 }
 
 void map_all_tests(){
-    srand((unsigned)time(0));
 
     cppr_pair();
     tst_binarytree();

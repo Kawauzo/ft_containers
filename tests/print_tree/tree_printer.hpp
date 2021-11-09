@@ -43,14 +43,33 @@ public:
 
     void  print()
     {
-        printf("Display tree : \n");
+        std::cout << "Black Depth :" << std::endl;
+        black_depth(this->_root, 0);
+        std::cout << std::endl << "Display tree :" << std::endl;
         node_print(this->_root, 0, max_depth());
-        printf("\n\n");
+        std::cout << std::endl << std::endl;
 
     }
+    void black_depth(typename map::node_type * n, int d) {
+        if (n->val &&  n->color == map::color_type::black)
+            ++d;
+        if ((!n->r && !n->l) || !n->val) {
+            /*
+            if (n->val)
+                std::cout << n->val->first << '/';
+            else
+                std::cout << n->parent->val->first << '/';
+                */
+            std::cout << d << ' ';
+            return;
+        }
+        if (n->l)
+            black_depth(n->l, d);
+        if (n->r)
+            black_depth(n->r, d);
+    }
 
-    void  node_print(typename map::node_type * n, int current_level, int max_level)
-    {
+    void  node_print(typename map::node_type * n, int current_level, int max_level) {
         int i;
 
         if (n) {

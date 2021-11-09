@@ -11,7 +11,7 @@
 //#endif
 
 // all testing functions declared here
-#include "tests.hpp"
+#include "../tests.hpp"
 
 void print_title(const char *s)
 {
