@@ -2,6 +2,148 @@
 
 typedef ft::map<int, int>  mpii;
 
+// Cppreference testing stuff
+template<typename Map>
+void print_map(Map& m)
+{
+   std::cout << '{';
+   for(typename Map::iterator it = m.begin(); it != m.end(); ++it )
+        std::cout << it->first << ':' << it->second << ' ';
+   std::cout << "}\n";
+}
+
+// Cppr constructor
+void cppr_construct(){
+  // (1) Default constructor
+  ft::map<std::string, int> map1;
+  map1["something"] = 69;
+  map1["anything"] = 199;
+  map1["that thing"] = 50;
+  std::cout << "map1 = "; print_map(map1);
+
+  // (2) Range constructor
+  ft::map<std::string, int> iter(map1.find("anything"), map1.end());
+  std::cout << "\niter = "; print_map(iter);
+  std::cout << "map1 = "; print_map(map1);
+
+  // (3) Copy constructor
+  ft::map<std::string, int> copied(map1);
+  std::cout << "\ncopied = "; print_map(copied);
+  std::cout << "map1 = "; print_map(map1);
+}
+
+void display_sizes(const ft::map<int, int> &nums1,
+                   const ft::map<int, int> &nums2,
+                   const ft::map<int, int> &nums3)
+{
+    std::cout << "nums1: " << nums1.size()
+              << " nums2: " << nums2.size()
+              << " nums3: " << nums3.size() << '\n';
+}
+
+void cppr_assign(){
+    ft::map<int, int> nums1;
+    nums1.insert(ft::make_pair(3, 1));
+    nums1.insert(ft::make_pair(4, 1));
+    nums1.insert(ft::make_pair(5, 9));
+    nums1.insert(ft::make_pair(6, 1));
+    nums1.insert(ft::make_pair(7, 1));
+    nums1.insert(ft::make_pair(8, 9));
+
+    ft::map<int, int> nums2;
+    ft::map<int, int> nums3;
+
+    std::cout << "Initially:\n";
+    display_sizes(nums1, nums2, nums3);
+
+    // copy assignment copies data from nums1 to nums2
+    nums2 = nums1;
+
+    std::cout << "After assigment:\n";
+    display_sizes(nums1, nums2, nums3);
+}
+
+void print(std::string comment, ft::map<char, int> & map) {
+    std::cout << comment << "{";
+    for (ft::map<char, int>::iterator it = map.begin(); it != map.end(); ++it) {
+        std::cout << "{" << it->first << ": " << it->second << "}";
+    }
+    std::cout << "}\n";
+};
+
+void cppr_operator_array(){
+    ft::map<char, int> letter_counts;
+    letter_counts.insert(ft::make_pair('a', 27));
+    letter_counts.insert(ft::make_pair('b', 3));
+    letter_counts.insert(ft::make_pair('c', 1));
+
+
+    print("letter_counts initially contains: ", letter_counts);
+
+    letter_counts['b'] = 42;  // updates an existing value
+    letter_counts['x'] = 9;  // inserts a new value
+
+    print("after modifications it contains: ", letter_counts);
+}
+
+void cpplus_insert(){
+    ft::map<char,int> mymap;
+
+    // first insert function version (single parameter):
+    mymap.insert ( ft::pair<char,int>('a',100) );
+    mymap.insert ( ft::pair<char,int>('z',200) );
+
+    ft::pair<ft::map<char,int>::iterator,bool> ret;
+    ret = mymap.insert(ft::make_pair('z',500));
+    if (ret.second==false) {
+        std::cout << "element 'z' already existed";
+        std::cout << " with a value of " << ret.first->second << '\n';
+    }
+
+    // second insert function version (with hint position):
+    ft::map<char,int>::iterator it = mymap.begin();
+    mymap.insert (it, ft::pair<char,int>('b',300));  // max efficiency inserting
+    mymap.insert (it, ft::pair<char,int>('c',400));  // no max efficiency inserting
+
+    // third insert function version (range insertion):
+    ft::map<char,int> anothermap;
+    anothermap.insert(mymap.begin(),mymap.find('c'));
+
+    // showing contents:
+    std::cout << "mymap contains:\n";
+    for (it=mymap.begin(); it!=mymap.end(); ++it)
+        std::cout << it->first << " => " << it->second << '\n';
+
+    std::cout << "anothermap contains:\n";
+    for (it=anothermap.begin(); it!=anothermap.end(); ++it)
+        std::cout << it->first << " => " << it->second << '\n';
+}
+
+void cpplus_begin(){
+    ft::map<char,int> mymap;
+
+    mymap['b'] = 100;
+    mymap['a'] = 200;
+    mymap['c'] = 300;
+
+    // show content:
+    for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+        std::cout << it->first << " => " << it->second << '\n';
+}
+
+void cpplus_rbegin(){
+    ft::map<char,int> mymap;
+
+    mymap['x'] = 100;
+    mymap['y'] = 200;
+    mymap['z'] = 300;
+
+    // show content:
+    ft::map<char,int>::reverse_iterator rit;
+    for (rit=mymap.rbegin(); rit!=mymap.rend(); ++rit)
+        std::cout << rit->first << " => " << rit->second << '\n';
+}
+
 void cppr_pair(){
     print_green("Tst ft::pair behaviour", __LINE__);
     ft::pair <std::string,double> product1;                     // default constructor
@@ -334,6 +476,14 @@ void map_all_tests(){
     print_green(__FILE__);
 
     cppr_pair();
+    cppr_assign();
+    cppr_construct();
+    cppr_operator_array();
+
+    cpplus_insert();
+    cpplus_begin();
+    cpplus_rbegin();
+
     tst_binarytree();
     tst_custom_operator();
     tst_range_cpy();
