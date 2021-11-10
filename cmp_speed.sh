@@ -17,6 +17,8 @@ if [ $? -eq 0 ] ; then
     fi
 fi
 
+echo
+
 # Speed Comparison for stack
 make re -C ./tests/time_stack/ > /dev/null
 if [ $? -eq 0 ] ; then
@@ -33,3 +35,6 @@ if [ $? -eq 0 ] ; then
         echo "$(tput setaf 1)  Diff in outputs, find diff in ./results/"
     fi
 fi
+
+echo
+# Speed Comparison for map

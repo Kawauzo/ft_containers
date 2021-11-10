@@ -1,35 +1,17 @@
 #include "../tests.hpp"
 
-#ifndef RSEED
-# define RSEED 89
-#endif
-
-void large_vec(){
+void large_stack(){
     ft::stack<int> ls;
 
-    ls.insert(ls.begin() + ls.size() / 2, 9999, 43);
-    std::cout << ls.size() << '\n';
-
-    ls.erase(ls.begin() + ls.size() / 4, ls.end() - ls.size() / 4);
-    std::cout << ls.size() << '\n';
-
-    ls.resize(ls.size() / 2);
-    std::cout << ls.size() << '\n';
-
-    ls.resize(ls.size() * 5);
-    std::cout << ls.size() << '\n';
-
-    std::cout << (ls < ls) << '\n';
-
-    for (size_t i = 0; i < 4000; i++ ){
-        ls.insert(ls.end() - i, i);
+    for(int i = 0; i < 9999; ++i){
+        ls.push(i);
+        std::cout << ls.top();
     }
-
-    ls.clear();
+    while (ls.size())
+        ls.pop();
 }
 
 
 int main(){
-    srand(RSEED);
-    large_vec();
+    large_stack();
 }
