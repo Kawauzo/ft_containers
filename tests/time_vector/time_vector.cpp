@@ -1,8 +1,5 @@
 #include "../tests.hpp"
 
-#ifndef RSEED
-# define RSEED 89
-#endif
 
 void large_vec(){
     ft::vector<int> lv(999999, 42);
@@ -30,6 +27,5 @@ void large_vec(){
 
 
 int main(){
-    srand(RSEED);
     large_vec();
 }
