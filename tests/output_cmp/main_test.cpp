@@ -31,4 +31,5 @@ int main() {
     vector_all_tests();
     stack_all_tests();
     map_all_tests();
+    set_all_tests();
 }
