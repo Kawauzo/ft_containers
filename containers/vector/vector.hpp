@@ -1,8 +1,6 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# include <iostream> // TEMPORARY // TESTING
-
 # include <memory> // needed for std::allocator
 # include <limits> // needed for vector::max_size()
 
