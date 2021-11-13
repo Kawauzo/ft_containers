@@ -458,7 +458,7 @@ void tst_set_range_cpy(){
 
 }
 
-void tst_set_fld_size(){
+void tst_set_fld_size() {
     print_green("Tst sz/max_sz", __LINE__);
     ft::set<int> ui;
     ui.insert(58966);

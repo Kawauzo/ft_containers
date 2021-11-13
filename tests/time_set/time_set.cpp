@@ -1,22 +1,22 @@
 #include "../tests.hpp"
 
 #ifndef RSEED
-# define RSEED 89
+# define RSEED 178
 #endif
 
 #define MAX_K 2147483647
 
-void large_map(){
-    typedef ft::map<int, std::string> mapi;
-    mapi mp;
+void large_set(){
+    typedef ft::set<int> seti;
+    seti mp;
 
     for (int i = 0; i < 9999; ++i)
-        mp.insert(ft::make_pair(rand() % MAX_K, "ui"));
+        mp.insert(rand() % MAX_K);
 
     for (int i = 0; i < 9999; ++i){
-        mapi::iterator it = mp.find(rand() % MAX_K);
+        seti::iterator it = mp.find(rand() % MAX_K);
         if (it != mp.end())
-            std::cout  <<  it->first << std::endl;
+            std::cout  <<  *it << std::endl;
     }
 
     for (int i = 0; i < 9999; ++i)
@@ -26,11 +26,11 @@ void large_map(){
         mp.erase(rand() % MAX_K);
 
     for (int i = 0; i < 9999; ++i)
-        mp.insert(ft::make_pair(rand() % MAX_K, "non"));
+        mp.insert(rand() % MAX_K);
 
 }
 
 int main(){
     srand(RSEED);
-    large_map();
+    large_set();
 }

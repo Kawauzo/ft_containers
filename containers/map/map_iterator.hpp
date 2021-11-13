@@ -41,7 +41,7 @@ template <class T, class node_type> class map_iterator
 
     // Member access operators
     value_type& operator * () const {return *_ptr->val;}
-    pointer operator -> () const {return _ptr->val;}
+    pointer     operator -> () const {return _ptr->val;}
 
     // Pre-increment
     map_iterator& operator++() {

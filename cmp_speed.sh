@@ -53,3 +53,21 @@ if [ $? -eq 0 ] ; then
         echo "$(tput setaf 1)  Diff in output, find diff in ./results/"
     fi
 fi
+
+echo
+# Speed Comparison for set
+make re -C ./tests/time_set/ > /dev/null
+if [ $? -eq 0 ] ; then
+    mkdir -p results
+    echo "$(tput setaf 2)Test set speed: "
+    echo -n "$(tput sgr0)   ft : "
+    $TIMECMD ./tests/time_set/settime_ft > results/ft_set_spd
+    echo -n "$(tput sgr0 2)  std : "
+    $TIMECMD ./tests/time_set/settime_og > results/og_set_spd
+    diff results/ft_set_spd results/og_set_spd -c --color > results/diff_set_spd 2>&1
+    if [ $? -eq 0 ] ; then
+        echo "$(tput setaf 2)  Same output"
+    else
+        echo "$(tput setaf 1)  Diff in output, find diff in ./results/"
+    fi
+fi
